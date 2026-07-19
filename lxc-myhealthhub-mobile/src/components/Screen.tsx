@@ -12,7 +12,7 @@ export function Screen({children, scroll = true}: Props) {
   const content = <View style={styles.content}>{children}</View>;
 
   return (
-    <SafeAreaView edges={['left', 'right']} style={styles.root}>
+    <SafeAreaView edges={['top', 'left', 'right']} style={styles.root}>
       {scroll ? (
         <ScrollView contentInsetAdjustmentBehavior="automatic">{content}</ScrollView>
       ) : (

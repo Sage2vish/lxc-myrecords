@@ -27,7 +27,7 @@
     "react-native-gesture-handler": "^2.22.0",
     "react-native-keychain": "^9.2.2",
     "react-native-safe-area-context": "^5.1.0",
-    "react-native-screens": "^4.5.0",
+    "react-native-screens": "^3.37.0",
     "zod": "^3.24.1",
     "zustand": "^5.0.3"
   },

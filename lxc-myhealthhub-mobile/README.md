@@ -8,6 +8,7 @@ MyHealthHub is a React Native Android app for patient health records, appointmen
 - [x] TypeScript app source created
 - [x] Android native project files created
 - [x] App navigation shell created
+- [x] MyHealthHub launcher icon wired into Android manifest
 - [x] Dashboard screen created
 - [x] Medical records screen created
 - [x] Appointments screen created
@@ -21,11 +22,14 @@ MyHealthHub is a React Native Android app for patient health records, appointmen
 - [x] npm packages installed
 - [x] Java JDK 17 available in local shell via `frameworks/jdk`
 - [ ] Android Studio installed
-- [x] Android SDK Platform 35 installed under `frameworks/android/sdk`
+- [ ] Android SDK Platform 36 installed under `frameworks/android/sdk`
 - [x] Gradle 8.10.2 installed under `frameworks/gradle`
 - [ ] Android Gradle wrapper generated
-- [ ] Android debug build verified
-- [ ] Android emulator/device run verified
+- [x] Android debug APK built successfully
+- [ ] Android emulator system image installed and device run verified
+- [ ] API 36 Pixel 8 Pro/Pixel 9 Pro emulator configured
+- [ ] Emulator configured for 2772 x 1240 resolution and 8 GB or 12 GB RAM
+- [x] ARM64-v8a preferred app architecture configured
 - [ ] Backend API connected
 - [ ] Login/authentication implemented
 - [ ] Secure token storage implemented
@@ -78,6 +82,7 @@ Vishal has completed a local-framework setup for macOS. The required development
 ```text
 frameworks/
 ├── android/       # Android SDK, platform tools, emulator tools
+├── android-emulator/ # Dedicated emulator installer and AVD files
 ├── jdk/           # JDK 17
 ├── node/          # Node.js 24 and npm
 └── gradle/        # Gradle 8.10.2
@@ -88,6 +93,8 @@ Load the tools before working on the app:
 ```bash
 source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 ```
+
+The emulator is kept separately in `frameworks/android-emulator` so emulator images and AVD files do not mix with the Android build SDK. Its installer is available at `frameworks/android-emulator/install.sh`.
 
 This approach is better for the Mac setup because the project uses known, isolated tool versions without requiring global package-manager changes. It also keeps the Android SDK, Java, Node.js, and Gradle paths consistent across terminals and projects.
 
@@ -120,6 +127,44 @@ In another terminal:
 npm run android
 ```
 
+## Test Devices
+
+Physical test device profile:
+
+```text
+Device: OPPO Reno10 5G
+ColorOS: 15
+Android version: [confirm on phone]
+CPU: MediaTek Dimensity 7050
+RAM: 8 GB physical RAM
+Storage: 256 GB
+Architecture: [confirm arm64-v8a]
+Network: 5G
+USB debugging: Enabled
+```
+
+The exact Android version, supported ABIs, display resolution, and DPI must be read from the connected phone. Enable `Developer Options > USB debugging`, connect the phone by USB, accept the authorization prompt, then run:
+
+```bash
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
+adb devices -l
+adb shell getprop ro.build.version.release
+adb shell getprop ro.product.cpu.abilist
+adb shell wm size
+adb shell wm density
+```
+
+Emulator profile:
+
+```text
+Device: Pixel 7 or Pixel 8
+Android: same API level as the OPPO phone
+Architecture: ARM64 preferred
+RAM: 4-6 GB
+Storage: 8-16 GB
+Resolution: approximately 1080 x 2412
+```
+
 ## Build Android APK
 
 ```bash
@@ -130,6 +175,32 @@ The debug APK should be generated under:
 
 ```text
 android/app/build/outputs/apk/debug/
+```
+
+## Android 16 Baseline
+
+The Android project baseline is configured for Android 16 / API 36:
+
+- `compileSdk`: 36
+- `targetSdk`: 36
+- `minSdk`: 29
+- Preferred ABI: `arm64-v8a` (with `x86_64` retained for emulator support)
+- Recommended device profile: Pixel 8 Pro, Pixel 9 Pro, or a custom device
+- Recommended resolution: `2772 x 1240`
+- Recommended RAM: 8 GB or 12 GB
+
+Before building, install Android SDK Platform 36, API 36 build tools, and an Android 16 ARM64 system image. The current local framework bundle still needs these API 36 components added.
+
+Last successful debug APK:
+
+```text
+/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-mobile/android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+Project-relative path:
+
+```text
+android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ## Validation
@@ -147,7 +218,7 @@ npm run lint
 npm run build:android:debug
 ```
 
-TypeScript and ESLint currently pass. The Android debug build and emulator run remain pending until the Gradle wrapper and emulator system image are fully available.
+TypeScript and ESLint currently pass. The last Android debug build completed successfully. Emulator launch still needs the React Native native dependency crash to be resolved.
 
 ## Backend Work Needed
 

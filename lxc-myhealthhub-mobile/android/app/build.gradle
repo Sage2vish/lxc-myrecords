@@ -9,7 +9,6 @@ react {
 }
 
 def enableProguardInReleaseBuilds = false
-def jscFlavor = "org.webkit:android-jsc:+"
 
 android {
     namespace "com.lxcmyhealthhub"
@@ -17,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId "com.lxcmyhealthhub"
-        minSdkVersion 23
+        minSdkVersion 29
         targetSdkVersion 35
         versionCode 1
         versionName "0.1.0"
@@ -48,8 +47,8 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     if (hermesEnabled.toBoolean()) {
-        implementation("com.facebook.react:hermes-android")
+        implementation(files("libs/hermes-android-0.78.0-debug.aar"))
     } else {
-        implementation jscFlavor
+        implementation("org.webkit:android-jsc:r245459")
     }
 }

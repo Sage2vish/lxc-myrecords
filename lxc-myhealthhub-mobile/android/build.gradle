@@ -1,4 +1,42 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.facebook.react:react-native-gradle-plugin")
+    }
+}
+
 plugins {
     id("com.android.application") version "8.7.2" apply false
     id("org.jetbrains.kotlin.android") version "2.0.21" apply false
+}
+
+ext {
+    buildToolsVersion = "35.0.0"
+    minSdkVersion = 29
+    compileSdkVersion = 35
+    targetSdkVersion = 35
+    ndkVersion = "27.0.12077973"
+}
+
+subprojects {
+    configurations.all {
+        resolutionStrategy.force(
+            "androidx.core:core:1.16.0",
+            "androidx.core:core-ktx:1.16.0",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.21",
+            "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21"
+        )
+    }
+
+    afterEvaluate { project ->
+        if (project.name == "react-native-screens") {
+            project.tasks.matching { task ->
+                task.name == "generateCodegenSchemaFromJavaScript" ||
+                    task.name == "generateCodegenArtifactsFromSchema"
+            }.configureEach { task -> task.enabled = false }
+        }
+    }
 }
