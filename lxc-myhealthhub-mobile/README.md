@@ -17,12 +17,13 @@ MyHealthHub is a React Native Android app for patient health records, appointmen
 - [x] Mock health service data added
 - [x] Environment sample file added
 - [x] Android build scripts added
-- [ ] Node.js available in local shell
-- [ ] npm packages installed
-- [ ] Java JDK 17 available in local shell
+- [x] Node.js available in local shell via `frameworks/node`
+- [x] npm packages installed
+- [x] Java JDK 17 available in local shell via `frameworks/jdk`
 - [ ] Android Studio installed
-- [ ] Android SDK Platform 35 installed
-- [ ] Android Gradle wrapper generated or Gradle installed
+- [x] Android SDK Platform 35 installed under `frameworks/android/sdk`
+- [x] Gradle 8.10.2 installed under `frameworks/gradle`
+- [ ] Android Gradle wrapper generated
 - [ ] Android debug build verified
 - [ ] Android emulator/device run verified
 - [ ] Backend API connected
@@ -70,6 +71,35 @@ Install these before running the app:
 
 ## Setup
 
+### macOS Local Framework Setup
+
+Vishal has completed a local-framework setup for macOS. The required development tools are kept together under the shared `frameworks` folder and loaded for this project with one command:
+
+```text
+frameworks/
+├── android/       # Android SDK, platform tools, emulator tools
+├── jdk/           # JDK 17
+├── node/          # Node.js 24 and npm
+└── gradle/        # Gradle 8.10.2
+```
+
+Load the tools before working on the app:
+
+```bash
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
+```
+
+This approach is better for the Mac setup because the project uses known, isolated tool versions without requiring global package-manager changes. It also keeps the Android SDK, Java, Node.js, and Gradle paths consistent across terminals and projects.
+
+Verified locally:
+
+- Node.js `v24.18.0`
+- npm `11.16.0`
+- Java `17.0.19`
+- Gradle `8.10.2`
+- Android SDK Platform `35`
+- Android Debug Bridge `37.0.0`
+
 ```bash
 cd lxc-myhealthhub-mobile
 cp .env.example .env
@@ -102,18 +132,22 @@ The debug APK should be generated under:
 android/app/build/outputs/apk/debug/
 ```
 
-## Important Note
+## Validation
 
-This shell currently cannot run `node` or `npm`, so package installation and Android build verification are still pending. Once Node.js is available, run:
+After loading the local macOS framework environment, run:
 
 ```bash
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 node -v
 npm -v
 npm install
 java -version
 npm run typecheck
+npm run lint
 npm run build:android:debug
 ```
+
+TypeScript and ESLint currently pass. The Android debug build and emulator run remain pending until the Gradle wrapper and emulator system image are fully available.
 
 ## Backend Work Needed
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Text} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import {HomeScreen} from '../screens/HomeScreen';
 import {RecordsScreen} from '../screens/RecordsScreen';
 import {AppointmentsScreen} from '../screens/AppointmentsScreen';
@@ -29,6 +29,16 @@ const icons: Record<keyof RootTabParamList, string> = {
   Profile: '○',
 };
 
+function TabIcon({color, icon}: {color: string; icon: string}) {
+  return <Text style={[styles.tabIcon, {color}]}>{icon}</Text>;
+}
+
+const styles = StyleSheet.create({
+  tabIcon: {
+    fontSize: 20,
+  },
+});
+
 export function RootNavigator() {
   return (
     <Tab.Navigator
@@ -44,9 +54,7 @@ export function RootNavigator() {
           paddingBottom: 8,
           paddingTop: 8,
         },
-        tabBarIcon: ({color}) => (
-          <Text style={{color, fontSize: 20}}>{icons[route.name]}</Text>
-        ),
+        tabBarIcon: ({color}) => <TabIcon color={color} icon={icons[route.name]} />,
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Records" component={RecordsScreen} />
