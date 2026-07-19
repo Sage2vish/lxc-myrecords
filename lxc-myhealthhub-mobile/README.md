@@ -1,163 +1,141 @@
 # MyHealthHub Mobile App by Lexvora
 
-![App Banner](https://via.placeholder.com/900x300.png?text=LXC+MyHealthHub)
+MyHealthHub is a React Native Android app for patient health records, appointments, prescriptions, vitals, and profile management.
 
-**Your Personal Health Companion. Manage your medical records, appointments, and prescriptions with ease.**
+## Current Status
 
----
+- [x] React Native project metadata created
+- [x] TypeScript app source created
+- [x] Android native project files created
+- [x] App navigation shell created
+- [x] Dashboard screen created
+- [x] Medical records screen created
+- [x] Appointments screen created
+- [x] Prescriptions screen created
+- [x] Vitals screen created
+- [x] Profile screen created
+- [x] Mock health service data added
+- [x] Environment sample file added
+- [x] Android build scripts added
+- [ ] Node.js available in local shell
+- [ ] npm packages installed
+- [ ] Java JDK 17 available in local shell
+- [ ] Android Studio installed
+- [ ] Android SDK Platform 35 installed
+- [ ] Android Gradle wrapper generated or Gradle installed
+- [ ] Android debug build verified
+- [ ] Android emulator/device run verified
+- [ ] Backend API connected
+- [ ] Login/authentication implemented
+- [ ] Secure token storage implemented
+- [ ] Real record upload/download implemented
+- [ ] Appointment booking form implemented
+- [ ] Medication reminder notifications implemented
+- [ ] Hindi translations implemented
+- [ ] Release signing configured
+- [ ] Play Store build generated
 
-## 📱 App Overview
+## What Has Been Built
 
-**MyHealthHub** is a secure, patient-centric mobile application designed to give you complete control over your healthcare journey. Access your health information anytime, anywhere, and connect with your healthcare providers seamlessly.
+The project now contains a working React Native app structure:
 
-### ✨ Key Features
-
--   👤 **Secure Profile:** Manage your personal and medical profile information.
--   🩺 **View Medical Records:** Access your complete health history, including diagnoses, lab results, and treatment plans.
--   📅 **Appointment Management:** Book new appointments, view upcoming visits, and check your visit history.
--   💊 **Prescription Tracking:** Keep a list of your current and past prescriptions, and set medication reminders.
--   📈 **Health Vitals:** Log and track key health metrics like blood pressure, glucose levels, and weight.
--   💬 **Secure Messaging:** (Future) Communicate directly and securely with your assigned doctors.
--   🔔 **Notifications:** Receive reminders for upcoming appointments and medication schedules.
--   🌐 **Multi-language Support:** Available in English and Hindi.
-
----
-
-## 🚀 Getting Started
-
-Follow these instructions to get the project up and running on your local machine for development and testing.
-
-### Prerequisites
-
--   Node.js (v18+ recommended)
--   Yarn or npm
--   React Native CLI (`npm install -g react-native-cli`)
--   **iOS:** Xcode and CocoaPods
--   **Android:** Java JDK (v17+) and Android Studio
-
-### 1. Clone the Repository
-
-```bash
-git clone <your-repository-url>
-cd lxc-myhealthhub-mobile
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-```
-
-### 3. Configure Environment
-
-Create a `.env` file in the root of the project and add the necessary environment variables.
-
-```env
-# .env
-API_BASE_URL=https://lexvoraconsulting.com/api/v1/myhealthhub
-```
-
-### 4. Link Native Dependencies (for iOS)
-
-```bash
-cd ios && pod install && cd ..
-```
-
-### 5. Run the Application
-
-#### For Android
-
-```bash
-# Start the Metro server
-npx react-native start
-
-# Run on an Android emulator or connected device
-npx react-native run-android
-```
-
-#### For iOS
-
-```bash
-# Start the Metro server
-npx react-native start
-
-# Run on an iOS simulator or connected device
-npx react-native run-ios
-```
-
----
-
-## 🛠️ Tech Stack & Key Libraries
-
-| Library                       | Purpose                               |
-| ----------------------------- | ------------------------------------- |
-| `react` & `react-native`      | Core application framework            |
-| `@react-navigation/*`         | Screen navigation (stack, tabs, drawer) |
-| `axios`                       | HTTP client for API communication     |
-| `react-native-keychain`       | Secure credential storage (for tokens)  |
-| `zod`                         | Schema validation for API responses   |
-| `@tanstack/react-query`       | Data fetching, caching, and state management |
-| `i18n-js`                     | Internationalization (EN/HI)          |
-| `moment` or `date-fns`        | Date and time formatting              |
-| `react-native-push-notification` | Local and remote notifications      |
-| `react-native-vector-icons`   | Customizable icons                    |
-
----
-
-## 🗂️ Project Structure
-
-```
+```text
 lxc-myhealthhub-mobile/
+├── android/                # Android native app and Gradle config
 ├── src/
-│   ├── api/          # API service definitions, Axios instance
-│   ├── assets/       # Images, fonts, and other static assets
-│   ├── components/   # Reusable UI components (Button, Card, Input)
-│   ├── config/       # App-wide configuration, environment variables
-│   ├── hooks/        # Custom React hooks (e.g., useAuth, useApi)
-│   ├── navigation/   # React Navigation navigators and routes
-│   ├── screens/      # Feature-based screen components
-│   ├── services/     # Business logic (auth, notifications)
-│   ├── store/        # State management (Zustand, Redux, etc.)
-│   ├── theme/        # Global styles, colors, typography
-│   └── utils/        # Helper functions
-├── .env.example      # Example environment file
-├── App.tsx           # Root component of the application
-└── ...               # Other config files (babel, metro, etc.)
+│   ├── api/                # API client and health service
+│   ├── components/         # Shared UI components
+│   ├── hooks/              # React Query data hooks
+│   ├── navigation/         # Bottom tab navigation
+│   ├── screens/            # App screens
+│   ├── theme/              # Colors and spacing
+│   └── types/              # TypeScript app types
+├── .env.example
+├── app.json
+├── index.js
+├── package.json
+└── tsconfig.json
 ```
 
----
+## Prerequisites
 
-## 🌐 API & Backend
+Install these before running the app:
 
-The mobile app communicates with a secure backend API to fetch and update user data.
+- Node.js 18 or newer
+- npm or Yarn
+- Java JDK 17
+- Android Studio
+- Android SDK Platform 35
+- Android emulator or physical Android device
 
--   **Base URL:** `https://lexvoraconsulting.com/api/v1/myhealthhub`
--   **Authentication:** JWT (JSON Web Tokens) sent in the `Authorization` header.
+## Setup
 
-### Example Endpoints
+```bash
+cd lxc-myhealthhub-mobile
+cp .env.example .env
+npm install
+```
 
--   `POST /auth/login` - User login
--   `GET /profile` - Get user profile data
--   `GET /appointments` - Get a list of user's appointments
--   `GET /records` - Get user's medical records
+## Run Android App
 
----
+Start Metro:
 
-## 🤝 Contributing
+```bash
+npm run start
+```
 
-Contributions are welcome! Please follow these steps:
+In another terminal:
 
-1.  Fork the repository.
-2.  Create a new branch (`git checkout -b feature/your-feature-name`).
-3.  Make your changes.
-4.  Commit your changes (`git commit -m 'Add some feature'`).
-5.  Push to the branch (`git push origin feature/your-feature-name`).
-6.  Open a Pull Request.
+```bash
+npm run android
+```
 
----
+## Build Android APK
 
-## 📞 Support
+```bash
+npm run build:android:debug
+```
 
-For questions or support, please contact **Lexvora Consulting** at lexvoraconsulting.com.
+The debug APK should be generated under:
+
+```text
+android/app/build/outputs/apk/debug/
+```
+
+## Important Note
+
+This shell currently cannot run `node` or `npm`, so package installation and Android build verification are still pending. Once Node.js is available, run:
+
+```bash
+node -v
+npm -v
+npm install
+java -version
+npm run typecheck
+npm run build:android:debug
+```
+
+## Backend Work Needed
+
+The app currently uses mock data in `src/api/healthService.ts`. To connect real data:
+
+- Add login endpoint integration: `POST /auth/login`
+- Store JWT securely using `react-native-keychain`
+- Attach JWT to `apiClient` requests
+- Replace mock service functions with API calls
+- Add loading, empty, and error states for each screen
+- Validate API responses with `zod`
+
+## Suggested Next Development Order
+
+- [ ] Install Node.js and npm dependencies
+- [ ] Open `android/` in Android Studio and sync Gradle
+- [ ] Run the debug app on emulator
+- [ ] Fix any native dependency autolinking issues
+- [ ] Add login screen and auth flow
+- [ ] Connect records, appointments, prescriptions, and vitals APIs
+- [ ] Add forms for booking appointments and logging vitals
+- [ ] Add push/local notification permission flow
+- [ ] Add production app icon and splash screen
+- [ ] Configure release keystore
+- [ ] Generate signed Android App Bundle
