@@ -48,6 +48,6 @@ The DSA (Direct Sales Agent) app is a robust, offline-first tablet application d
 
 ---
 
-## © 2024 Lexvora Consulting
+## © 2026 Lexvora Consulting
 
 This project is the intellectual property of **Lexvora Consulting**. All rights reserved. For more information, visit [lexvoraconsulting.com](https://lexvoraconsulting.com).
