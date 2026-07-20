@@ -47,7 +47,7 @@ dependencies {
     implementation("com.facebook.react:react-android")
 
     if (hermesEnabled.toBoolean()) {
-        implementation(files("libs/hermes-android-0.78.0-debug.aar"))
+        implementation("com.facebook.react:hermes-android")
     } else {
         implementation("org.webkit:android-jsc:r245459")
     }

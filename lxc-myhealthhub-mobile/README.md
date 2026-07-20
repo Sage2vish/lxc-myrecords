@@ -62,6 +62,42 @@ lxc-myhealthhub-mobile/
 └── tsconfig.json
 ```
 
+## MyHealthHub Home Screen Design Implementation
+
+The home screen has been redesigned to match the premium MyHealthHub Space concept:
+
+- Blue MyHealthHub header with logo, greeting, notification, and profile avatar
+- Family Health Space card with family members, add member action, status, and health score
+- Upcoming appointment card
+- Six quick actions: Health Records, Reports & Visits, Find Nearby Care, Appointments, Health App Sync, Family Profiles
+- One-call support card using India Head Office number: `(+91) 767 647 7775`
+- DSA Assisted Setup card
+- Privacy/security card
+- Bottom navigation styled as Home, Health, center Add, Vault, More
+
+Primary files:
+
+```text
+src/screens/HomeScreen.tsx       # Main app home/dashboard UI
+src/navigation/RootNavigator.tsx  # Bottom tab navigation styling
+src/theme/colors.ts              # MyHealthHub blue/pink color theme
+src/App.tsx                      # Status bar theme
+assets/myhealthhub-icon.png      # Current app logo/icon asset
+```
+
+Color theme:
+
+```text
+Deep Blue:  #0D63B7
+Dark Blue:  #073B86
+Sky Blue:   #1599EA
+Pink:       #F41678
+Background: #F6FAFF
+Text:       #10254A
+```
+
+No extra icon library or gradient package is required for this version. The UI is built with React Native core components so it is easy to open in VS Code and customize.
+
 ## Prerequisites
 
 Install these before running the app:
@@ -114,6 +150,35 @@ npm install
 ```
 
 ## Run Android App
+
+### Recommended VS Code run flow
+
+Use this flow whenever you want to see the latest React Native UI in the Android emulator.
+
+Terminal 1:
+
+```bash
+cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-mobile"
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
+npm run start:reset
+```
+
+Terminal 2:
+
+```bash
+cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-mobile"
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
+npm run android
+```
+
+If the emulator ever shows an old screen, uninstall the old app once and run again:
+
+```bash
+adb uninstall com.lxcmyhealthhub
+npm run android
+```
+
+Important: Android now launches the React Native app through `android/app/src/main/java/com/lxcmyhealthhub/MainActivity.kt`. The old hardcoded native Kotlin “Health Vault” mock screen has been removed, so the emulator should load `src/screens/HomeScreen.tsx`.
 
 Start Metro:
 

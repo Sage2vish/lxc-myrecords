@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Alert, StyleSheet, Text} from 'react-native';
 import {Card} from '../components/Card';
 import {ListRow} from '../components/ListRow';
 import {PrimaryButton} from '../components/PrimaryButton';
@@ -18,7 +18,10 @@ export function ProfileScreen() {
         <ListRow title="Emergency contact" detail="+91 00000 00000" />
         <ListRow title="Language" detail="English" />
       </Card>
-      <PrimaryButton label="Edit Profile" />
+      <PrimaryButton
+        label="Edit Profile"
+        onPress={() => Alert.alert('Coming soon', 'Profile editing is not available yet.')}
+      />
     </Screen>
   );
 }

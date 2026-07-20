@@ -12,7 +12,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        <StatusBar barStyle="light-content" backgroundColor={colors.primary} />
         <NavigationContainer>
           <RootNavigator />
         </NavigationContainer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {Alert, Text} from 'react-native';
 import {Card} from '../components/Card';
 import {ListRow} from '../components/ListRow';
 import {PrimaryButton} from '../components/PrimaryButton';
@@ -13,7 +13,10 @@ export function VitalsScreen() {
   return (
     <Screen>
       <SectionHeader title="Vitals" subtitle="Log and review key health measurements." />
-      <PrimaryButton label="Add Vital Reading" />
+      <PrimaryButton
+        label="Add Vital Reading"
+        onPress={() => Alert.alert('Coming soon', 'Manual vital entry is not available yet.')}
+      />
       <Card>
         {isLoading ? <Text>Loading vitals...</Text> : null}
         {data.map(vital => (
