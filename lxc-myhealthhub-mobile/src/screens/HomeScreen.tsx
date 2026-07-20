@@ -60,7 +60,7 @@ export function HomeScreen() {
           <View style={styles.cardHeader}>
             <View style={styles.familyTitleRow}>
               <View style={styles.heartBubble}><Text style={styles.heart}>♥</Text></View>
-              <View>
+              <View style={styles.titleTextWrap}>
                 <Text style={styles.cardTitle}>Family Health Space</Text>
                 <Text style={styles.membersCount}>{familyMembers.length} Members</Text>
               </View>
@@ -93,7 +93,7 @@ export function HomeScreen() {
           <View style={styles.healthStrip}>
             <View style={styles.healthMetric}>
               <View style={styles.metricIcon}><Text style={styles.metricIconText}>🛡</Text></View>
-              <View>
+              <View style={styles.metricTextWrap}>
                 <Text style={styles.metricLabel}>Overall Health Status</Text>
                 <Text style={styles.goodStatus}>Good</Text>
               </View>
@@ -101,7 +101,7 @@ export function HomeScreen() {
             <View style={styles.metricDivider} />
             <View style={styles.healthMetric}>
               <Text style={styles.scoreIcon}>⌁</Text>
-              <View>
+              <View style={styles.metricTextWrap}>
                 <Text style={styles.metricLabel}>Health Score</Text>
                 <Text style={styles.score}><Text style={styles.scoreNumber}>82</Text> /100</Text>
               </View>
@@ -319,10 +319,15 @@ const styles = StyleSheet.create({
     color: colors.accent,
     fontSize: 30,
   },
+  titleTextWrap: {
+    flexShrink: 1,
+    marginRight: 8,
+  },
   cardTitle: {
     color: colors.text,
     fontSize: 22,
     fontWeight: '900',
+    flexShrink: 1,
   },
   membersCount: {
     color: colors.primary,
@@ -456,9 +461,13 @@ const styles = StyleSheet.create({
   metricIconText: {
     fontSize: 24,
   },
+  metricTextWrap: {
+    flexShrink: 1,
+  },
   metricLabel: {
     color: colors.muted,
     fontSize: 13,
+    flexShrink: 1,
   },
   goodStatus: {
     marginTop: 2,

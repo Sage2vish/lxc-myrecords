@@ -41,6 +41,13 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def buildType = variant.buildType.name
+            outputFileName = buildType == "debug" ? "MyHealthHub-debug.apk" : "MyHealthHub.apk"
+        }
+    }
 }
 
 dependencies {
