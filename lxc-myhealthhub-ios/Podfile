@@ -21,9 +21,14 @@ end
 target 'LxcMyHealthHub' do
   # Run the RN CLI's config resolution from lxc-myhealthhub-shared (where
   # package.json / react-native.config.js live) instead of this ios/ folder.
+  # `require('@react-native-community/cli')` here (a bare specifier) would
+  # resolve against process.cwd() at the time this -e script's module wrapper
+  # is created, which is snapshotted before process.chdir() below ever runs -
+  # so it must be required by its absolute path inside lxc-myhealthhub-shared
+  # instead of relying on chdir to relocate module resolution.
   config = use_native_modules!([
     'node', '-e',
-    "process.chdir(#{shared_root.to_s.inspect});process.argv=['', '', 'config'];require('@react-native-community/cli').run()"
+    "process.chdir(#{shared_root.to_s.inspect});process.argv=['', '', 'config'];require(require('path').join(#{shared_root.to_s.inspect}, 'node_modules', '@react-native-community/cli')).run()"
   ])
 
   use_react_native!(

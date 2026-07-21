@@ -8,6 +8,7 @@ import {PrescriptionsScreen} from '../screens/PrescriptionsScreen';
 import {VitalsScreen} from '../screens/VitalsScreen';
 import {ProfileScreen} from '../screens/ProfileScreen';
 import {ScheduleVisitScreen} from '../screens/ScheduleVisitScreen';
+import {NotificationsScreen} from '../screens/NotificationsScreen';
 import {colors} from '../theme/colors';
 
 export type RootTabParamList = {
@@ -18,6 +19,7 @@ export type RootTabParamList = {
   Vitals: undefined;
   Profile: undefined;
   ScheduleVisit: undefined;
+  Notifications: undefined;
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -30,6 +32,7 @@ const icons: Record<keyof RootTabParamList, string> = {
   Vitals: '♡',
   Profile: '☰',
   ScheduleVisit: '⏳',
+  Notifications: '🔔',
 };
 
 function TabIcon({color, icon, focused, routeName}: {color: string; icon: string; focused: boolean; routeName: keyof RootTabParamList}) {
@@ -121,6 +124,11 @@ export function RootNavigator() {
       <Tab.Screen
         name="ScheduleVisit"
         component={ScheduleVisitScreen}
+        options={{tabBarButton: () => null, tabBarItemStyle: styles.hiddenTab}}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationsScreen}
         options={{tabBarButton: () => null, tabBarItemStyle: styles.hiddenTab}}
       />
     </Tab.Navigator>

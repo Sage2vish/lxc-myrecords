@@ -8,6 +8,10 @@ import {
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
+import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {useAccountMenu} from '../context/AccountMenuContext';
+import type {RootTabParamList} from '../navigation/RootNavigator';
 import {colors} from '../theme/colors';
 
 const familyMembers = [
@@ -27,6 +31,9 @@ const quickActions = [
 ];
 
 export function HomeScreen() {
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+  const {openMenu} = useAccountMenu();
+
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={styles.root}>
       <ScrollView
@@ -44,11 +51,26 @@ export function HomeScreen() {
               </View>
             </View>
             <View style={styles.headerActions}>
-              <TouchableOpacity style={styles.bellButton}>
+              <TouchableOpacity
+                style={styles.bellButton}
+                onPress={() => navigation.navigate('Notifications')}>
                 <Text style={styles.bell}>🔔</Text>
                 <Text style={styles.badge}>3</Text>
               </TouchableOpacity>
-              <View style={styles.profileAvatar}><Text style={styles.profileAvatarText}>P</Text></View>
+              <TouchableOpacity
+                style={styles.profileAvatar}
+                onPress={() => navigation.navigate('Profile')}
+                onLongPress={openMenu}
+                delayLongPress={350}>
+                <Text style={styles.profileAvatarText}>P</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityLabel="Account menu"
+                accessibilityRole="button"
+                style={styles.menuButton}
+                onPress={openMenu}>
+                <Text style={styles.menuDots}>⋮</Text>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -273,6 +295,17 @@ const styles = StyleSheet.create({
   profileAvatarText: {
     color: '#fff',
     fontSize: 20,
+    fontWeight: '900',
+  },
+  menuButton: {
+    width: 28,
+    height: 42,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuDots: {
+    color: '#fff',
+    fontSize: 22,
     fontWeight: '900',
   },
   greeting: {

@@ -11,7 +11,7 @@ react {
     autolinkLibrariesWithApp()
 }
 
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 android {
     namespace "com.lxcmyhealthhub"
@@ -34,6 +34,18 @@ android {
         }
     }
 
+    // A universal APK bundles native libraries for every CPU architecture
+    // (arm64-v8a, armeabi-v7a, x86, x86_64) even though a single device only
+    // ever needs one. Splitting per-ABI cuts installable APK size roughly 4x.
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk false
+        }
+    }
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
@@ -41,6 +53,7 @@ android {
         release {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -48,7 +61,8 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def buildType = variant.buildType.name
-            outputFileName = buildType == "debug" ? "MyHealthHub-debug.apk" : "MyHealthHub.apk"
+            def abi = output.getFilter(com.android.build.OutputFile.ABI) ?: "universal"
+            outputFileName = buildType == "debug" ? "MyHealthHub-debug-${abi}.apk" : "MyHealthHub-${abi}.apk"
         }
     }
 }

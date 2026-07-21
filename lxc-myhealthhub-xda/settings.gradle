@@ -1,7 +1,3 @@
-// This app's JS/native-agnostic source lives in the sibling lxc-myhealthhub-shared
-// folder (package.json, node_modules, src/) rather than inside this project.
-def sharedRoot = file("../lxc-myhealthhub-shared")
-
 pluginManagement {
     includeBuild("../lxc-myhealthhub-shared/node_modules/@react-native/gradle-plugin")
     repositories {
@@ -14,6 +10,10 @@ pluginManagement {
 plugins {
     id("com.facebook.react.settings")
 }
+
+// This app's JS/native-agnostic source lives in the sibling lxc-myhealthhub-shared
+// folder (package.json, node_modules, src/) rather than inside this project.
+def sharedRoot = file("../lxc-myhealthhub-shared")
 
 extensions.configure(com.facebook.react.ReactSettingsExtension) { extension ->
     extension.autolinkLibrariesFromCommand(

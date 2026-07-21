@@ -19,6 +19,12 @@ ext {
     compileSdkVersion = 35
     targetSdkVersion = 35
     ndkVersion = "27.0.12077973"
+    // JS/native-agnostic source (package.json, node_modules) lives in the sibling
+    // lxc-myhealthhub-shared folder. Some autolinked libraries' build.gradle files
+    // shell out to `node` from rootDir to resolve react-native's location, which
+    // fails here since node_modules isn't a rootDir ancestor; this short-circuits
+    // that lookup.
+    REACT_NATIVE_NODE_MODULES_DIR = file("../lxc-myhealthhub-shared/node_modules/react-native")
 }
 
 subprojects {
