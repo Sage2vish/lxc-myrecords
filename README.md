@@ -10,14 +10,17 @@ This repository contains the source code for the Lexvora MyRecords healthcare pl
 
 This monorepo contains two primary React Native applications:
 
-1.  [**MyHealthHub Mobile App**](./lxc-myhealthhub-mobile/)
-2.  [**MyRecords DSA Tablet App**](./lxc-myrecords-dsaapp-xda/)
+1.  **MyHealthHub Mobile App** — split into three folders:
+    - [**lxc-myhealthhub-shared**](./lxc-myhealthhub-shared/) — all JS/TS source, screens, and assets (start here)
+    - [**lxc-myhealthhub-xda**](./lxc-myhealthhub-xda/) — Android native project (Gradle)
+    - [**lxc-myhealthhub-ios**](./lxc-myhealthhub-ios/) — iOS native project (Xcode/CocoaPods)
+2.  [**MyRecords DSA Tablet App**](./lxc-myrecords-dsa-xda/)
 
 ---
 
-### 1. MyHealthHub Mobile App (`lxc-myhealthhub-mobile`)
+### 1. MyHealthHub Mobile App (`lxc-myhealthhub-shared` + `lxc-myhealthhub-xda` + `lxc-myhealthhub-ios`)
 
-The MyHealthHub app is a modern, patient-centric mobile application for Android. It allows patients to manage their health information, connect with providers, and stay informed about their care.
+The MyHealthHub app is a modern, patient-centric mobile application for Android and iOS. It allows patients to manage their health information, connect with providers, and stay informed about their care.
 
 **Key Features:**
 -   View and manage health records, prescriptions, and vitals.
@@ -33,7 +36,7 @@ The MyHealthHub app is a modern, patient-centric mobile application for Android.
 
 ---
 
-### 2. MyRecords DSA Tablet App (`lxc-myrecords-dsaapp-xda`)
+### 2. MyRecords DSA Tablet App (`lxc-myrecords-dsa-xda`)
 
 The DSA (Direct Sales Agent) app is a robust, offline-first tablet application designed for field agents. It enables agents to manage patient and doctor information, book appointments, and upload documents, even without an internet connection.
 

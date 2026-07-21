@@ -25,7 +25,7 @@ This is the **DSA (Direct Sales Agent) tablet app** for Lexvora's MyRecords heal
 ## 🗂️ Folder Structure
 
 ```
-lxc-myrecords-dsaapp-xda/
+lxc-myrecords-dsa-xda/
 ├── App.js                          ← Root: PIN gate → Navigator
 ├── package.json
 ├── src/
@@ -61,7 +61,7 @@ npm install -g react-native-cli
 ### 1. Install Dependencies
 
 ```bash
-cd lxc-myrecords-dsaapp-xda
+cd lxc-myrecords-dsa-xda
 npm install
 ```
 

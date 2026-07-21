@@ -1,9 +1,13 @@
+# JS/native-agnostic source (package.json, node_modules, src/) lives in the
+# sibling lxc-myhealthhub-shared folder, not inside this native project.
+shared_root = File.join(__dir__, '..', 'lxc-myhealthhub-shared')
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
-  )', __dir__]).strip
+  )', shared_root]).strip
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
@@ -15,12 +19,17 @@ if linkage != nil
 end
 
 target 'LxcMyHealthHub' do
-  config = use_native_modules!
+  # Run the RN CLI's config resolution from lxc-myhealthhub-shared (where
+  # package.json / react-native.config.js live) instead of this ios/ folder.
+  config = use_native_modules!([
+    'node', '-e',
+    "process.chdir(#{shared_root.to_s.inspect});process.argv=['', '', 'config'];require('@react-native-community/cli').run()"
+  ])
 
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => shared_root
   )
 
   post_install do |installer|

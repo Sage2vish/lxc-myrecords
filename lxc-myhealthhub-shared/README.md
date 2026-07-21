@@ -42,11 +42,13 @@ MyHealthHub is a React Native Android app for patient health records, appointmen
 
 ## What Has Been Built
 
-The project now contains a working React Native app structure:
+The MyHealthHub app is split into three sibling folders: native builders for each
+platform, and this shared JS/TS project that both of them build from.
 
 ```text
-lxc-myhealthhub-mobile/
-├── android/                # Android native app and Gradle config
+lxc-myhealthhub-xda/         # Android native app and Gradle config (builder only)
+lxc-myhealthhub-ios/         # iOS native app and Xcode/Podfile config (builder only)
+lxc-myhealthhub-shared/      # this folder — all JS/TS source and assets
 ├── src/
 │   ├── api/                # API client and health service
 │   ├── components/         # Shared UI components
@@ -55,6 +57,8 @@ lxc-myhealthhub-mobile/
 │   ├── screens/            # App screens
 │   ├── theme/              # Colors and spacing
 │   └── types/              # TypeScript app types
+├── assets/
+├── react-native.config.js  # points the RN CLI at ../lxc-myhealthhub-xda and ../lxc-myhealthhub-ios
 ├── .env.example
 ├── app.json
 ├── index.js
@@ -144,7 +148,7 @@ Verified locally:
 - Android Debug Bridge `37.0.0`
 
 ```bash
-cd lxc-myhealthhub-mobile
+cd lxc-myhealthhub-shared
 cp .env.example .env
 npm install
 ```
@@ -158,7 +162,7 @@ Use this flow whenever you want to see the latest React Native UI in the Android
 Terminal 1:
 
 ```bash
-cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-mobile"
+cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-shared"
 source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 npm run start:reset
 ```
@@ -166,7 +170,7 @@ npm run start:reset
 Terminal 2:
 
 ```bash
-cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-mobile"
+cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-shared"
 source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 npm run android
 ```
@@ -178,7 +182,7 @@ adb uninstall com.lxcmyhealthhub
 npm run android
 ```
 
-Important: Android now launches the React Native app through `android/app/src/main/java/com/lxcmyhealthhub/MainActivity.kt`. The old hardcoded native Kotlin “Health Vault” mock screen has been removed, so the emulator should load `src/screens/HomeScreen.tsx`.
+Important: Android now launches the React Native app through `../lxc-myhealthhub-xda/app/src/main/java/com/lxcmyhealthhub/MainActivity.kt`. The old hardcoded native Kotlin “Health Vault” mock screen has been removed, so the emulator should load `src/screens/HomeScreen.tsx`.
 
 Start Metro:
 
@@ -239,7 +243,7 @@ npm run build:android:debug
 The debug APK should be generated under:
 
 ```text
-android/app/build/outputs/apk/debug/
+../lxc-myhealthhub-xda/app/build/outputs/apk/debug/
 ```
 
 ## Android 16 Baseline
@@ -259,13 +263,13 @@ Before building, install Android SDK Platform 36, API 36 build tools, and an And
 Last successful debug APK:
 
 ```text
-/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-mobile/android/app/build/outputs/apk/debug/app-debug.apk
+/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-xda/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 Project-relative path:
 
 ```text
-android/app/build/outputs/apk/debug/app-debug.apk
+../lxc-myhealthhub-xda/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ## Validation
@@ -299,7 +303,7 @@ The app currently uses mock data in `src/api/healthService.ts`. To connect real 
 ## Suggested Next Development Order
 
 - [ ] Install Node.js and npm dependencies
-- [ ] Open `android/` in Android Studio and sync Gradle
+- [ ] Open `../lxc-myhealthhub-xda/` in Android Studio and sync Gradle
 - [ ] Run the debug app on emulator
 - [ ] Fix any native dependency autolinking issues
 - [ ] Add login screen and auth flow

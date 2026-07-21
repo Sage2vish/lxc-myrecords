@@ -5,6 +5,9 @@ plugins {
 }
 
 react {
+    // JS/native-agnostic source (package.json, node_modules, src/) lives in the
+    // sibling lxc-myhealthhub-shared folder, not inside this native project.
+    root = file("../../lxc-myhealthhub-shared")
     autolinkLibrariesWithApp()
 }
 

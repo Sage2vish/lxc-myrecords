@@ -1,5 +1,5 @@
 {
-  "name": "lxc-myhealthhub-mobile",
+  "name": "lxc-myhealthhub-shared",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,10 +10,10 @@
     "lint": "eslint .",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "clean:android": "cd android && ./gradlew clean",
-    "build:android:debug": "cd android && ./gradlew assembleDebug",
-    "build:android:release": "cd android && ./gradlew assembleRelease",
-    "pod:install": "cd ios && pod install"
+    "clean:android": "cd ../lxc-myhealthhub-xda && ./gradlew clean",
+    "build:android:debug": "cd ../lxc-myhealthhub-xda && ./gradlew assembleDebug",
+    "build:android:release": "cd ../lxc-myhealthhub-xda && ./gradlew assembleRelease",
+    "pod:install": "cd ../lxc-myhealthhub-ios && pod install"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.1.0",

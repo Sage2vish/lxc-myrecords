@@ -1,0 +1,41 @@
+// This app's JS/native-agnostic source lives in the sibling lxc-myhealthhub-shared
+// folder (package.json, node_modules, src/) rather than inside this project.
+def sharedRoot = file("../lxc-myhealthhub-shared")
+
+pluginManagement {
+    includeBuild("../lxc-myhealthhub-shared/node_modules/@react-native/gradle-plugin")
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id("com.facebook.react.settings")
+}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension) { extension ->
+    extension.autolinkLibrariesFromCommand(
+        ["npx", "@react-native-community/cli", "config"],
+        sharedRoot,
+        files(
+            new File(sharedRoot, "yarn.lock"),
+            new File(sharedRoot, "package-lock.json"),
+            new File(sharedRoot, "package.json"),
+            new File(sharedRoot, "react-native.config.js")
+        )
+    )
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "LxcMyHealthHub"
+include ":app"
+includeBuild("../lxc-myhealthhub-shared/node_modules/@react-native/gradle-plugin")
