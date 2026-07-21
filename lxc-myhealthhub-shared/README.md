@@ -1,6 +1,22 @@
 # MyHealthHub Mobile App by Lexvora
 
-MyHealthHub is a React Native Android app for patient health records, appointments, prescriptions, vitals, and profile management.
+MyHealthHub is a React Native app (Android and iOS) for patient health records, appointments, prescriptions, vitals, and profile management.
+
+## History
+
+This folder is the JS/TS "common area" for the MyHealthHub app. It was originally a
+single project, `lxc-myhealthhub-mobile`, containing `src/`, `android/`, and `ios/`
+together. On 2026-07-21 it was split into three sibling folders under the repo root so
+the native Android and iOS build projects are separated from the shared app code they
+both build from:
+
+- `lxc-myhealthhub-shared` (this folder) — all JS/TS source, assets, `package.json`
+- [`lxc-myhealthhub-xda`](../lxc-myhealthhub-xda/) — Android native project (Gradle)
+- [`lxc-myhealthhub-ios`](../lxc-myhealthhub-ios/) — iOS native project (Xcode/CocoaPods)
+
+`react-native.config.js` in this folder is what tells the React Native CLI (and the
+Gradle/CocoaPods tooling in the other two folders) where to find each native project.
+Git history for individual files was preserved as renames across the split.
 
 ## Current Status
 

@@ -5,6 +5,16 @@ Android Tablet APK | React Native | SQLite Local Storage
 
 ---
 
+## 🕘 History
+
+This folder was originally named `lxc-myrecords-dsaapp-xda`; it was renamed to
+`lxc-myrecords-dsa-xda` on 2026-07-21 for naming consistency with the rest of the
+repo. Git history was preserved as a rename — no source files changed. This app is
+Android-only today; an iPadOS build is a possible future addition once the platform
+priority calls for it, at which point it would get its own native folder the same way
+MyHealthHub's `lxc-myhealthhub-ios` was added, without needing to restructure this
+app's JS source.
+
 ## 📱 App Overview
 
 This is the **DSA (Direct Sales Agent) tablet app** for Lexvora's MyRecords healthcare platform.
