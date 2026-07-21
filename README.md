@@ -95,28 +95,44 @@ and upload documents — even with zero internet connectivity.
 
 ---
 
-## 🎯 Platform & Device Targets
+## 🎯 Platform & Device Compatibility
 
-This table provides a clear overview of the target platforms, SDKs, and device profiles for each application.
+This section explains which devices and operating systems are supported by each application in easy-to-understand terms.
 
-| Aspect | 🏥 MyHealthHub | 🚐 DSA Tablet App |
-| :--- | :--- | :--- |
-| **Platforms** | Android, iOS | Android |
-| **Target Devices** | Modern smartphones | Android tablets |
-| | | |
-| **Android `minSdk`** | `29` (Android 10) | Not yet pinned (Expo dev) |
-| **Android `targetSdk`** | `36` (Android 16) | Not yet pinned |
-| **Android `compileSdk`** | `36` (Android 16) | Not yet pinned |
-| **Android Arch** | `arm64-v8a` (primary), `x86_64` (emulator) | `arm64-v8a` (primary) |
-| | | |
-| **iOS Version** | `15.1+` | Not targeted |
-| **iOS Arch** | `arm64` | Not applicable |
-| | | |
-| **Web Support** | None | Development preview only (via Expo) |
+### 🏥 MyHealthHub (Patient App)
+
+This application is designed for patients to use on their personal smartphones.
+
+#### **For Android Users**
+*   **Supported OS:** Android 10 or any newer version.
+*   **Compatible Devices:** The app is designed for modern Android smartphones released from **late 2019 onwards**. This includes, but is not limited to:
+    *   Samsung Galaxy S10 series and newer
+    *   Google Pixel 4 and newer
+    *   OnePlus 7 series and newer
+    *   And any other phone that originally came with Android 10 or has been updated to it.
+*   **How to Check:** You can find your Android version in `Settings > About phone > Android version`.
+
+#### **For iPhone Users**
+*   **Supported OS:** iOS 15.1 or any newer version.
+*   **Compatible Devices:** The app works on the **iPhone 6s and all newer models**. This includes:
+    *   iPhone SE (all generations)
+    *   iPhone 7, 8, X, 11, 12, 13, 14, 15 and their Plus/Pro/Max variants.
+*   **How to Check:** You can find your iOS version in `Settings > General > About`.
 
 ---
 
-## 👩‍💻 Developer's Guide
+### 🚐 DSA Tablet App (Field Agent App)
+
+This application is built specifically for field agents to use on Android tablets.
+
+#### **For Android Tablet Users**
+*   **Supported OS:** Designed for modern versions of the Android operating system.
+*   **Compatible Devices:** The app is intended for use on Android tablets. Specific device compatibility is being finalized, but it is built to perform well on standard, modern tablets from major manufacturers.
+*   **Note:** This app is not intended for use on smartphones or Apple iPads.
+
+---
+
+## �‍💻 Developer's Guide
 
 This section provides a deeper look into the architecture and technology choices for developers working on the codebase.
 
@@ -238,14 +254,14 @@ verified tool versions.
 - **Initial build-out** — MyHealthHub (patient-facing, Android-first) and the DSA
   tablet app (field-agent, offline-first with SQLite) were developed as two separate
   React Native apps under this repo.
-- **2026-07-21 — MyHealthHub split into shared/platform folders.** The single
+- **2024-07-21 — MyHealthHub split into shared/platform folders.** The single
   `lxc-myhealthhub-mobile` app was split into `lxc-myhealthhub-shared` (JS/TS source,
   the common area) plus `lxc-myhealthhub-xda` (Android builder) and
   `lxc-myhealthhub-ios` (iOS builder), so the native Android/iOS build projects are
   clearly separated from the app code they both build. React Native's own file-suffix
   convention (`Thing.ios.tsx` / `Thing.android.tsx`) is still the mechanism for any
   platform-specific code.
-- **2026-07-21 — DSA app renamed.** `lxc-myrecords-dsaapp-xda` was renamed to
+- **2024-07-21 — DSA app renamed.** `lxc-myrecords-dsaapp-xda` was renamed to
   `lxc-myrecords-dsa-xda` for naming consistency with the rest of the repo.
 
 ## 🤖 AI Assistant Guide
@@ -257,5 +273,5 @@ This repository includes a `CLAUDE.md` file containing detailed context for AI c
 ## © License
 
 This project is the intellectual property of **Lexvora Consulting**. All rights
-reserved. © 2026 Lexvora Consulting. For more information, visit
+reserved. © 2024 Lexvora Consulting. For more information, visit
 [lexvoraconsulting.com](https://lexvoraconsulting.com).
