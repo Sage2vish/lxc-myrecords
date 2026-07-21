@@ -38,7 +38,7 @@ export function HomeScreen() {
           <View style={styles.topRow}>
             <View style={styles.brandRow}>
               <Image source={require('../../assets/myhealthhub-icon.png')} style={styles.logo} />
-              <View>
+              <View style={styles.brandTextWrap}>
                 <Text style={styles.brandTitle}>MyHealthHub</Text>
                 <Text style={styles.brandSub}>Space</Text>
               </View>
@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexShrink: 1,
   },
   logo: {
     width: 58,
@@ -214,11 +215,15 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     marginRight: 12,
   },
+  brandTextWrap: {
+    flexShrink: 1,
+  },
   brandTitle: {
     color: '#fff',
     fontSize: 25,
     fontWeight: '900',
     letterSpacing: -0.4,
+    flexShrink: 1,
   },
   brandSub: {
     color: 'rgba(255,255,255,0.86)',
