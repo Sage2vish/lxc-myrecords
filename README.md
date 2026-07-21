@@ -1,58 +1,60 @@
 <p align="center">
   <a href="https://lexvoraconsulting.com" target="_blank">
-    <h1 align="center">🩺 Lexvora Consulting - Health</h1>
+    <h1 align="center">🩺 MyRecords Healthcare Platform</h1>
   </a>
-  <p align="center"><strong>MyRecords Healthcare Platform</strong></p>
 </p>
 
 <p align="center">
-  Two React Native applications — a patient-facing mobile app and a field-agent tablet app —
-  built and maintained by <a href="https://lexvoraconsulting.com" target="_blank">Lexvora Consulting</a>.
+  <a href="https://lexvoraconsulting.com" target="_blank"><strong> lexvoraconsulting.com</strong></a>
+</p>
+
+<p align="center">
+    <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status">
+    <img src="https://img.shields.io/badge/license-Proprietary-red" alt="License">
+    <img src="https://img.shields.io/badge/React%20Native-0.78%20%7C%200.75-61DAFB" alt="React Native">
+    <img src="https://img.shields.io/badge/TypeScript-5.5-3178C6" alt="TypeScript">
 </p>
 
 ---
 
 ## 📚 Table of Contents
 
-- [Overview](#-overview)
-- [Applications at a Glance](#-applications-at-a-glance)
-- [1. MyHealthHub Mobile App](#1--myhealthhub-mobile-app)
-- [2. MyRecords DSA Tablet App](#2--myrecords-dsa-tablet-app)
-- [Tech Stack](#-tech-stack)
-- [Repository Structure](#-repository-structure)
-- [Getting Started](#-getting-started)
-- [Local macOS Development Setup](#local-macos-development-setup)
-- [Project History](#-project-history)
-- [Working with Claude Code](#-working-with-claude-code)
-- [License](#-license)
+- [📖 Overview](#-overview)
+- [📱 The Applications](#-the-applications)
+- [🎯 Platform & Device Targets](#-platform--device-targets)
+- [👩‍💻 Developer's Guide](#-developers-guide)
+- [🚀 Setup and Running the Apps](#-setup-and-running-the-apps)
+- [⚡️ Common Commands](#️-common-commands)
+- [�️ Local macOS Development Setup](#️-local-macos-development-setup)
+- [📜 Repository History](#-repository-history)
+- [🤖 AI Assistant Guide](#-ai-assistant-guide)
+- [© License](#-license)
 
 ---
 
 ## 📖 Overview
 
-This repository contains the source for the **Lexvora MyRecords healthcare platform**:
-a patient-facing mobile app (**MyHealthHub**) and an offline-first field-agent tablet
-app (**DSA**). Both are independent React Native projects living side by side in this
-monorepo — they don't share code or a dependency tree, and are built/versioned
-separately.
+This repository is the home of the **Lexvora MyRecords healthcare platform**. It contains two distinct React Native applications:
 
-## 📱 Applications at a Glance
+1.  **MyHealthHub**: A patient-facing mobile app for managing health records.
+2.  **DSA Tablet App**: An offline-first tablet app for field agents.
+
+> **Note**: These projects are developed independently within this monorepo. They do not share code or dependencies and are versioned and built separately.
+
+## 📱 The Applications
 
 | App | Who it's for | Platforms | Folder(s) |
 |---|---|---|---|
 | **MyHealthHub** | Patients | Android, iOS | [`lxc-myhealthhub-shared`](./lxc-myhealthhub-shared/), [`lxc-myhealthhub-xda`](./lxc-myhealthhub-xda/), [`lxc-myhealthhub-ios`](./lxc-myhealthhub-ios/) |
-| **DSA Tablet App** | Field agents (Direct Sales Agents) | Android tablet (+ Expo web for dev preview) | [`lxc-myrecords-dsa-xda`](./lxc-myrecords-dsa-xda/) |
+| **DSA Tablet App** | Field agents (Direct Sales Agents) | Android tablet | `lxc-myrecords-dsa-xda` |
 
 ---
 
-## 1. 🏥 MyHealthHub Mobile App
+### 1. 🏥 MyHealthHub Mobile App
 
-The MyHealthHub app is a modern, patient-centric mobile application. It lets patients
-manage their health information, connect with providers, and stay informed about their
-care, built around a "Family Health Space" concept.
+The MyHealthHub app is a modern, patient-centric mobile application that empowers patients to manage their health information, connect with providers, and stay informed about their care.
 
-### Features
-
+**Key Features:**
 - 🗂️ View and manage health records, prescriptions, and vitals
 - 📅 Schedule and track appointments, with a dedicated schedule-visit flow
 - 👨‍👩‍👧 Family Health Space — family member cards, add-member action, family health score
@@ -63,24 +65,14 @@ care, built around a "Family Health Space" concept.
 - 🔒 Privacy/security card
 - 👤 Profile and settings management
 
-### Platform & Device Compatibility
+> **Status**: Android build verified (debug APK builds successfully). iOS project exists and is configured, but a real device/simulator run has not yet been verified.
 
-| | Requirement |
-|---|---|
-| **Android** | minSdk 29 (Android 10+) · compileSdk/targetSdk 35 (Android 15) · preferred ABI `arm64-v8a` (`x86_64` retained for emulators) |
-| **iOS** | iOS 15.1+ (`IPHONEOS_DEPLOYMENT_TARGET`) |
-| App ID | `com.lxcmyhealthhub` |
-| Version | `0.1.0` (Android `versionName`) / `1.0` (iOS marketing version) |
-
-> Status: Android build verified (debug APK builds successfully). iOS project exists
-> and is configured but a real device/simulator run has not yet been verified.
-
-> For detailed setup and development instructions, see
-> [`lxc-myhealthhub-shared/README.md`](./lxc-myhealthhub-shared/README.md).
+> For detailed setup and development instructions, see the app's dedicated README:
+> **➡️ `lxc-myhealthhub-shared/README.md`**
 
 ---
 
-## 2. 🚐 MyRecords DSA Tablet App
+### 2. 🚐 MyRecords DSA Tablet App
 
 The DSA (Direct Sales Agent) app is a robust, offline-first tablet application for
 field agents. It lets agents manage patient and doctor information, book appointments,
@@ -89,7 +81,6 @@ and upload documents — even with zero internet connectivity.
 ### Features
 
 - 🔐 PIN-based authentication (4-6 digit, device-locked)
-- 👤 Patient management — profiles, medical history, doctor assignment
 - 🩺 Doctor management — specialization, schedule, patient assignment
 - 📅 Appointments — booking, status tracking, consultation types
 - 📎 Document uploads — camera, file picker, document scanner
@@ -99,22 +90,51 @@ and upload documents — even with zero internet connectivity.
 - 💾 **100% offline** — local SQLite storage, sync-ready (`sync_status` column) for
   when a backend is live
 
-### Platform & Device Compatibility
-
-| | Requirement |
-|---|---|
-| **Android** | Android tablet target. A native Android project has not been generated yet in this repo (Expo/Metro-based dev flow so far) — SDK floor is not yet pinned. |
-| **iOS** | Not targeted currently (Android tablet only). An iPadOS build is a possible future addition — see the app's own README. |
-| **Web** | Expo Webpack config present, used for in-browser dev preview only |
-| App ID | `LexvoraDSA` |
-| Version | `1.0.0` |
-
-> For detailed setup and development instructions, see
-> [`lxc-myrecords-dsa-xda/README.md`](./lxc-myrecords-dsa-xda/README.md).
+> For detailed setup and development instructions, see the app's dedicated README:
+> **➡️ `lxc-myrecords-dsa-xda/README.md`**
 
 ---
 
-## ⚙️ Tech Stack
+## 🎯 Platform & Device Targets
+
+This table provides a clear overview of the target platforms, SDKs, and device profiles for each application.
+
+| Aspect | 🏥 MyHealthHub | 🚐 DSA Tablet App |
+| :--- | :--- | :--- |
+| **Platforms** | Android, iOS | Android |
+| **Target Devices** | Modern smartphones | Android tablets |
+| | | |
+| **Android `minSdk`** | `29` (Android 10) | Not yet pinned (Expo dev) |
+| **Android `targetSdk`** | `36` (Android 16) | Not yet pinned |
+| **Android `compileSdk`** | `36` (Android 16) | Not yet pinned |
+| **Android Arch** | `arm64-v8a` (primary), `x86_64` (emulator) | `arm64-v8a` (primary) |
+| | | |
+| **iOS Version** | `15.1+` | Not targeted |
+| **iOS Arch** | `arm64` | Not applicable |
+| | | |
+| **Web Support** | None | Development preview only (via Expo) |
+
+---
+
+## 👩‍💻 Developer's Guide
+
+This section provides a deeper look into the architecture and technology choices for developers working on the codebase.
+
+### Core Philosophy
+The repository is a "monorepo" of two completely separate applications. A change in one app does not affect the other. This allows for tailored technology choices for each app's specific needs.
+
+### MyHealthHub Architecture
+- **Structure**: The app is split into three folders to cleanly separate the shared JavaScript/TypeScript code from the native Android and iOS build projects.
+  - `lxc-myhealthhub-shared`: Contains all app logic, screens, components, and assets. **99% of development happens here.**
+  - `lxc-myhealthhub-xda`: The native Android project (Gradle).
+  - `lxc-myhealthhub-ios`: The native iOS project (Xcode/CocoaPods).
+- **Technology**: Built with modern tools including **TypeScript**, **React Navigation 7**, and **TanStack Query** for asynchronous state management. It uses a mock service for now, but is architected for a seamless transition to a live backend.
+
+### DSA Tablet App Architecture
+- **Structure**: This app is self-contained within the `lxc-myrecords-dsa-xda` folder.
+- **Technology**: Built with **JavaScript** and designed to be **100% offline-first**. All data is stored and managed in a local **SQLite** database. It features a `sync_status` column in its tables, preparing it for future backend synchronization without requiring a constant internet connection.
+
+### Tech Stack Comparison
 
 | | MyHealthHub | DSA Tablet App |
 |---|---|---|
@@ -133,52 +153,62 @@ and upload documents — even with zero internet connectivity.
 | **Linting** | ESLint (`@react-native/eslint-config`) | ESLint (`@react-native/eslint-config`) |
 | **Node engine** | `>=18` | `>=18` |
 
-Some MyHealthHub dependencies (`zod`, `zustand`, `i18n-js`, `react-native-keychain`)
-are pre-installed for near-term roadmap items (auth, secure token storage, Hindi
-translations) and aren't wired into the app yet — see
-[`lxc-myhealthhub-shared/README.md`](./lxc-myhealthhub-shared/README.md) for the
-current build/backend TODO list.
+---
 
-## 🗂️ Repository Structure
+##  Setup and Running the Apps
 
-```text
-lxc-myrecords/
-├── lxc-myhealthhub-shared/   # MyHealthHub: shared JS/TS source, assets, package.json
-├── lxc-myhealthhub-xda/      # MyHealthHub: Android native project (Gradle)
-├── lxc-myhealthhub-ios/      # MyHealthHub: iOS native project (Xcode/CocoaPods)
-├── lxc-myrecords-dsa-xda/    # DSA Tablet App (Android + Expo web, self-contained)
-├── CLAUDE.md                 # Instructions for Claude Code / AI assistants working in this repo
-└── README.md                 # This file
+Follow these steps to get a local development environment running.
+
+### Step 1: Set Up The Local Toolchain (CRITICAL)
+
+This project uses a sandboxed, version-pinned toolchain for macOS instead of relying on globally installed tools. Before doing anything else, you **must** load this environment. See the Local macOS Development Setup section for details.
+
+In your terminal, run:
+```sh
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 ```
 
-Both apps are React Native. MyHealthHub targets Android and iOS; the DSA app currently
-targets Android tablets only (an iPadOS build is a possible future addition — see
-`lxc-myrecords-dsa-xda`'s own README for its roadmap notes).
+### Step 2: Clone the Repository
 
-## 🚀 Getting Started
+```sh
+git clone <repository-url>
+cd lxc-myrecords
+```
 
-1. **Clone the repo** and `cd` into it.
-2. **Set up the local toolchain** (macOS) — see
-   [Local macOS Development Setup](#local-macos-development-setup) below.
-3. **Pick an app** and install its dependencies:
+### Step 3: Install Dependencies and Run an App
 
-   ```bash
-   # MyHealthHub
-   cd lxc-myhealthhub-shared
-   cp .env.example .env
-   npm install
+Choose which app you want to work on and run the commands from within its directory.
 
-   # DSA Tablet App
-   cd lxc-myrecords-dsa-xda
-   npm install
-   ```
+#### To run the MyHealthHub App:
+```sh
+cd lxc-myhealthhub-shared
+npm install
+npm run android # Or npm run ios
+```
 
-4. **Run it** — each app's own README has the full command set (Metro, Android,
-   iOS/Pods, linting, builds):
-   - [`lxc-myhealthhub-shared/README.md`](./lxc-myhealthhub-shared/README.md)
-   - [`lxc-myrecords-dsa-xda/README.md`](./lxc-myrecords-dsa-xda/README.md)
+#### To run the DSA Tablet App:
+```sh
+cd lxc-myrecords-dsa-xda
+npm install
+npm run android
+```
 
-## Local macOS Development Setup
+## ⚡️ Common Commands
+
+All commands should be run from within the specific app's directory (`lxc-myhealthhub-shared` or `lxc-myrecords-dsa-xda`).
+
+| Command | MyHealthHub (`lxc-myhealthhub-shared`) | DSA Tablet App (`lxc-myrecords-dsa-xda`) |
+|---|---|---|
+| **Install Dependencies** | `npm install` | `npm install` |
+| **Start Metro Bundler** | `npm run start` | `npm run start` |
+| **Run on Android** | `npm run android` | `npm run android` |
+| **Run on iOS** | `npm run ios` | `npm run ios` (not used) |
+| **Lint Code** | `npm run lint` | `npm run lint` |
+| **Build Debug APK** | `npm run build:android:debug` | `cd android && ./gradlew assembleDebug` |
+
+## 🛠️ Local macOS Development Setup
+
+> **Important**: This repository uses a sandboxed, project-independent toolchain instead of relying on globally installed packages like Node or Java.
 
 Development on this repo has been done on macOS using a local, project-independent
 toolchain kept outside the repo under a shared `frameworks/` folder, rather than relying
@@ -186,16 +216,16 @@ on global/system installs of Node, Java, or the Android SDK:
 
 ```text
 frameworks/
-├── android/           # Android SDK, platform tools, emulator tools
-├── android-emulator/  # Dedicated emulator installer and AVD files
-├── jdk/                # JDK 17
-├── node/               # Node.js and npm
-└── gradle/             # Gradle
+├── android/          # Android SDK, platform tools, emulator tools
+├── android-emulator/ # Dedicated emulator installer and AVD files
+├── jdk/              # JDK 17
+├── node/             # Node.js and npm
+└── gradle/           # Gradle
 ```
 
 Before working on either app, the toolchain is loaded into the shell with:
 
-```bash
+```sh
 source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 ```
 
@@ -205,7 +235,6 @@ machine, without changing global package-manager state. See
 verified tool versions.
 
 ## 📜 Project History
-
 - **Initial build-out** — MyHealthHub (patient-facing, Android-first) and the DSA
   tablet app (field-agent, offline-first with SQLite) were developed as two separate
   React Native apps under this repo.
@@ -215,18 +244,13 @@ verified tool versions.
   `lxc-myhealthhub-ios` (iOS builder), so the native Android/iOS build projects are
   clearly separated from the app code they both build. React Native's own file-suffix
   convention (`Thing.ios.tsx` / `Thing.android.tsx`) is still the mechanism for any
-  platform-specific code — the split is about build-project layout, not forking the
-  JS source.
+  platform-specific code.
 - **2026-07-21 — DSA app renamed.** `lxc-myrecords-dsaapp-xda` was renamed to
   `lxc-myrecords-dsa-xda` for naming consistency with the rest of the repo.
 
-## 🤖 Working with Claude Code
+## 🤖 AI Assistant Guide
 
-This repo includes a [`CLAUDE.md`](./CLAUDE.md) file with project-specific context and
-rules for Claude Code (or other AI coding assistants). Anyone — including future team
-members — picking up this project with Claude Code should have it pick up that file
-automatically; it covers the repo layout, the macOS toolchain setup, and conventions to
-follow when making changes.
+This repository includes a `CLAUDE.md` file containing detailed context for AI coding assistants. It covers the repository layout, the unique macOS toolchain setup, and architectural conventions. To ensure the best results when using an AI assistant, please provide it with the contents of this file.
 
 ---
 
