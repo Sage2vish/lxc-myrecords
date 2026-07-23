@@ -12,6 +12,7 @@
   <img src="https://img.shields.io/badge/shell-bash%203.2%20compatible-4EAA25?logo=gnubash&logoColor=white" alt="Bash 3.2 compatible">
   <img src="https://img.shields.io/badge/targets-Android%20%7C%20iOS-0D63B7" alt="Android and iOS">
   <img src="https://img.shields.io/badge/status-verified%20working-brightgreen" alt="Verified working">
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/license-Proprietary-red" alt="License: Proprietary"></a>
 </p>
 
 ---
@@ -19,6 +20,7 @@
 ## 📚 Table of Contents
 
 - [📖 Overview](#-overview)
+- [🗺️ Build Pipeline](#️-build-pipeline)
 - [🍎 macos_iosapp_build.sh](#-macos_iosapp_buildsh)
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
 - [🩹 Error Message Format](#-error-message-format)
@@ -41,6 +43,35 @@ build flow — see that app's README.
 Every failure mode — a missing tool, a missing folder, no device connected —
 stops the script immediately with a plain-language explanation *and* the exact
 developer fix. See [Error Message Format](#-error-message-format).
+
+---
+
+## 🗺️ Build Pipeline
+
+Both scripts follow the same shape — preflight, toolchain, deps, a
+platform-specific readiness check, then build+launch:
+
+```mermaid
+flowchart LR
+    A(["./macos_*_build.sh"]) --> B[Preflight checks]
+    B --> C[Load toolchain]
+    C --> D[Install JS + native deps]
+    D --> E{Platform check}
+    E -->|iOS: sandbox flag forced off| F[Build]
+    E -->|Android: device or AVD ready| F
+    F --> G(["App running 🚀"])
+
+    classDef step fill:#EAF4FF,stroke:#0D63B7,color:#073B86,stroke-width:1.5px
+    classDef decision fill:#FFEAF4,stroke:#F41678,color:#073B86,stroke-width:1.5px
+    classDef terminal fill:#0D63B7,stroke:#073B86,color:#ffffff,stroke-width:1.5px
+    class B,C,D,F step
+    class E decision
+    class A,G terminal
+```
+
+The two platform-specific branches are what make each script more than a
+thin wrapper — see their sections below for exactly what "sandbox flag" and
+"device or AVD ready" mean in practice.
 
 ---
 

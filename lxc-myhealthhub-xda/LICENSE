@@ -1,0 +1,22 @@
+Copyright (c) 2024-2026 Lexvora Consulting. All rights reserved.
+
+This folder (the native Android build project for the MyHealthHub app — the
+Gradle project and related build files) is the proprietary and confidential
+property of Lexvora Consulting.
+
+No part of this Software may be copied, reproduced, distributed, modified,
+merged, published, sublicensed, publicly displayed or performed, or used to
+create derivative works, in whole or in part, by any means, without the
+prior written permission of Lexvora Consulting.
+
+No license, express or implied, to any patent, trademark, copyright, or
+other intellectual property right is granted by this document.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+LEXVORA CONSULTING BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY
+ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+See the repository root LICENSE for the terms covering the full project.
+For licensing inquiries, contact Lexvora Consulting: lexvoraconsulting.com

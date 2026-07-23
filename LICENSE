@@ -1,0 +1,23 @@
+Copyright (c) 2024-2026 Lexvora Consulting. All rights reserved.
+
+This repository (the "Software") — including the MyHealthHub patient app
+(lxc-myhealthhub-shared, lxc-myhealthhub-xda, lxc-myhealthhub-ios) and the
+MyRecords DSA Tablet App (lxc-myrecords-dsa-xda), along with all source
+code, assets, documentation, and build scripts contained within it — is the
+proprietary and confidential property of Lexvora Consulting.
+
+No part of this Software may be copied, reproduced, distributed, modified,
+merged, published, sublicensed, publicly displayed or performed, or used to
+create derivative works, in whole or in part, by any means, without the
+prior written permission of Lexvora Consulting.
+
+No license, express or implied, to any patent, trademark, copyright, or
+other intellectual property right is granted by this document.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+LEXVORA CONSULTING BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY
+ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+For licensing inquiries, contact Lexvora Consulting: lexvoraconsulting.com

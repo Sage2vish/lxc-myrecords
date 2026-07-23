@@ -287,5 +287,8 @@ This repository includes a `CLAUDE.md` file containing detailed context for AI c
 ## © License
 
 This project is the intellectual property of **Lexvora Consulting**. All rights
-reserved. © 2024 Lexvora Consulting. For more information, visit
-[lexvoraconsulting.com](https://lexvoraconsulting.com).
+reserved. © 2024–2026 Lexvora Consulting. See [`LICENSE`](./LICENSE) for the
+full terms — the native builders each carry their own copy
+([`lxc-myhealthhub-ios/LICENSE`](./lxc-myhealthhub-ios/LICENSE),
+[`lxc-myhealthhub-xda/LICENSE`](./lxc-myhealthhub-xda/LICENSE)). For more
+information, visit [lexvoraconsulting.com](https://lexvoraconsulting.com).
