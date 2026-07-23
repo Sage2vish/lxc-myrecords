@@ -138,7 +138,10 @@ cd "$SHARED_DIR"
 
 if [ "$TARGET" = "device" ]; then
   echo "    Physical devices this Mac can currently see:"
-  mapfile -t DEVICE_LINES < <(xcrun xctrace list devices 2>/dev/null | awk '/^== Devices ==/{f=1;next} /^==/{f=0} f && NF {print}')
+  DEVICE_LINES=()
+  while IFS= read -r line; do
+    [ -n "$line" ] && DEVICE_LINES+=("$line")
+  done < <(xcrun xctrace list devices 2>/dev/null | awk '/^== Devices ==/{f=1;next} /^==/{f=0} f && NF {print}')
 
   if [ ${#DEVICE_LINES[@]} -eq 0 ]; then
     fail "Physical device" \
@@ -182,7 +185,10 @@ if [ "$TARGET" = "device" ]; then
   npx react-native run-ios --device "$DEVICE_NAME"
 else
   echo "    iOS Simulator versions installed on this Mac:"
-  mapfile -t SIM_LINES < <(
+  SIM_LINES=()
+  while IFS= read -r line; do
+    [ -n "$line" ] && SIM_LINES+=("$line")
+  done < <(
     xcrun simctl list devices available 2>/dev/null | awk '
       /^-- .* --$/ { gsub(/^-- | --$/, ""); ver = $0; next }
       /^    / { line = $0; sub(/^    /, "", line); sub(/ \([0-9A-Fa-f-]+\).*/, "", line); print line " | " ver }

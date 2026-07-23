@@ -65,7 +65,7 @@ The MyHealthHub app is a modern, patient-centric mobile application that empower
 - 🔒 Privacy/security card
 - 👤 Profile and settings management
 
-> **Status**: Android build verified (debug APK builds successfully). iOS project exists and is configured, but a real device/simulator run has not yet been verified.
+> **Status**: Android build verified (debug APK builds successfully). iOS build verified end-to-end — builds and launches on both the iOS Simulator and a physical device.
 
 > For detailed setup and development instructions, see the app's dedicated README:
 > **➡️ `lxc-myhealthhub-shared/README.md`**
@@ -209,6 +209,18 @@ npm install
 npm run android
 ```
 
+### Fastest path: one-shot build scripts
+
+For MyHealthHub specifically, `Executable/` at the repo root has scripts that do
+everything above in one command — load the toolchain, install deps, build, and
+launch — with clear error messages if a prerequisite (Xcode, a device, a folder)
+is missing:
+
+```sh
+./Executable/macos_iosapp_build.sh          # iOS Simulator/device
+./Executable/macos_xdaapp_build.sh          # Android debug/release build
+```
+
 ## ⚡️ Common Commands
 
 All commands should be run from within the specific app's directory (`lxc-myhealthhub-shared` or `lxc-myrecords-dsa-xda`).
@@ -234,6 +246,7 @@ on global/system installs of Node, Java, or the Android SDK:
 frameworks/
 ├── android/          # Android SDK, platform tools, emulator tools
 ├── android-emulator/ # Dedicated emulator installer and AVD files
+├── ios/              # Ruby + CocoaPods (needed for iOS builds)
 ├── jdk/              # JDK 17
 ├── node/             # Node.js and npm
 └── gradle/           # Gradle
@@ -242,7 +255,8 @@ frameworks/
 Before working on either app, the toolchain is loaded into the shell with:
 
 ```sh
-source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"  # Node, Java, Android SDK, Gradle
+source "/Users/SageVish/Documents/Development Work/frameworks/ios/env.sh"      # Ruby + CocoaPods — iOS builds only
 ```
 
 This keeps Node, Java, the Android SDK, and Gradle versions consistent and isolated per

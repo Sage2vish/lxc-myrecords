@@ -38,6 +38,77 @@ Native's normal file-suffix convention (`Thing.ios.tsx` / `Thing.android.tsx`) i
 `lxc-myhealthhub-shared/src` — the folder split is about separating native build
 projects, not about forking the JS source per platform.
 
+## Current status — read this first
+
+Last updated: 2026-07-23. This section exists so a new chat can pick up work
+without re-discovering what's already been verified.
+
+**MyHealthHub — done / verified:**
+- Login screen (`screens/LoginScreen.tsx`) built: mobile+OTP flow (mock, no real
+  backend) and biometric login via `react-native-keychain`. Not yet wired into
+  `RootNavigator.tsx` as an actual auth gate — it exists as a screen but nothing
+  currently forces the user through it before the tab navigator.
+- `theme/typography.ts` added (font size/weight scale) and wired into
+  `LoginScreen.tsx`. Other screens still hardcode font sizes/weights — not yet
+  migrated to the token scale.
+- iOS build **verified working end-to-end**: builds and launches on the iOS
+  Simulator via `npx react-native run-ios`. Physical-device build also verified
+  against a connected iPhone 14 Pro Max ("Sage 14Pro", signing team
+  `6EERS23K5D` already set in the pbxproj).
+- Fixed a real build breakage: Xcode auto-upgrading `project.pbxproj` sets
+  `ENABLE_USER_SCRIPT_SANDBOXING = YES`, which makes CocoaPods' "[CP] Embed Pods
+  Frameworks" script phase fail with a sandbox `rsync`/`unlink` denial on
+  `hermes.framework`. Fixed by forcing that setting to `NO` for both the Debug
+  and Release configs. `Executable/macos_iosapp_build.sh` re-applies this fix
+  automatically on every run in case Xcode flips it again.
+- `Executable/` folder added at the repo root: `macos_iosapp_build.sh` and
+  `macos_xdaapp_build.sh` are one-shot build+install+launch scripts — see
+  "Executable build scripts" below. They're the preferred way to build+run
+  now, over calling `npm run ios`/`npm run android` by hand.
+- `HomeScreen.tsx` / `RootNavigator.tsx` had a UI-density pass (smaller tab
+  bar, custom vector-free quick-action icons via `View`-based shapes instead
+  of emoji, horizontally-scrolling quick actions).
+- Android build **verified end-to-end via `Executable/macos_xdaapp_build.sh`**:
+  the script now detects when nothing is connected, lists installed AVDs, boots
+  one automatically (lowest API level by default), waits for boot, builds, and
+  installs+launches. Two real bugs were found and fixed while verifying this:
+  `mapfile`/`${arr[-1]}` don't exist in bash 3.2 (macOS's default `/bin/bash`,
+  vs. the bash 4+ assumed) — replaced with portable `while read` loops; and
+  this project outputs per-ABI split APKs (`MyHealthHub-debug-arm64-v8a.apk`,
+  not `app-debug.apk`) — the script now resolves the right one from the target
+  device's ABI. Launch uses `adb shell am start -n <pkg>/.MainActivity`, not
+  `monkey` (monkey's exit code is unreliable and was tripping `set -e`).
+
+**Not done yet (unchanged from before):** no real backend integration, no JWT
+storage wired up despite the dependency being present, no login gate in the
+navigator. See each app's own README for the fuller task checklist.
+
+**Where to start next:** likely either (a) wire `LoginScreen` into
+`RootNavigator` as a real gate, or (b) start on real API integration in
+`api/healthService.ts`. Ask the user which, don't assume.
+
+### Executable build scripts
+
+See `Executable/README.md` for the full breakdown of what each script does.
+`Executable/macos_iosapp_build.sh` and `Executable/macos_xdaapp_build.sh` are
+self-contained, run-from-anywhere scripts for MyHealthHub — they load the
+toolchain, install JS/CocoaPods deps if needed, verify prerequisites (Xcode,
+toolchain scripts, folders, connected device/simulator) with plain-language +
+developer-fix error messages, and build+launch. Prefer pointing the user at
+these over walking them through the manual `npm run ios`/`android` steps by
+hand.
+
+```bash
+./Executable/macos_iosapp_build.sh                  # iOS Simulator (default: iPhone 14)
+./Executable/macos_iosapp_build.sh device            # physical device (default: "Sage 14Pro")
+./Executable/macos_xdaapp_build.sh                   # Android debug build — auto-boots an AVD if nothing's connected
+```
+
+Both scripts are written for bash 3.2 (macOS's stock `/bin/bash`) on purpose —
+don't reach for `mapfile`/`readarray` or `${arr[-1]}` negative indexing when
+editing them, neither exists there; use a `while read` loop into an array and
+`${arr[$((${#arr[@]}-1))]}` instead.
+
 ## Commands
 
 All commands below are run with that folder as the working directory.
@@ -59,7 +130,10 @@ npm run typecheck             # tsc --noEmit
 npm run test                  # jest (no test files exist yet)
 ```
 
-Debug APK output: `lxc-myhealthhub-xda/app/build/outputs/apk/debug/app-debug.apk`
+Debug APK output: `lxc-myhealthhub-xda/app/build/outputs/apk/debug/` — this project
+builds per-ABI split APKs (e.g. `MyHealthHub-debug-arm64-v8a.apk`), not a single
+`app-debug.apk`. `Executable/macos_xdaapp_build.sh` picks the right one automatically
+based on the target device's ABI.
 
 ### DSA Tablet App (`lxc-myrecords-dsa-xda/`)
 
@@ -74,12 +148,15 @@ npm run lint       # eslint src --ext .js,.jsx
 ### macOS local toolchain
 
 Development on this repo uses a project-independent toolchain kept outside the repo
-under `frameworks/` (Node, JDK 17, Android SDK, Gradle) instead of global installs.
-Load it before building either app:
+under `frameworks/` instead of global installs. There are two loader scripts:
 
 ```bash
-source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
+source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"  # Node, JDK 17, Android SDK, Gradle
+source "/Users/SageVish/Documents/Development Work/frameworks/ios/env.sh"      # Ruby + CocoaPods (needed for iOS builds)
 ```
+
+Building iOS requires sourcing **both** — Node comes from the `android/env.sh`
+script even for iOS work. The `Executable/*.sh` scripts source both automatically.
 
 ## Architecture
 
@@ -90,8 +167,10 @@ source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 - `navigation/RootNavigator.tsx` — bottom tab navigator; the single place that wires
   together all screens.
 - `screens/` — one file per screen (Home, Records, Appointments, Prescriptions,
-  Vitals, Profile, ScheduleVisit). Screens compose shared components rather than
-  defining their own primitives.
+  Vitals, Profile, ScheduleVisit, Login, Notifications). Screens compose shared
+  components rather than defining their own primitives. `LoginScreen.tsx` exists
+  (mobile+OTP mock flow, biometric login) but is not yet wired as an actual gate
+  in `RootNavigator.tsx`.
 - `components/` — shared UI primitives (`Card`, `ListRow`, `PrimaryButton`, `Screen`,
   `SectionHeader`) used across most screens.
 - `api/client.ts` — single Axios instance (`apiClient`), base URL from
@@ -100,8 +179,11 @@ source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
   not yet wired up (no login/auth flow, no JWT storage yet, despite `zod` and
   `react-native-keychain` already being in `package.json` for that upcoming work).
 - `hooks/useHealthData.ts` — React Query hooks consumed by screens.
-- `theme/colors.ts`, `theme/spacing.ts` — the MyHealthHub blue/pink design tokens;
-  screens should use these rather than hardcoding colors/spacing.
+- `theme/colors.ts`, `theme/spacing.ts`, `theme/typography.ts` — the MyHealthHub
+  blue/pink design tokens plus a font size/weight scale; screens should use these
+  rather than hardcoding colors/spacing/fonts. Only `LoginScreen.tsx` has been
+  migrated to `theme/typography.ts` so far — other screens still hardcode
+  `fontSize`/`fontWeight`.
 
 ### DSA Tablet App (`lxc-myrecords-dsa-xda/src/`)
 

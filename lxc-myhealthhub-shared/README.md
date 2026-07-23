@@ -42,7 +42,8 @@ Git history for individual files was preserved as renames across the split.
 - [x] Gradle 8.10.2 installed under `frameworks/gradle`
 - [ ] Android Gradle wrapper generated
 - [x] Android debug APK built successfully
-- [ ] Android emulator system image installed and device run verified
+- [x] Android emulator system image installed and device run verified (2026-07-23,
+      via `../Executable/macos_xdaapp_build.sh`)
 - [ ] API 36 Pixel 8 Pro/Pixel 9 Pro emulator configured
 - [ ] Emulator configured for 2772 x 1240 resolution and 8 GB or 12 GB RAM
 - [x] ARM64-v8a preferred app architecture configured
@@ -70,8 +71,8 @@ lxc-myhealthhub-shared/      # this folder — all JS/TS source and assets
 │   ├── components/         # Shared UI components
 │   ├── hooks/              # React Query data hooks
 │   ├── navigation/         # Bottom tab navigation
-│   ├── screens/            # App screens
-│   ├── theme/              # Colors and spacing
+│   ├── screens/            # App screens (incl. LoginScreen — mock OTP + biometric)
+│   ├── theme/              # Colors, spacing, and typography (font scale)
 │   └── types/              # TypeScript app types
 ├── assets/
 ├── react-native.config.js  # points the RN CLI at ../lxc-myhealthhub-xda and ../lxc-myhealthhub-ios
@@ -168,6 +169,15 @@ cd lxc-myhealthhub-shared
 cp .env.example .env
 npm install
 ```
+
+## Fastest path: one-shot build scripts
+
+`../Executable/macos_iosapp_build.sh` and `../Executable/macos_xdaapp_build.sh`
+load the toolchain, install deps, and build+launch in one command — including
+auto-booting an Android emulator if nothing's connected. Both iOS (Simulator +
+physical device) and Android (emulator, auto-booted) have been verified working
+end-to-end through these scripts as of 2026-07-23. Prefer these over the manual
+steps below unless you're debugging the build itself.
 
 ## Run Android App
 

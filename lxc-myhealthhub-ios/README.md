@@ -8,9 +8,19 @@ Xcode project and CocoaPods config (`LxcMyHealthHub.xcodeproj`,
 
 This is the `ios/` folder from the original `lxc-myhealthhub-mobile` project, moved
 out to a sibling folder on 2026-07-21 so the native iOS build project is separated
-from the shared app source. Git history was preserved as a rename. As of the move,
-this folder exists but a real device/simulator run has not yet been verified —
-building for Android was the initial focus.
+from the shared app source. Git history was preserved as a rename.
+
+**Status (2026-07-23): verified working.** Builds and launches successfully on
+both the iOS Simulator and a physical device via `npx react-native run-ios`.
+
+**Known gotcha:** Xcode auto-upgrading `project.pbxproj` (e.g. after opening it
+in a newer Xcode version) sets `ENABLE_USER_SCRIPT_SANDBOXING = YES`, which
+breaks CocoaPods' "[CP] Embed Pods Frameworks" build phase with a sandbox
+`rsync`/`unlink` denial on `hermes.framework`. If a build suddenly fails there,
+set `ENABLE_USER_SCRIPT_SANDBOXING` back to `NO` for both Debug and Release in
+this project's build settings.
+`../Executable/macos_iosapp_build.sh` checks and re-applies this fix
+automatically on every run.
 
 ## Where the app code lives
 
@@ -21,7 +31,15 @@ and `node_modules` location.
 
 ## Building
 
-Run these from `lxc-myhealthhub-shared` (where `package.json` lives), not from here:
+Fastest path — one-shot script that loads the toolchain, installs deps, and
+builds+launches for you (see `../Executable/macos_iosapp_build.sh` for details):
+
+```bash
+../Executable/macos_iosapp_build.sh              # simulator (default: iPhone 14)
+../Executable/macos_iosapp_build.sh device        # physical device
+```
+
+Or manually, from `lxc-myhealthhub-shared` (where `package.json` lives):
 
 ```bash
 cd ../lxc-myhealthhub-shared
