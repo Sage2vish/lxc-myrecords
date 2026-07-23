@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : index.js (localization)
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : English + Hindi UI strings (i18n-js) plus the active-locale
+//               getter/loader, switchable in-app.
+// ============================================================================
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const strings = {

@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : SectionHeader.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Shared title/subtitle header used at the top of each
+//               screen's content.
+// ============================================================================
+
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {colors} from '../theme/colors';

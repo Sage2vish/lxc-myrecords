@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : PinScreen.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : PIN setup + login screen (4-6 digit, device-locked via
+//               AsyncStorage) gating the DSA Tablet App before AppNavigator.
+// ============================================================================
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Animated,

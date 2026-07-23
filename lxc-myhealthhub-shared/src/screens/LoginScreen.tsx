@@ -1,3 +1,18 @@
+// ============================================================================
+// FILE        : LoginScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Mobile-number + OTP login screen for MyHealthHub, with
+//               biometric (Face ID / Touch ID / Fingerprint) login support
+//               via react-native-keychain. Uses a mock OTP flow (no real
+//               backend yet) and styles text with theme/typography.ts. Not
+//               yet wired into RootNavigator.tsx as an actual auth gate.
+// ============================================================================
+
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,

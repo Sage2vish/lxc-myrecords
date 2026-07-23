@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : ProfileScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Patient profile screen — personal details, ABHA/Aadhaar IDs,
+//               and emergency contact (mock data).
+// ============================================================================
+
 import React from 'react';
 import {Alert, Pressable, StyleSheet, Text, View} from 'react-native';
 import {Card} from '../components/Card';

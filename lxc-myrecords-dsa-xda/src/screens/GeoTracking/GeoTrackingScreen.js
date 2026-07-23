@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : GeoTrackingScreen.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : GPS visit-logging screen for the DSA Tablet App — records
+//               and lists geo-tagged patient/doctor field visits.
+// ============================================================================
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

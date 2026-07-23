@@ -1,3 +1,19 @@
+// ============================================================================
+// FILE        : HomeScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : MyHealthHub home/dashboard screen — hero header with brand +
+//               notifications + profile, Family Health Space card, upcoming
+//               appointment card, horizontally-scrolling Quick Actions (with
+//               custom View-based vector-free icons via QuickActionIcon),
+//               one-call support card, DSA assisted-setup card, and privacy
+//               card.
+// ============================================================================
+
 import React from 'react';
 import {
   Image,

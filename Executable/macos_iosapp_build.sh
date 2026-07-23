@@ -1,11 +1,18 @@
 #!/bin/bash
-# =============================================================================
-#  macos_iosapp_build.sh
+# ============================================================================
+# FILE        : macos_iosapp_build.sh
+# PROJECT     : LXC-Health
+# AUTHOR      : Vishal Kumar
+# UPDATED BY  : Vishal Kumar
+# VERSION     : 1.0.0
+# DATE-TIME   : 23-July-2026 | 20:39 Hrs
 #
-#  Copyright (c) 2026 Lexvora Consulting. All rights reserved.
-#  Author:  Sage Vish
-#  Created: 2026-07-23
-# =============================================================================
+# PURPOSE     : One-shot build+launch script for MyHealthHub (iOS). Loads the
+#               local macOS toolchain, installs JS/CocoaPods dependencies,
+#               guards against Xcode's ENABLE_USER_SCRIPT_SANDBOXING build
+#               regression, and builds+runs on a chosen iOS Simulator or
+#               physical device. See Executable/README.md for full details.
+# ============================================================================
 #
 # macos_iosapp_build.sh — build + launch MyHealthHub (iOS)
 #

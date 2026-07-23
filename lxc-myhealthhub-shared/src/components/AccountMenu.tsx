@@ -1,3 +1,16 @@
+// ============================================================================
+// FILE        : AccountMenu.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Slide-in account panel (View Profile / Log Out) opened from
+//               the header via AccountMenuContext, animated in/out with
+//               Animated.timing.
+// ============================================================================
+
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, Pressable, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';

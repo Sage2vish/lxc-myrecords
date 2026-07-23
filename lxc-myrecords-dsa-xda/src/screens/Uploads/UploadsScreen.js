@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : UploadsScreen.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Document uploads list screen for the DSA Tablet App — file
+//               name, patient, type, size, and sync status.
+// ============================================================================
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

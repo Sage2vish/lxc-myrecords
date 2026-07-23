@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : Card.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Shared bordered/shadowed container primitive used to group
+//               content across screens.
+// ============================================================================
+
 import React, {PropsWithChildren} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {colors} from '../theme/colors';

@@ -1,3 +1,16 @@
+// ============================================================================
+// FILE        : ScheduleVisitScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Form screen for booking a new appointment (doctor, date,
+//               time, location, reason); writes the new appointment into
+//               the TanStack Query cache on submit.
+// ============================================================================
+
 import React, {useState} from 'react';
 import {Alert, Pressable, Text, TextInput, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';

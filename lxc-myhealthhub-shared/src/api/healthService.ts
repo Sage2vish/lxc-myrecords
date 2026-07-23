@@ -1,3 +1,16 @@
+// ============================================================================
+// FILE        : healthService.ts
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Mock data layer for appointments, medical records,
+//               prescriptions, and vitals. Stands in for real backend API
+//               integration, which is not yet wired up.
+// ============================================================================
+
 import {Appointment, MedicalRecord, Prescription, Vital} from '../types/health';
 
 export async function getAppointments(): Promise<Appointment[]> {

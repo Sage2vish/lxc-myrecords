@@ -1,11 +1,18 @@
 #!/bin/bash
-# =============================================================================
-#  macos_xdaapp_build.sh
+# ============================================================================
+# FILE        : macos_xdaapp_build.sh
+# PROJECT     : LXC-Health
+# AUTHOR      : Vishal Kumar
+# UPDATED BY  : Vishal Kumar
+# VERSION     : 1.0.0
+# DATE-TIME   : 23-July-2026 | 20:39 Hrs
 #
-#  Copyright (c) 2026 Lexvora Consulting. All rights reserved.
-#  Author:  Sage Vish
-#  Created: 2026-07-23
-# =============================================================================
+# PURPOSE     : One-shot build+launch script for MyHealthHub (Android). Loads
+#               the local macOS toolchain, auto-boots an emulator (AVD) if
+#               none is connected, builds the debug/release APK (resolving
+#               the correct per-ABI split), and installs+launches it on the
+#               chosen device. See Executable/README.md for full details.
+# ============================================================================
 #
 # macos_xdaapp_build.sh — build + launch MyHealthHub (Android / "xda" native project)
 #

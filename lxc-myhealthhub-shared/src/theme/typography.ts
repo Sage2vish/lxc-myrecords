@@ -1,3 +1,17 @@
+// ============================================================================
+// FILE        : typography.ts
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Defines the MyHealthHub font-size and font-weight design-token
+//               scale (theme/typography.ts). Screens should import fontSizes/
+//               fontWeights from here instead of hardcoding numeric font
+//               values, so type styling stays consistent across the app.
+// ============================================================================
+
 export const fontSizes = {
   xs: 10,
   sm: 11,

@@ -1,3 +1,16 @@
+// ============================================================================
+// FILE        : AppNavigator.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Tab + stack navigator wiring together the Dashboard,
+//               Patients, Doctors, Appointments, Uploads, GeoTracking, and
+//               Records screens for the DSA Tablet App.
+// ============================================================================
+
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';

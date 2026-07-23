@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : PatientsScreen.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Patient list/search screen for the DSA Tablet App —
+//               profile, assigned doctor, address, with delete support.
+// ============================================================================
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

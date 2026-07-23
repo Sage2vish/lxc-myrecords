@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : DashboardScreen.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Dashboard screen for the DSA Tablet App — patient/doctor/
+//               appointment/upload stats and a recent-activity feed.
+// ============================================================================
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';

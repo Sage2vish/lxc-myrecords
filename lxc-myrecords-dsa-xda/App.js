@@ -1,3 +1,16 @@
+// ============================================================================
+// FILE        : App.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Root component for the DSA Tablet App. Initializes the local
+//               SQLite DB via getDB(), gates the app behind PinScreen until
+//               authenticated, then renders AppNavigator.
+// ============================================================================
+
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, LogBox } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';

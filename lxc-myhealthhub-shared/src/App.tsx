@@ -1,3 +1,18 @@
+// ============================================================================
+// FILE        : App.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Root component. Gates the app behind LoginScreen until
+//               isAuthenticated is true, then renders the tab navigator
+//               wrapped in QueryClientProvider (TanStack Query) and
+//               SafeAreaProvider, plus the AccountMenu slide-in panel via
+//               AccountMenuProvider.
+// ============================================================================
+
 import React, {useRef, useState} from 'react';
 import {StatusBar, StyleSheet, View} from 'react-native';
 import {

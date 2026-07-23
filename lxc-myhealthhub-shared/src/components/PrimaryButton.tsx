@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : PrimaryButton.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Shared primary action button with pressed, disabled, and
+//               loading states.
+// ============================================================================
+
 import React from 'react';
 import {ActivityIndicator, Pressable, StyleSheet, Text} from 'react-native';
 import {colors} from '../theme/colors';

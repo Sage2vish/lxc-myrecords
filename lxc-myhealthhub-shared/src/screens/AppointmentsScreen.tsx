@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : AppointmentsScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Appointments list screen, with a "Schedule New Visit" action
+//               that navigates to ScheduleVisitScreen.
+// ============================================================================
+
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';

@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : colors.ts
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : MyHealthHub blue/pink color design tokens, used across
+//               screens instead of hardcoded hex values.
+// ============================================================================
+
 export const colors = {
   background: '#F6FAFF',
   surface: '#ffffff',

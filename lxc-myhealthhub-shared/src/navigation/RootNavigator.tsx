@@ -1,3 +1,18 @@
+// ============================================================================
+// FILE        : RootNavigator.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Bottom tab navigator for MyHealthHub — the single place that
+//               wires together Home, Records, Appointments, Prescriptions,
+//               Vitals, Profile, and the center Add/ScheduleVisit action.
+//               Styles the tab bar (icon sizes, center Add button, active/
+//               inactive tint) rather than defining screen content itself.
+// ============================================================================
+
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {StyleSheet, Text, View} from 'react-native';

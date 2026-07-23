@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : ListRow.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Shared title/detail/meta row primitive used inside Card lists
+//               across screens (appointments, records, prescriptions, vitals).
+// ============================================================================
+
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {colors} from '../theme/colors';

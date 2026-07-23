@@ -1,3 +1,16 @@
+// ============================================================================
+// FILE        : database.web.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Expo-web platform variant of database.js — same API surface
+//               as the SQLite version but backed by localStorage, aliased
+//               in webpack.config.js for the web build.
+// ============================================================================
+
 // Web implementation of database.js using localStorage instead of SQLite
 
 const KEYS = {

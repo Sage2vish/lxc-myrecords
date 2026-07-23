@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : PrescriptionsScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Prescriptions list screen — medicine, dosage, schedule, and
+//               refill-until date.
+// ============================================================================
+
 import React from 'react';
 import {Text} from 'react-native';
 import {Card} from '../components/Card';

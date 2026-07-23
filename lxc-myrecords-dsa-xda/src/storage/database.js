@@ -1,3 +1,18 @@
+// ============================================================================
+// FILE        : database.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 23-July-2026 | 20:39 Hrs
+//
+// PURPOSE     : Entire local data layer for the DSA Tablet App — opens the
+//               SQLite DB, defines the full schema (patients, doctors,
+//               appointments, medical_records, uploads, geo_visits,
+//               activity_log), and all CRUD. Offline-first: every table has
+//               a sync_status column for a future backend sync pass.
+// ============================================================================
+
 import SQLite from 'react-native-sqlite-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

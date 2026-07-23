@@ -45,9 +45,13 @@ without re-discovering what's already been verified.
 
 **MyHealthHub — done / verified:**
 - Login screen (`screens/LoginScreen.tsx`) built: mobile+OTP flow (mock, no real
-  backend) and biometric login via `react-native-keychain`. Not yet wired into
-  `RootNavigator.tsx` as an actual auth gate — it exists as a screen but nothing
-  currently forces the user through it before the tab navigator.
+  backend) and biometric login via `react-native-keychain`. It **is** wired as
+  an auth gate — `App.tsx` renders `LoginScreen` until `isAuthenticated` is set
+  via `onLoginSuccess`, then renders the tab navigator. The gate lives in
+  `App.tsx`, not `RootNavigator.tsx`.
+- `AccountMenu.tsx` (slide-in account panel: View Profile / Log Out) and
+  `context/AccountMenuContext.tsx` (exposes `openMenu()` so any screen can open
+  it without prop-drilling) were added alongside the login work.
 - `theme/typography.ts` added (font size/weight scale) and wired into
   `LoginScreen.tsx`. Other screens still hardcode font sizes/weights — not yet
   migrated to the token scale.
@@ -80,12 +84,15 @@ without re-discovering what's already been verified.
   `monkey` (monkey's exit code is unreliable and was tripping `set -e`).
 
 **Not done yet (unchanged from before):** no real backend integration, no JWT
-storage wired up despite the dependency being present, no login gate in the
-navigator. See each app's own README for the fuller task checklist.
+storage wired up despite the dependency being present — the login gate in
+`App.tsx` only tracks `isAuthenticated` in local component state, it doesn't
+call a real API or persist a session. See each app's own README for the
+fuller task checklist.
 
-**Where to start next:** likely either (a) wire `LoginScreen` into
-`RootNavigator` as a real gate, or (b) start on real API integration in
-`api/healthService.ts`. Ask the user which, don't assume.
+**Where to start next:** likely real API integration in `api/healthService.ts`
+plus wiring `LoginScreen`'s mock OTP submit to an actual `POST /auth/login`
+and persisting the session via `react-native-keychain`. Ask the user before
+starting, don't assume.
 
 ### Executable build scripts
 
@@ -162,22 +169,25 @@ script even for iOS work. The `Executable/*.sh` scripts source both automaticall
 
 ### MyHealthHub (`lxc-myhealthhub-shared/src/`)
 
-- `App.tsx` — root component: wraps the app in `QueryClientProvider` (TanStack Query),
-  `SafeAreaProvider`, and `NavigationContainer`.
+- `App.tsx` — root component: renders `LoginScreen` until `isAuthenticated` is
+  set (via `onLoginSuccess`), then wraps the tab navigator in
+  `QueryClientProvider` (TanStack Query), `SafeAreaProvider`, and
+  `AccountMenuProvider` (for the slide-in `AccountMenu` panel).
 - `navigation/RootNavigator.tsx` — bottom tab navigator; the single place that wires
-  together all screens.
+  together all screens except `LoginScreen` (gated separately in `App.tsx`).
 - `screens/` — one file per screen (Home, Records, Appointments, Prescriptions,
   Vitals, Profile, ScheduleVisit, Login, Notifications). Screens compose shared
-  components rather than defining their own primitives. `LoginScreen.tsx` exists
-  (mobile+OTP mock flow, biometric login) but is not yet wired as an actual gate
-  in `RootNavigator.tsx`.
+  components rather than defining their own primitives. `LoginScreen.tsx` is a
+  mobile+OTP mock flow (no real backend) plus biometric login.
 - `components/` — shared UI primitives (`Card`, `ListRow`, `PrimaryButton`, `Screen`,
-  `SectionHeader`) used across most screens.
+  `SectionHeader`, `AccountMenu`) used across most screens.
+- `context/AccountMenuContext.tsx` — exposes `openMenu()` via context so any
+  screen can open the `AccountMenu` panel without prop-drilling.
 - `api/client.ts` — single Axios instance (`apiClient`), base URL from
   `react-native-config` (`Config.API_BASE_URL`), falls back to the production API.
-- `api/healthService.ts` — currently returns **mock data**; real API integration is
-  not yet wired up (no login/auth flow, no JWT storage yet, despite `zod` and
-  `react-native-keychain` already being in `package.json` for that upcoming work).
+- `api/healthService.ts` — currently returns **mock data**; real API integration
+  (and JWT storage, despite `zod`/`react-native-keychain` already being in
+  `package.json` for that) is not yet wired up. Login is UI-only/mock so far.
 - `hooks/useHealthData.ts` — React Query hooks consumed by screens.
 - `theme/colors.ts`, `theme/spacing.ts`, `theme/typography.ts` — the MyHealthHub
   blue/pink design tokens plus a font size/weight scale; screens should use these
