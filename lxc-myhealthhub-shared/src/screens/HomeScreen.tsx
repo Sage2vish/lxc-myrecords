@@ -22,12 +22,12 @@ const familyMembers = [
 ];
 
 const quickActions = [
-  {icon: '▣', title: 'Health\nRecords', tone: colors.primarySoft, accent: colors.primary},
-  {icon: '▤', title: 'Reports &\nVisits', tone: colors.purpleSoft, accent: '#7D5AF2'},
-  {icon: '●', title: 'Find Nearby\nCare', tone: '#EAF7FF', accent: colors.sky},
-  {icon: '✓', title: 'Appointments', tone: colors.accentSoft, accent: colors.accent},
-  {icon: '↻', title: 'Health App\nSync', tone: '#EAF7FF', accent: colors.primary},
-  {icon: '👥', title: 'Family\nProfiles', tone: colors.purpleSoft, accent: '#7D5AF2'},
+  {key: 'records', title: 'Health\nRecords', tone: colors.primarySoft, accent: colors.primary},
+  {key: 'reports', title: 'Reports &\nVisits', tone: colors.purpleSoft, accent: '#7D5AF2'},
+  {key: 'nearby', title: 'Find Nearby\nCare', tone: '#EAF7FF', accent: colors.sky},
+  {key: 'appointments', title: 'Appointments', tone: colors.accentSoft, accent: colors.accent},
+  {key: 'sync', title: 'Health App\nSync', tone: '#EAF7FF', accent: colors.primary},
+  {key: 'profiles', title: 'Family\nProfiles', tone: colors.purpleSoft, accent: '#7D5AF2'},
 ];
 
 export function HomeScreen() {
@@ -144,19 +144,25 @@ export function HomeScreen() {
           <Text style={styles.chevron}>›</Text>
         </TouchableOpacity>
 
-        <View style={styles.quickPanel}>
+        <View style={styles.quickSection}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickGrid}>
-            {quickActions.map(action => (
-              <TouchableOpacity key={action.title} style={styles.quickCard}>
-                <View style={[styles.quickIcon, {backgroundColor: action.tone}]}>
-                  <Text style={[styles.quickIconText, {color: action.accent}]}>{action.icon}</Text>
-                </View>
-                <Text style={styles.quickTitle}>{action.title}</Text>
-                <Text style={styles.quickArrow}>›</Text>
-              </TouchableOpacity>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.quickScroller}>
+            {chunkQuickActions(quickActions, 2).map((column, columnIndex) => (
+              <View key={columnIndex} style={styles.quickColumn}>
+                {column.map(action => (
+                  <TouchableOpacity key={action.title} style={styles.quickCard}>
+                    <View style={[styles.quickIcon, {backgroundColor: action.tone}]}>
+                      <QuickActionIcon kind={action.key} color={action.accent} />
+                    </View>
+                    <Text style={styles.quickTitle}>{action.title}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             ))}
-          </View>
+          </ScrollView>
         </View>
 
         <View style={styles.supportGrid}>
@@ -202,22 +208,22 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   hero: {
-    minHeight: 268,
-    paddingHorizontal: 22,
-    paddingTop: 24,
-    paddingBottom: 92,
+    minHeight: 208,
+    paddingHorizontal: 18,
+    paddingTop: 18,
+    paddingBottom: 68,
     backgroundColor: colors.primary,
-    borderBottomLeftRadius: 42,
-    borderBottomRightRadius: 42,
+    borderBottomLeftRadius: 34,
+    borderBottomRightRadius: 34,
     overflow: 'hidden',
   },
   heroGlow: {
     position: 'absolute',
-    right: -90,
-    top: 40,
-    width: 240,
-    height: 240,
-    borderRadius: 120,
+    right: -104,
+    top: 30,
+    width: 210,
+    height: 210,
+    borderRadius: 105,
     backgroundColor: colors.sky,
     opacity: 0.38,
   },
@@ -232,24 +238,24 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
   logo: {
-    width: 58,
-    height: 58,
-    borderRadius: 18,
-    marginRight: 12,
+    width: 42,
+    height: 42,
+    borderRadius: 13,
+    marginRight: 10,
   },
   brandTextWrap: {
     flexShrink: 1,
   },
   brandTitle: {
     color: '#fff',
-    fontSize: 25,
+    fontSize: 20,
     fontWeight: '900',
-    letterSpacing: -0.4,
+    letterSpacing: -0.3,
     flexShrink: 1,
   },
   brandSub: {
     color: 'rgba(255,255,255,0.86)',
-    fontSize: 17,
+    fontSize: 13,
     marginTop: -1,
   },
   headerActions: {
@@ -258,35 +264,35 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   bellButton: {
-    width: 42,
-    height: 42,
+    width: 36,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bell: {
     color: '#fff',
-    fontSize: 24,
+    fontSize: 20,
   },
   badge: {
     position: 'absolute',
-    right: 2,
+    right: 0,
     top: 0,
-    minWidth: 22,
-    height: 22,
-    borderRadius: 11,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 18,
     overflow: 'hidden',
     backgroundColor: colors.accent,
     color: '#fff',
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '900',
   },
   profileAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 3,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 2,
     borderColor: '#fff',
     backgroundColor: colors.accent,
     alignItems: 'center',
@@ -294,39 +300,39 @@ const styles = StyleSheet.create({
   },
   profileAvatarText: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '900',
   },
   menuButton: {
-    width: 28,
-    height: 42,
+    width: 24,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
   },
   menuDots: {
     color: '#fff',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '900',
   },
   greeting: {
-    marginTop: 26,
+    marginTop: 18,
     color: '#fff',
-    fontSize: 34,
-    lineHeight: 40,
+    fontSize: 26,
+    lineHeight: 30,
     fontWeight: '900',
-    letterSpacing: -0.8,
+    letterSpacing: -0.5,
   },
   heroSub: {
-    marginTop: 10,
+    marginTop: 6,
     color: 'rgba(255,255,255,0.88)',
-    fontSize: 17,
-    lineHeight: 23,
+    fontSize: 13,
+    lineHeight: 18,
   },
   familyCard: {
     marginHorizontal: 18,
-    marginTop: -72,
-    padding: 18,
-    borderRadius: 28,
+    marginTop: -48,
+    padding: 14,
+    borderRadius: 22,
     backgroundColor: colors.surface,
     shadowColor: colors.shadow,
     shadowOpacity: 0.14,
@@ -345,9 +351,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heartBubble: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.accentSoft,
@@ -355,7 +361,7 @@ const styles = StyleSheet.create({
   },
   heart: {
     color: colors.accent,
-    fontSize: 30,
+    fontSize: 24,
   },
   titleTextWrap: {
     flexShrink: 1,
@@ -363,82 +369,82 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: colors.text,
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: '900',
     flexShrink: 1,
   },
   membersCount: {
     color: colors.primary,
-    fontSize: 16,
+    fontSize: 11,
     fontWeight: '800',
     marginTop: 3,
   },
   viewAllButton: {
-    height: 42,
-    paddingHorizontal: 16,
-    borderRadius: 21,
+    height: 34,
+    paddingHorizontal: 12,
+    borderRadius: 17,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primarySoft,
   },
   viewAllText: {
     color: colors.primary,
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '900',
   },
   viewAllArrow: {
     marginLeft: 6,
     color: colors.primary,
-    fontSize: 25,
-    lineHeight: 25,
+    fontSize: 18,
+    lineHeight: 18,
   },
   membersRow: {
-    marginTop: 24,
+    marginTop: 18,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
   },
   memberItem: {
     alignItems: 'center',
-    width: 62,
+    width: 56,
   },
   memberAvatar: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
   memberInitial: {
     color: '#fff',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '900',
   },
   verifiedTick: {
     position: 'absolute',
     right: -1,
     bottom: 0,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 16,
     overflow: 'hidden',
     color: '#fff',
     backgroundColor: colors.primary,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '900',
   },
   memberName: {
-    marginTop: 8,
+    marginTop: 6,
     color: colors.text,
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '900',
   },
   memberRelation: {
     marginTop: 2,
     color: colors.muted,
-    fontSize: 10,
+    fontSize: 9,
   },
   youPill: {
     paddingHorizontal: 6,
@@ -451,33 +457,33 @@ const styles = StyleSheet.create({
   },
   addMember: {
     alignItems: 'center',
-    width: 66,
+    width: 58,
   },
   addPlus: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     textAlign: 'center',
-    lineHeight: 58,
+    lineHeight: 48,
     overflow: 'hidden',
     backgroundColor: colors.primarySoft,
     color: colors.primary,
-    fontSize: 34,
+    fontSize: 26,
     fontWeight: '300',
   },
   addMemberText: {
-    marginTop: 8,
+    marginTop: 6,
     color: colors.text,
     textAlign: 'center',
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '800',
-    lineHeight: 16,
+    lineHeight: 14,
   },
   healthStrip: {
-    marginTop: 26,
-    minHeight: 84,
-    borderRadius: 22,
-    padding: 14,
+    marginTop: 18,
+    minHeight: 72,
+    borderRadius: 18,
+    padding: 12,
     backgroundColor: colors.primarySoft,
     flexDirection: 'row',
     alignItems: 'center',
@@ -488,59 +494,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   metricIcon: {
-    width: 46,
-    height: 46,
-    borderRadius: 16,
-    marginRight: 10,
+    width: 38,
+    height: 38,
+    borderRadius: 14,
+    marginRight: 8,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primary,
   },
   metricIconText: {
-    fontSize: 24,
+    fontSize: 20,
   },
   metricTextWrap: {
     flexShrink: 1,
   },
   metricLabel: {
     color: colors.muted,
-    fontSize: 13,
+    fontSize: 11,
     flexShrink: 1,
   },
   goodStatus: {
     marginTop: 2,
     color: colors.primary,
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '900',
   },
   metricDivider: {
     width: 1,
-    height: 54,
-    marginHorizontal: 10,
+    height: 42,
+    marginHorizontal: 8,
     backgroundColor: '#C8D7EA',
   },
   scoreIcon: {
     color: colors.primary,
-    fontSize: 30,
-    marginRight: 10,
+    fontSize: 24,
+    marginRight: 8,
     fontWeight: '900',
   },
   score: {
     color: colors.muted,
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '700',
   },
   scoreNumber: {
     color: colors.primary,
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '900',
   },
   appointmentCard: {
     marginHorizontal: 18,
-    marginTop: 22,
-    minHeight: 136,
-    borderRadius: 26,
-    padding: 16,
+    marginTop: 18,
+    minHeight: 112,
+    borderRadius: 20,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#EAF4FF',
@@ -548,48 +554,48 @@ const styles = StyleSheet.create({
     borderColor: '#DCEBFA',
   },
   appointmentIcon: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
-    marginRight: 14,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 10,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.accentSoft,
   },
   appointmentIconText: {
     color: colors.accent,
-    fontSize: 30,
+    fontSize: 22,
   },
   appointmentBody: {
     flex: 1,
   },
   kickerPink: {
     color: colors.accent,
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '900',
-    marginBottom: 3,
+    marginBottom: 2,
   },
   doctorName: {
     color: colors.text,
-    fontSize: 21,
+    fontSize: 16,
     fontWeight: '900',
   },
   doctorRole: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '700',
     marginTop: 2,
   },
   appointmentMeta: {
     marginTop: 5,
     color: colors.muted,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '700',
   },
   doctorAvatar: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primary,
@@ -604,37 +610,34 @@ const styles = StyleSheet.create({
     fontSize: 34,
     lineHeight: 34,
   },
-  quickPanel: {
-    marginHorizontal: 18,
-    marginTop: 22,
-    padding: 16,
-    borderRadius: 26,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    shadowColor: colors.shadow,
-    shadowOpacity: 0.08,
-    shadowRadius: 22,
-    shadowOffset: {width: 0, height: 12},
-    elevation: 5,
+  quickSection: {
+    marginHorizontal: 0,
+    marginTop: 14,
   },
   sectionTitle: {
     color: colors.text,
-    fontSize: 21,
-    fontWeight: '900',
-    marginBottom: 14,
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 8,
+    paddingLeft: 10,
   },
-  quickGrid: {
+  quickScroller: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    rowGap: 12,
+    gap: 10,
+    paddingLeft: 18,
+    paddingRight: 18,
+  },
+  quickColumn: {
+    width: 110,
+    gap: 10,
   },
   quickCard: {
-    width: '31.5%',
-    minHeight: 104,
-    borderRadius: 18,
-    padding: 10,
+    width: 110,
+    minHeight: 100,
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 8,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
@@ -643,43 +646,178 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: {width: 0, height: 6},
     elevation: 2,
+    alignItems: 'center',
   },
   quickIcon: {
-    width: 42,
-    height: 42,
+    width: 46,
+    height: 46,
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 8,
   },
-  quickIconText: {
-    fontSize: 22,
-    fontWeight: '900',
-  },
   quickTitle: {
     color: colors.text,
-    fontSize: 13,
-    fontWeight: '900',
-    lineHeight: 16,
+    fontSize: 10,
+    fontWeight: '500',
+    lineHeight: 12,
+    textAlign: 'center',
+    width: '100%',
   },
-  quickArrow: {
+  iconStack: {
+    width: 26,
+    height: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  iconSheet: {
     position: 'absolute',
-    right: 10,
-    top: 42,
-    color: colors.muted,
-    fontSize: 26,
+    width: 14,
+    height: 18,
+    borderRadius: 4,
+    borderWidth: 2,
+    top: 4,
+    left: 6,
+    backgroundColor: 'transparent',
+  },
+  iconSheetTop: {
+    position: 'absolute',
+    width: 12,
+    height: 6,
+    borderRadius: 3,
+    top: 2,
+    left: 8,
+  },
+  iconBars: {
+    position: 'absolute',
+    width: 16,
+    height: 4,
+    borderRadius: 2,
+    top: 5,
+    left: 5,
+  },
+  iconBarsMid: {
+    position: 'absolute',
+    width: 18,
+    height: 4,
+    borderRadius: 2,
+    top: 11,
+    left: 4,
+  },
+  iconBarsBottom: {
+    position: 'absolute',
+    width: 12,
+    height: 4,
+    borderRadius: 2,
+    top: 17,
+    left: 7,
+  },
+  iconRingOuter: {
+    position: 'absolute',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    top: 4,
+    left: 4,
+  },
+  iconRingInner: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 2,
+    top: 8,
+    left: 8,
+  },
+  iconDot: {
+    position: 'absolute',
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    top: 11,
+    left: 11,
+  },
+  iconCalendar: {
+    position: 'absolute',
+    width: 18,
+    height: 16,
+    borderRadius: 4,
+    borderWidth: 2,
+    top: 6,
+    left: 4,
+  },
+  iconCalendarTop: {
+    position: 'absolute',
+    width: 18,
+    height: 5,
+    borderRadius: 2,
+    top: 4,
+    left: 4,
+  },
+  iconCalendarDot: {
+    position: 'absolute',
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    top: 12,
+    left: 12,
+  },
+  iconCircle: {
+    position: 'absolute',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    top: 4,
+    left: 4,
+  },
+  iconArrow: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    transform: [{rotate: '45deg'}],
+    top: 8,
+    left: 8,
+  },
+  iconPersonLeft: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    top: 4,
+    left: 4,
+  },
+  iconPersonRight: {
+    position: 'absolute',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    top: 4,
+    right: 4,
+  },
+  iconPeopleBase: {
+    position: 'absolute',
+    width: 18,
+    height: 8,
+    borderRadius: 4,
+    bottom: 4,
+    left: 4,
   },
   supportGrid: {
     marginHorizontal: 18,
-    marginTop: 22,
+    marginTop: 18,
     flexDirection: 'row',
     gap: 12,
   },
   supportCard: {
     flex: 1,
-    minHeight: 170,
-    borderRadius: 24,
-    padding: 14,
+    minHeight: 146,
+    borderRadius: 18,
+    padding: 12,
   },
   oneCallCard: {
     backgroundColor: colors.accentSoft,
@@ -688,52 +826,52 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
   },
   supportIconPink: {
-    width: 52,
-    height: 52,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#FFD7E8',
     marginBottom: 10,
   },
   supportIconBlue: {
-    width: 52,
-    height: 52,
-    borderRadius: 18,
+    width: 42,
+    height: 42,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#D8EBFF',
     marginBottom: 10,
   },
   supportIconTextPink: {
-    fontSize: 24,
+    fontSize: 20,
   },
   supportIconTextBlue: {
-    fontSize: 24,
+    fontSize: 20,
   },
   supportTextBlock: {
     flex: 1,
   },
   oneCallTitle: {
     color: colors.accent,
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '900',
   },
   dsaTitle: {
     color: colors.primary,
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '900',
   },
   supportCopy: {
-    marginTop: 5,
+    marginTop: 4,
     color: colors.text,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 11,
+    lineHeight: 15,
   },
   phonePill: {
-    marginTop: 12,
-    minHeight: 38,
-    borderRadius: 14,
+    marginTop: 10,
+    minHeight: 32,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#FFB6D2',
     alignItems: 'center',
@@ -742,13 +880,13 @@ const styles = StyleSheet.create({
   },
   phonePillText: {
     color: colors.accent,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '900',
   },
   getStartedButton: {
-    marginTop: 12,
-    minHeight: 38,
-    borderRadius: 14,
+    marginTop: 10,
+    minHeight: 32,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: '#B9D9FA',
     alignItems: 'center',
@@ -757,23 +895,23 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     color: colors.primary,
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '900',
   },
   privacyCard: {
     marginHorizontal: 18,
-    marginTop: 22,
-    minHeight: 76,
-    borderRadius: 22,
-    paddingHorizontal: 16,
+    marginTop: 18,
+    minHeight: 64,
+    borderRadius: 18,
+    paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primarySoft,
   },
   privacyIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
+    width: 34,
+    height: 34,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primary,
@@ -781,20 +919,92 @@ const styles = StyleSheet.create({
   },
   privacyIconText: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: '900',
   },
   privacyText: {
     flex: 1,
     color: colors.primaryDark,
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 11,
+    lineHeight: 15,
     fontWeight: '700',
   },
   learnMore: {
     color: colors.primary,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '900',
     marginLeft: 8,
   },
 });
+
+function QuickActionIcon({
+  kind,
+  color,
+}: {
+  kind: 'records' | 'reports' | 'nearby' | 'appointments' | 'sync' | 'profiles';
+  color: string;
+}) {
+  if (kind === 'records') {
+    return (
+      <View style={styles.iconStack}>
+        <View style={[styles.iconSheet, {borderColor: color}]} />
+        <View style={[styles.iconSheetTop, {backgroundColor: color}]} />
+      </View>
+    );
+  }
+
+  if (kind === 'reports') {
+    return (
+      <View style={styles.iconStack}>
+        <View style={[styles.iconBars, {backgroundColor: color}]} />
+        <View style={[styles.iconBarsMid, {backgroundColor: color}]} />
+        <View style={[styles.iconBarsBottom, {backgroundColor: color}]} />
+      </View>
+    );
+  }
+
+  if (kind === 'nearby') {
+    return (
+      <View style={styles.iconStack}>
+        <View style={[styles.iconRingOuter, {borderColor: color}]} />
+        <View style={[styles.iconRingInner, {borderColor: color}]} />
+        <View style={[styles.iconDot, {backgroundColor: color}]} />
+      </View>
+    );
+  }
+
+  if (kind === 'appointments') {
+    return (
+      <View style={styles.iconStack}>
+        <View style={[styles.iconCalendar, {borderColor: color}]} />
+        <View style={[styles.iconCalendarTop, {backgroundColor: color}]} />
+        <View style={[styles.iconCalendarDot, {backgroundColor: color}]} />
+      </View>
+    );
+  }
+
+  if (kind === 'sync') {
+    return (
+      <View style={styles.iconStack}>
+        <View style={[styles.iconCircle, {borderColor: color}]} />
+        <View style={[styles.iconArrow, {borderColor: color}]} />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.iconStack}>
+      <View style={[styles.iconPersonLeft, {backgroundColor: color}]} />
+      <View style={[styles.iconPersonRight, {backgroundColor: color}]} />
+      <View style={[styles.iconPeopleBase, {backgroundColor: color}]} />
+    </View>
+  );
+}
+
+function chunkQuickActions<T>(items: T[], size: number) {
+  const chunks: T[][] = [];
+  for (let index = 0; index < items.length; index += size) {
+    chunks.push(items.slice(index, index + size));
+  }
+  return chunks;
+}

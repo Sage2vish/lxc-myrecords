@@ -16,6 +16,7 @@ import * as Keychain from 'react-native-keychain';
 import {PrimaryButton} from '../components/PrimaryButton';
 import {colors} from '../theme/colors';
 import {spacing} from '../theme/spacing';
+import {fontSizes, fontWeights} from '../theme/typography';
 const {version: appVersion} = require('../../package.json');
 
 const OTP_LENGTH = 6;
@@ -256,12 +257,12 @@ const styles = StyleSheet.create({
   },
   brandTitle: {
     color: colors.primaryDark,
-    fontSize: 26,
-    fontWeight: '800',
+    fontSize: fontSizes['2xl'],
+    fontWeight: fontWeights.extrabold,
   },
   brandSub: {
     color: colors.muted,
-    fontSize: 14,
+    fontSize: fontSizes.lg,
     marginTop: spacing.xs,
     textAlign: 'center',
   },
@@ -280,8 +281,8 @@ const styles = StyleSheet.create({
   },
   label: {
     color: colors.text,
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.extrabold,
   },
   inputRow: {
     alignItems: 'center',
@@ -297,8 +298,8 @@ const styles = StyleSheet.create({
   },
   countryCode: {
     color: colors.text,
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.extrabold,
     paddingHorizontal: spacing.md,
   },
   inputDivider: {
@@ -309,16 +310,16 @@ const styles = StyleSheet.create({
   input: {
     color: colors.text,
     flex: 1,
-    fontSize: 16,
+    fontSize: fontSizes.lg,
     minHeight: 48,
     paddingHorizontal: spacing.md,
   },
   otpWrapper: {
-    paddingBottom: spacing.md,
+    paddingBottom: spacing.xl,
   },
   otpHint: {
     color: colors.muted,
-    fontSize: 13,
+    fontSize: fontSizes.md,
     marginBottom: spacing.sm,
   },
   otpInput: {
@@ -326,8 +327,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 10,
     borderWidth: 1,
-    fontSize: 20,
-    fontWeight: '700',
+    height: 56,
+    fontSize: fontSizes.xl,
+    fontWeight: fontWeights.extrabold,
     letterSpacing: 8,
     marginBottom: spacing.sm,
     textAlign: 'center',
@@ -339,8 +341,8 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: colors.primary,
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.extrabold,
   },
   linkTextMuted: {
     color: colors.muted,
@@ -357,8 +359,8 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     color: colors.muted,
-    fontSize: 12,
-    fontWeight: '700',
+    fontSize: fontSizes.base,
+    fontWeight: fontWeights.extrabold,
   },
   biometricButton: {
     alignItems: 'center',
@@ -379,12 +381,12 @@ const styles = StyleSheet.create({
   },
   biometricIcon: {
     color: colors.primary,
-    fontSize: 20,
+    fontSize: fontSizes.xl,
   },
   biometricLabel: {
     color: colors.primary,
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.extrabold,
   },
   footer: {
     alignItems: 'center',
@@ -393,11 +395,11 @@ const styles = StyleSheet.create({
   },
   supportText: {
     color: colors.primary,
-    fontSize: 13,
-    fontWeight: '700',
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.extrabold,
   },
   versionText: {
     color: colors.muted,
-    fontSize: 12,
+    fontSize: fontSizes.base,
   },
 });
