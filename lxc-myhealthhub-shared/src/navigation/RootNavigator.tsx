@@ -15,7 +15,7 @@
 
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {HomeScreen} from '../screens/HomeScreen';
 import {RecordsScreen} from '../screens/RecordsScreen';
 import {AppointmentsScreen} from '../screens/AppointmentsScreen';
@@ -39,18 +39,13 @@ export type RootTabParamList = {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const icons: Record<keyof RootTabParamList, string> = {
-  Home: '⌂',
-  Records: '▣',
-  Appointments: '+',
-  Prescriptions: '℞',
-  Vitals: '♡',
-  Profile: '☰',
-  ScheduleVisit: '⏳',
-  Notifications: '🔔',
-};
-
-function TabIcon({color, icon, focused, routeName}: {color: string; icon: string; focused: boolean; routeName: keyof RootTabParamList}) {
+function TabIcon({
+  focused,
+  routeName,
+}: {
+  focused: boolean;
+  routeName: keyof RootTabParamList;
+}) {
   if (routeName === 'Appointments') {
     return (
       <View style={styles.addTab}>
@@ -59,13 +54,70 @@ function TabIcon({color, icon, focused, routeName}: {color: string; icon: string
     );
   }
 
-  return <Text style={[styles.tabIcon, focused && styles.tabIconActive, {color}]}>{icon}</Text>;
+  if (routeName === 'Home') {
+    return (
+      <Image
+        source={
+          focused
+            ? require('../../assets/nav-home-icon-blue.png')
+            : require('../../assets/nav-home-icon-pink.png')
+        }
+        style={styles.navImage}
+      />
+    );
+  }
+
+  if (routeName === 'Vitals') {
+    return (
+      <Image
+        source={
+          focused
+            ? require('../../assets/nav-health-icon-blue.png')
+            : require('../../assets/nav-health-icon-pink.png')
+        }
+        style={styles.navImage}
+      />
+    );
+  }
+
+  if (routeName === 'Records') {
+    return (
+      <Image
+        source={
+          focused
+            ? require('../../assets/nav-vault-icon-blue.png')
+            : require('../../assets/nav-vault-icon-pink.png')
+        }
+        style={styles.navImage}
+      />
+    );
+  }
+
+  if (routeName === 'Profile') {
+    return (
+      <Image
+        source={
+          focused
+            ? require('../../assets/nav-more-icon-blue.png')
+            : require('../../assets/nav-more-icon-pink.png')
+        }
+        style={styles.navImage}
+      />
+    );
+  }
+
+  return null;
 }
 
 const styles = StyleSheet.create({
   tabIcon: {
     fontSize: 18,
     lineHeight: 20,
+  },
+  navImage: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
   },
   tabIconActive: {
     fontWeight: '900',
@@ -122,9 +174,7 @@ export function RootNavigator() {
           shadowOffset: {width: 0, height: -6},
           elevation: 12,
         },
-        tabBarIcon: ({color, focused}) => (
-          <TabIcon color={color} focused={focused} icon={icons[route.name]} routeName={route.name} />
-        ),
+        tabBarIcon: ({focused}) => <TabIcon focused={focused} routeName={route.name} />,
       })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Vitals" component={VitalsScreen} options={{tabBarLabel: 'Health'}} />

@@ -14,7 +14,7 @@
 //               card.
 // ============================================================================
 
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -30,8 +30,9 @@ import {useAccountMenu} from '../context/AccountMenuContext';
 import type {RootTabParamList} from '../navigation/RootNavigator';
 import {colors} from '../theme/colors';
 
+const selfProfile = {name: 'Priya', relation: 'You', initials: 'P', tone: colors.accent};
+
 const familyMembers = [
-  {name: 'Priya', relation: 'You', initials: 'P', tone: colors.accent},
   {name: 'Rajesh', relation: 'Father', initials: 'R', tone: colors.primary},
   {name: 'Aarav', relation: 'Child', initials: 'A', tone: colors.sky},
   {name: 'Meera', relation: 'Mother', initials: 'M', tone: '#8B6FE8'},
@@ -46,9 +47,139 @@ const quickActions = [
   {key: 'profiles', title: 'Family\nProfiles', tone: colors.purpleSoft, accent: '#7D5AF2'},
 ];
 
+const appointments = [
+  {
+    name: 'Dr. Ananya Sharma',
+    role: 'Cardiologist',
+    gender: 'female',
+    date: '24 May 2025, Sat',
+    time: '11:30 AM',
+    location: 'HealthPlus Clinic, Bengaluru',
+  },
+  {
+    name: 'Dr. Mehul Joshi',
+    role: 'Orthopedist',
+    gender: 'male',
+    date: '27 May 2025, Tue',
+    time: '09:15 AM',
+    location: 'Apollo Speciality, Bengaluru',
+  },
+  {
+    name: 'Dr. Kavya Rao',
+    role: 'Pediatrician',
+    gender: 'female',
+    date: '29 May 2025, Thu',
+    time: '04:00 PM',
+    location: 'Motherhood Hospital, Bengaluru',
+  },
+];
+
+const labTabs = ['Medication', 'Laboratory', 'Radiology'] as const;
+
+const labResults = {
+  Medication: [
+    {
+      title: 'Ketoprofen 25 mg/g Gel',
+      source: 'Al Wahda Medical Centre',
+      date: '18/02/2023 09:01 PM',
+      badge: 'Rx',
+    },
+    {
+      title: 'Meloxicam 15 mg Tablets',
+      source: 'Al Wahda Medical Centre',
+      date: '18/02/2023 09:01 PM',
+      badge: 'Rx',
+    },
+    {
+      title: 'Co-amoxiclav 1 g Tablets',
+      source: 'Al Wahda Medical Centre',
+      date: '02/02/2023 02:24 PM',
+      badge: 'Rx',
+    },
+  ],
+  Laboratory: [
+    {
+      title: 'Assay of Ferritin',
+      source: 'Burjeel Holdings',
+      date: '16/06/2023 06:52 PM',
+      badge: 'Lab',
+    },
+    {
+      title: 'Hepatic Function Panel',
+      source: 'Burjeel Holdings',
+      date: '16/06/2023 06:21 PM',
+      badge: 'Lab',
+    },
+    {
+      title: 'C-Reactive Protein',
+      source: 'Burjeel Holdings',
+      date: '16/06/2023 06:21 PM',
+      badge: 'Lab',
+    },
+  ],
+  Radiology: [
+    {
+      title: 'Chest X-Ray',
+      source: 'Mubadala Capital',
+      date: '25/01/2026 11:07 AM',
+      badge: 'XR',
+    },
+    {
+      title: 'X-Ray Exam of Trunk Spine',
+      source: 'Burjeel Holdings',
+      date: '31/03/2021 06:01 PM',
+      badge: 'XR',
+    },
+    {
+      title: 'US Exam, Pelvic, Complete',
+      source: 'Burjeel Holdings',
+      date: '08/09/2020 10:28 AM',
+      badge: 'XR',
+    },
+  ],
+} as const;
+
+const documentVaultItems = [
+  {
+    title: 'Annual Health Summary',
+    subtitle: 'Complete record bundle with physician notes and scans.',
+    uploaded: 'Uploaded 24 Jul 2026, 09:10 AM',
+    badge: 'DOC',
+  },
+  {
+    title: 'Radiology Archive',
+    subtitle: 'Chest X-Ray and imaging reports stored securely.',
+    uploaded: 'Uploaded 22 Jul 2026, 04:45 PM',
+    badge: 'DOC',
+  },
+  {
+    title: 'Medication History',
+    subtitle: 'Prescription receipts and current medicine list.',
+    uploaded: 'Uploaded 20 Jul 2026, 01:25 PM',
+    badge: 'DOC',
+  },
+  {
+    title: 'Insurance Policy Pack',
+    subtitle: 'Coverage documents and claim reference files.',
+    uploaded: 'Uploaded 18 Jul 2026, 11:50 AM',
+    badge: 'DOC',
+  },
+  {
+    title: 'Family Lab Bundle',
+    subtitle: 'Consolidated test reports for shared review.',
+    uploaded: 'Uploaded 16 Jul 2026, 03:35 PM',
+    badge: 'DOC',
+  },
+] as const;
+
 export function HomeScreen() {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const {openMenu} = useAccountMenu();
+  const [profilesExpanded, setProfilesExpanded] = useState(true);
+  const [appointmentsExpanded, setAppointmentsExpanded] = useState(false);
+  const [labExpanded, setLabExpanded] = useState(false);
+  const [vaultExpanded, setVaultExpanded] = useState(false);
+  const [selectedLabTab, setSelectedLabTab] = useState<(typeof labTabs)[number]>('Medication');
 
   return (
     <SafeAreaView edges={['top', 'left', 'right']} style={styles.root}>
@@ -97,7 +228,12 @@ export function HomeScreen() {
         <View style={styles.familyCard}>
           <View style={styles.cardHeader}>
             <View style={styles.familyTitleRow}>
-              <View style={styles.heartBubble}><Text style={styles.heart}>♥</Text></View>
+              <View style={styles.heartBubble}>
+                <Image
+                  source={require('../../assets/family-badge-icon.png')}
+                  style={styles.cardBadgeImage}
+                />
+              </View>
               <View style={styles.titleTextWrap}>
                 <Text style={styles.cardTitle}>Family Health Space</Text>
                 <Text style={styles.membersCount}>{familyMembers.length} Members</Text>
@@ -109,23 +245,64 @@ export function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={styles.membersRow}>
-            {familyMembers.map(member => (
-              <View key={member.name} style={styles.memberItem}>
-                <View style={[styles.memberAvatar, {backgroundColor: member.tone}]}>
-                  <Text style={styles.memberInitial}>{member.initials}</Text>
-                  {member.name !== 'Priya' ? <Text style={styles.verifiedTick}>✓</Text> : null}
+          <View style={styles.profileGroupCard}>
+            <TouchableOpacity
+              accessibilityRole="button"
+              activeOpacity={0.85}
+              onPress={() => setProfilesExpanded(value => !value)}
+              style={styles.profileGroupHeader}>
+              <View style={styles.profileGroupHeaderLeft}>
+                <View style={styles.profileHeaderTitleRow}>
+                  <View style={styles.profileSelfBadge}>
+                    <Image
+                      source={require('../../assets/profiles-icon-only.png')}
+                      style={styles.profileSelfBadgeImage}
+                    />
+                  </View>
+                  <View style={styles.profileHeaderTitleCopy}>
+                    <Text style={styles.profileSectionLabel}>Profiles</Text>
+                    <Text style={styles.profileGroupHint}>Priya and family together</Text>
+                  </View>
                 </View>
-                <Text style={styles.memberName}>{member.name}</Text>
-                <Text style={[styles.memberRelation, member.name === 'Priya' && styles.youPill]}>
-                  {member.relation}
-                </Text>
               </View>
-            ))}
-            <TouchableOpacity style={styles.addMember}>
-              <Text style={styles.addPlus}>＋</Text>
-              <Text style={styles.addMemberText}>Add{'\n'}Member</Text>
+              <View style={styles.profileGroupHeaderRight}>
+                <Text style={styles.membersCount}>{familyMembers.length + 1} Profiles</Text>
+                <View style={styles.profileChevronPill}>
+                  <Text style={styles.profileChevron}>{profilesExpanded ? '−' : '+'}</Text>
+                </View>
+              </View>
             </TouchableOpacity>
+
+            <View style={styles.profileGroupBody}>
+              {profilesExpanded ? (
+                <View style={styles.membersRow}>
+                  <View style={[styles.memberItem, styles.memberSelectedFrame]}>
+                    <View style={[styles.memberAvatar, {backgroundColor: selfProfile.tone}]}>
+                      <Text style={styles.memberInitial}>{selfProfile.initials}</Text>
+                      <Text style={styles.verifiedTick}>✓</Text>
+                    </View>
+                    <Text style={styles.memberName}>{selfProfile.name}</Text>
+                    <Text style={[styles.memberRelation, styles.memberYouLabel]}>
+                      {selfProfile.relation}
+                    </Text>
+                  </View>
+                  {familyMembers.map(member => (
+                    <View key={member.name} style={styles.memberItem}>
+                      <View style={[styles.memberAvatar, {backgroundColor: member.tone}]}>
+                        <Text style={styles.memberInitial}>{member.initials}</Text>
+                        <Text style={styles.verifiedTick}>✓</Text>
+                      </View>
+                      <Text style={styles.memberName}>{member.name}</Text>
+                      <Text style={styles.memberRelation}>{member.relation}</Text>
+                    </View>
+                  ))}
+                  <TouchableOpacity style={styles.addMember}>
+                    <Text style={styles.addPlus}>＋</Text>
+                    <Text style={styles.addMemberText}>Add{'\n'}Member</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </View>
           </View>
 
           <View style={styles.healthStrip}>
@@ -147,18 +324,192 @@ export function HomeScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.appointmentCard}>
-          <View style={styles.appointmentIcon}><Text style={styles.appointmentIconText}>☑</Text></View>
-          <View style={styles.appointmentBody}>
-            <Text style={styles.kickerPink}>Upcoming Appointment</Text>
-            <Text style={styles.doctorName}>Dr. Ananya Sharma</Text>
-            <Text style={styles.doctorRole}>Cardiologist</Text>
-            <Text style={styles.appointmentMeta}>▣  24 May 2025, Sat  •  11:30 AM</Text>
-            <Text style={styles.appointmentMeta}>⌖  HealthPlus Clinic, Bengaluru</Text>
+        <View style={styles.appointmentCard}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            activeOpacity={0.85}
+            onPress={() => setAppointmentsExpanded(value => !value)}
+            style={styles.appointmentHeader}>
+            <View style={styles.appointmentHeaderIcon}>
+              <Image
+                source={require('../../assets/appointment-badge-icon.png')}
+                style={styles.cardBadgeImage}
+              />
+            </View>
+            <View style={styles.appointmentHeaderLeft}>
+              <Text style={styles.appointmentTitle}>Upcoming Appointments</Text>
+              <Text style={styles.appointmentSubtitle}>Top 3 upcoming visits</Text>
+            </View>
+            <View style={styles.appointmentHeaderRight}>
+              <TouchableOpacity style={styles.viewAllButton}>
+                <Text style={styles.viewAllText}>View all</Text>
+                <Text style={styles.viewAllArrow}>›</Text>
+              </TouchableOpacity>
+              <View style={styles.profileChevronPill}>
+                <Text style={styles.profileChevron}>{appointmentsExpanded ? '−' : '+'}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          <View style={styles.appointmentListCard}>
+            {(appointmentsExpanded ? appointments.slice(0, 3) : appointments.slice(0, 1)).map(
+              (appointment, index, visibleAppointments) => (
+                <View
+                  key={`${appointment.name}-${appointment.date}`}
+                  style={[
+                    styles.appointmentItem,
+                    index !== visibleAppointments.length - 1 && styles.appointmentItemDivider,
+                  ]}>
+                  <View style={styles.appointmentRowIcon}>
+                    <Image
+                      source={
+                        appointment.gender === 'female'
+                          ? require('../../assets/doctor-female-icon.png')
+                          : require('../../assets/doctor-male-icon.png')
+                      }
+                      style={styles.appointmentRowIconImage}
+                    />
+                  </View>
+                  <View style={styles.appointmentBody}>
+                    <Text style={styles.doctorName}>{appointment.name}</Text>
+                    <View style={styles.appointmentDetailsRow}>
+                      <View style={styles.appointmentDetailsLeft}>
+                        <Text style={styles.appointmentRole}>{appointment.role}</Text>
+                        <Text style={styles.appointmentLocation}>⌖  {appointment.location}</Text>
+                      </View>
+                      <View style={styles.appointmentDivider} />
+                      <View style={styles.appointmentDetailsRight}>
+                        <Text style={styles.appointmentDate}>{appointment.date}</Text>
+                        <Text style={styles.appointmentTime}>{appointment.time}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              ),
+            )}
           </View>
-          <View style={styles.doctorAvatar}><Text style={styles.doctorAvatarText}>Dr</Text></View>
-          <Text style={styles.chevron}>›</Text>
-        </TouchableOpacity>
+        </View>
+
+        <View style={styles.labCard}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            activeOpacity={0.85}
+            onPress={() => setLabExpanded(value => !value)}
+            style={styles.labCardHeader}>
+            <View style={styles.labCardHeaderIcon}>
+              <Image
+                source={require('../../assets/lab-badge-icon.png')}
+                style={styles.cardBadgeImage}
+              />
+            </View>
+            <View style={styles.labCardHeaderLeft}>
+              <Text style={styles.labCardTitle}>Lab Reports & Results</Text>
+              <Text style={styles.labCardSubtitle}>Top 3 results in each section</Text>
+            </View>
+            <View style={styles.labCardHeaderRight}>
+              <TouchableOpacity style={styles.viewAllButton}>
+                <Text style={styles.viewAllText}>View all</Text>
+                <Text style={styles.viewAllArrow}>›</Text>
+              </TouchableOpacity>
+              <View style={styles.profileChevronPill}>
+                <Text style={styles.profileChevron}>{labExpanded ? '−' : '+'}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {labExpanded ? (
+            <>
+              <View style={styles.labTabsRow}>
+                {labTabs.map(tab => {
+                  const active = tab === selectedLabTab;
+                  return (
+                    <TouchableOpacity
+                      key={tab}
+                      accessibilityRole="button"
+                      onPress={() => setSelectedLabTab(tab)}
+                      style={[styles.labTab, active && styles.labTabActive]}>
+                      <Text style={[styles.labTabText, active && styles.labTabTextActive]}>
+                        {tab}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              <View style={styles.labListCard}>
+                {labResults[selectedLabTab].slice(0, 3).map((item, index, visibleItems) => (
+                  <View
+                    key={`${selectedLabTab}-${item.title}-${item.date}`}
+                    style={[
+                      styles.labItem,
+                      index !== visibleItems.length - 1 && styles.labItemDivider,
+                    ]}>
+                    <View style={styles.labIconWrap}>
+                      <Text style={styles.labIconText}>{item.badge}</Text>
+                    </View>
+                    <View style={styles.labItemBody}>
+                      <Text style={styles.labItemTitle}>{item.title}</Text>
+                      <Text style={styles.labItemSource}>{item.source}</Text>
+                      <Text style={styles.labItemDate}>{item.date}</Text>
+                    </View>
+                    <Text style={styles.labItemChevron}>›</Text>
+                  </View>
+                ))}
+              </View>
+            </>
+          ) : null}
+        </View>
+
+        <View style={styles.vaultCard}>
+          <TouchableOpacity
+            accessibilityRole="button"
+            activeOpacity={0.85}
+            onPress={() => setVaultExpanded(value => !value)}
+            style={styles.vaultCardHeader}>
+            <View style={styles.vaultCardHeaderIcon}>
+              <Image
+                source={require('../../assets/document-vault-icon.png')}
+                style={styles.cardBadgeImage}
+              />
+            </View>
+            <View style={styles.vaultCardHeaderLeft}>
+              <Text style={styles.vaultCardTitle}>Document Vault</Text>
+              <Text style={styles.vaultCardSubtitle}>Securely stored uploads and records</Text>
+            </View>
+            <View style={styles.vaultCardHeaderRight}>
+              <TouchableOpacity style={styles.viewAllButton}>
+                <Text style={styles.viewAllText}>View all</Text>
+                <Text style={styles.viewAllArrow}>›</Text>
+              </TouchableOpacity>
+              <View style={styles.profileChevronPill}>
+                <Text style={styles.profileChevron}>{vaultExpanded ? '−' : '+'}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {vaultExpanded ? (
+            <View style={styles.vaultListCard}>
+              {documentVaultItems.slice(0, 5).map((item, index, visibleItems) => (
+                <View
+                  key={`${item.title}-${item.uploaded}`}
+                  style={[
+                    styles.vaultItem,
+                    index !== visibleItems.length - 1 && styles.vaultItemDivider,
+                  ]}>
+                  <View style={styles.vaultIconWrap}>
+                    <Text style={styles.vaultIconText}>{item.badge}</Text>
+                  </View>
+                  <View style={styles.vaultItemBody}>
+                    <Text style={styles.vaultItemTitle}>{item.title}</Text>
+                    <Text style={styles.vaultItemSubtitle}>{item.subtitle}</Text>
+                    <Text style={styles.vaultItemDate}>{item.uploaded}</Text>
+                  </View>
+                  <Text style={styles.vaultItemChevron}>›</Text>
+                </View>
+              ))}
+            </View>
+          ) : null}
+        </View>
 
         <View style={styles.quickSection}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
@@ -265,7 +616,7 @@ const styles = StyleSheet.create({
   brandTitle: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: '900',
+    fontWeight: '400',
     letterSpacing: -0.3,
     flexShrink: 1,
   },
@@ -330,12 +681,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '900',
   },
+  // Good Morning UI
   greeting: {
     marginTop: 18,
     color: '#fff',
-    fontSize: 26,
+    fontSize: 24,
     lineHeight: 30,
-    fontWeight: '900',
+    fontWeight: '300',
     letterSpacing: -0.5,
   },
   heroSub: {
@@ -345,9 +697,9 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   familyCard: {
-    marginHorizontal: 18,
+    marginHorizontal: 9,
     marginTop: -48,
-    padding: 14,
+    padding: 8,
     borderRadius: 22,
     backgroundColor: colors.surface,
     shadowColor: colors.shadow,
@@ -374,10 +726,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.accentSoft,
     marginRight: 12,
+    overflow: 'hidden',
   },
-  heart: {
-    color: colors.accent,
-    fontSize: 24,
+  cardBadgeImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   titleTextWrap: {
     flexShrink: 1,
@@ -385,14 +739,14 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: colors.text,
-    fontSize: 17,
-    fontWeight: '900',
+    fontSize: 14,
+    fontWeight: '700',
     flexShrink: 1,
   },
   membersCount: {
     color: colors.primary,
-    fontSize: 11,
-    fontWeight: '800',
+    fontSize: 12,
+    fontWeight: '500',
     marginTop: 3,
   },
   viewAllButton: {
@@ -414,8 +768,79 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 18,
   },
+  profileGroupBody: {
+    marginTop: 10,
+  },
+  profileHeaderTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileSelfBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 0,
+    marginRight: 8,
+    overflow: 'hidden',
+  },
+  profileSelfBadgeImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  profileHeaderTitleCopy: {
+    flexShrink: 1,
+  },
+  profileChevron: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '900',
+    lineHeight: 12,
+  },
+  profileChevronPill: {
+    marginLeft: 10,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primaryDark,
+  },
+  profilesPanel: {
+    marginTop: 12,
+  },
+  profileGroupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  profileGroupHeaderLeft: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  profileGroupHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  profileGroupHint: {
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+    marginTop: 1,
+  },
+  profileSectionLabel: {
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  profileGroupCard: {
+    marginTop: 16,
+    padding: 10,
+    borderRadius: 18,
+    backgroundColor: colors.primarySoft,
+  },
   membersRow: {
-    marginTop: 18,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
@@ -423,6 +848,8 @@ const styles = StyleSheet.create({
   memberItem: {
     alignItems: 'center',
     width: 56,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
   },
   memberAvatar: {
     width: 48,
@@ -462,6 +889,18 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 9,
   },
+  memberYouLabel: {
+    color: colors.accent,
+    fontWeight: '900',
+  },
+  memberSelectedFrame: {
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    borderRadius: 16,
+    backgroundColor: colors.accentSoft,
+    borderWidth: 1,
+    borderColor: colors.accent,
+  },
   youPill: {
     paddingHorizontal: 6,
     paddingVertical: 1,
@@ -496,10 +935,11 @@ const styles = StyleSheet.create({
     lineHeight: 14,
   },
   healthStrip: {
-    marginTop: 18,
-    minHeight: 72,
+    marginTop: 9,
+    minHeight: 50,
     borderRadius: 18,
-    padding: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     backgroundColor: colors.primarySoft,
     flexDirection: 'row',
     alignItems: 'center',
@@ -510,9 +950,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   metricIcon: {
-    width: 38,
-    height: 38,
-    borderRadius: 14,
+    width: 32,
+    height: 32,
+    borderRadius: 12,
     marginRight: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -532,7 +972,7 @@ const styles = StyleSheet.create({
   goodStatus: {
     marginTop: 2,
     color: colors.primary,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '900',
   },
   metricDivider: {
@@ -543,7 +983,7 @@ const styles = StyleSheet.create({
   },
   scoreIcon: {
     color: colors.primary,
-    fontSize: 24,
+    fontSize: 20,
     marginRight: 8,
     fontWeight: '900',
   },
@@ -558,73 +998,356 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   appointmentCard: {
-    marginHorizontal: 18,
-    marginTop: 18,
-    minHeight: 112,
+    marginHorizontal: 9,
+    marginTop: 9,
     borderRadius: 20,
-    padding: 14,
+    padding: 10,
+    backgroundColor: colors.surface,
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.14,
+    shadowRadius: 28,
+    shadowOffset: {width: 0, height: 16},
+    elevation: 5,
+  },
+  appointmentHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EAF4FF',
-    borderWidth: 1,
-    borderColor: '#DCEBFA',
+    justifyContent: 'space-between',
   },
-  appointmentIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    marginRight: 10,
+  appointmentHeaderIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 12,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.accentSoft,
+    overflow: 'hidden',
   },
-  appointmentIconText: {
-    color: colors.accent,
-    fontSize: 22,
-  },
-  appointmentBody: {
+  appointmentHeaderLeft: {
     flex: 1,
+    paddingRight: 12,
   },
-  kickerPink: {
-    color: colors.accent,
-    fontSize: 11,
-    fontWeight: '900',
-    marginBottom: 2,
+  appointmentHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  doctorName: {
+  appointmentTitle: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '900',
   },
-  doctorRole: {
-    color: colors.text,
-    fontSize: 12,
-    fontWeight: '700',
+  appointmentSubtitle: {
     marginTop: 2,
-  },
-  appointmentMeta: {
-    marginTop: 5,
     color: colors.muted,
     fontSize: 10,
     fontWeight: '700',
   },
-  doctorAvatar: {
+  appointmentListCard: {
+    marginTop: 10,
+    padding: 8,
+    borderRadius: 16,
+    backgroundColor: colors.primarySoft,
+  },
+  appointmentItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  appointmentItemDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#DCEBFA',
+  },
+  appointmentBody: {
+    flex: 1,
+  },
+  appointmentDetailsRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  appointmentDetailsLeft: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  appointmentDivider: {
+    width: 1,
+    alignSelf: 'stretch',
+    marginHorizontal: 10,
+    backgroundColor: '#DCEBFA',
+  },
+  appointmentDetailsRight: {
+    alignItems: 'flex-end',
+  },
+  appointmentRowIcon: {
     width: 42,
     height: 42,
-    borderRadius: 21,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
-    marginHorizontal: 6,
+    marginRight: 10,
+    overflow: 'hidden',
   },
-  doctorAvatarText: {
-    color: '#fff',
+  appointmentRowIconImage: {
+    width: 42,
+    height: 42,
+    resizeMode: 'cover',
+  },
+  doctorName: {
+    color: colors.text,
+    fontSize: 14,
     fontWeight: '900',
   },
-  chevron: {
+  appointmentRole: {
+    color: colors.muted,
+    fontSize: 11,
+    fontWeight: '700',
+    marginTop: 2,
+  },
+  appointmentLocation: {
+    marginTop: 3,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  appointmentDate: {
+    color: colors.text,
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  appointmentTime: {
+    marginTop: 3,
     color: colors.primary,
-    fontSize: 34,
-    lineHeight: 34,
+    fontSize: 11,
+    fontWeight: '900',
+  },
+  labCard: {
+    marginHorizontal: 9,
+    marginTop: 9,
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: colors.surface,
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.14,
+    shadowRadius: 28,
+    shadowOffset: {width: 0, height: 16},
+    elevation: 5,
+  },
+  labCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  labCardHeaderIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primarySoft,
+    overflow: 'hidden',
+  },
+  labCardHeaderLeft: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  labCardHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  labCardTitle: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  labCardSubtitle: {
+    marginTop: 2,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  labTabsRow: {
+    marginTop: 10,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  labTab: {
+    flex: 1,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EEF4FB',
+  },
+  labTabActive: {
+    backgroundColor: colors.primary,
+  },
+  labTabText: {
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '900',
+  },
+  labTabTextActive: {
+    color: '#fff',
+  },
+  labListCard: {
+    marginTop: 10,
+    padding: 8,
+    borderRadius: 16,
+    backgroundColor: colors.primarySoft,
+  },
+  labItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  labItemDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#DCEBFA',
+  },
+  labIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  labIconText: {
+    color: colors.primary,
+    fontSize: 10,
+    fontWeight: '900',
+  },
+  labItemBody: {
+    flex: 1,
+  },
+  labItemTitle: {
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  labItemSource: {
+    marginTop: 3,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  labItemDate: {
+    marginTop: 3,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  labItemChevron: {
+    color: colors.primary,
+    fontSize: 26,
+    lineHeight: 26,
+    marginLeft: 6,
+  },
+  vaultCard: {
+    marginHorizontal: 9,
+    marginTop: 9,
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: colors.surface,
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.14,
+    shadowRadius: 28,
+    shadowOffset: {width: 0, height: 16},
+    elevation: 5,
+  },
+  vaultCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  vaultCardHeaderIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginRight: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primarySoft,
+    overflow: 'hidden',
+  },
+  vaultCardHeaderLeft: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  vaultCardHeaderRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  vaultCardTitle: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '900',
+  },
+  vaultCardSubtitle: {
+    marginTop: 2,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  vaultListCard: {
+    marginTop: 10,
+    padding: 8,
+    borderRadius: 16,
+    backgroundColor: colors.primarySoft,
+  },
+  vaultItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  vaultItemDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#DCEBFA',
+  },
+  vaultIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 14,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  vaultIconText: {
+    color: colors.primary,
+    fontSize: 10,
+    fontWeight: '900',
+  },
+  vaultItemBody: {
+    flex: 1,
+  },
+  vaultItemTitle: {
+    color: colors.text,
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  vaultItemSubtitle: {
+    marginTop: 3,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  vaultItemDate: {
+    marginTop: 3,
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  vaultItemChevron: {
+    color: colors.primary,
+    fontSize: 26,
+    lineHeight: 26,
+    marginLeft: 6,
   },
   quickSection: {
     marginHorizontal: 0,
@@ -824,7 +1547,7 @@ const styles = StyleSheet.create({
     left: 4,
   },
   supportGrid: {
-    marginHorizontal: 18,
+    marginHorizontal: 9,
     marginTop: 18,
     flexDirection: 'row',
     gap: 12,
@@ -915,7 +1638,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   privacyCard: {
-    marginHorizontal: 18,
+    marginHorizontal: 9,
     marginTop: 18,
     minHeight: 64,
     borderRadius: 18,

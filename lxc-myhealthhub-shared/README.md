@@ -85,16 +85,18 @@ lxc-myhealthhub-shared/      # this folder — all JS/TS source and assets
 
 ## MyHealthHub Home Screen Design Implementation
 
-The home screen has been redesigned to match the premium MyHealthHub Space concept:
+The home screen is currently built around a premium card stack:
 
 - Blue MyHealthHub header with logo, greeting, notification, and profile avatar
-- Family Health Space card with family members, add member action, status, and health score
-- Upcoming appointment card
-- Six quick actions: Health Records, Reports & Visits, Find Nearby Care, Appointments, Health App Sync, Family Profiles
+- Family Health Space card with a collapsible `Profiles` subsection, a selected `Priya` tile, and family member tiles
+- Upcoming Appointments card with a collapsible top-3 list, split row details, and avatar icons
+- Lab Reports & Results card with tabs for `Medication`, `Laboratory`, and `Radiology`
+- Document Vault card with secure document previews
+- Quick actions grid for Health Records, Reports & Visits, Find Nearby Care, Appointments, Health App Sync, and Family Profiles
 - One-call support card using India Head Office number: `(+91) 767 647 7775`
 - DSA Assisted Setup card
 - Privacy/security card
-- Bottom navigation styled as Home, Health, center Add, Vault, More
+- Bottom navigation uses pink icon artwork by default and blue icon artwork for the active tab
 
 Primary files:
 
@@ -104,6 +106,24 @@ src/navigation/RootNavigator.tsx  # Bottom tab navigation styling
 src/theme/colors.ts              # MyHealthHub blue/pink color theme
 src/App.tsx                      # Status bar theme
 assets/myhealthhub-icon.png      # Current app logo/icon asset
+```
+
+Current asset set includes:
+
+```text
+assets/family-badge-icon.png
+assets/appointment-badge-icon.png
+assets/lab-badge-icon.png
+assets/document-vault-icon.png
+assets/nav-home-icon-pink.png
+assets/nav-home-icon-blue.png
+assets/nav-health-icon-pink.png
+assets/nav-health-icon-blue.png
+assets/nav-vault-icon-pink.png
+assets/nav-vault-icon-blue.png
+assets/nav-more-icon-pink.png
+assets/nav-more-icon-blue.png
+assets/profiles-icon-only.png
 ```
 
 Color theme:

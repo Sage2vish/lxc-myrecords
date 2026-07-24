@@ -40,7 +40,7 @@ projects, not about forking the JS source per platform.
 
 ## Current status — read this first
 
-Last updated: 2026-07-23. This section exists so a new chat can pick up work
+Last updated: 2026-07-24. This section exists so a new chat can pick up work
 without re-discovering what's already been verified.
 
 **MyHealthHub — done / verified:**
@@ -71,7 +71,10 @@ without re-discovering what's already been verified.
   now, over calling `npm run ios`/`npm run android` by hand.
 - `HomeScreen.tsx` / `RootNavigator.tsx` had a UI-density pass (smaller tab
   bar, custom vector-free quick-action icons via `View`-based shapes instead
-  of emoji, horizontally-scrolling quick actions).
+  of emoji, horizontally-scrolling quick actions). The home screen now also
+  includes collapsible `Family Health Space`, `Upcoming Appointments`,
+  `Lab Reports & Results`, and `Document Vault` cards with rounded badge
+  artwork and tabbed lab content.
 - Android build **verified end-to-end via `Executable/macos_xdaapp_build.sh`**:
   the script now detects when nothing is connected, lists installed AVDs, boots
   one automatically (lowest API level by default), waits for boot, builds, and
@@ -175,10 +178,16 @@ script even for iOS work. The `Executable/*.sh` scripts source both automaticall
   `AccountMenuProvider` (for the slide-in `AccountMenu` panel).
 - `navigation/RootNavigator.tsx` — bottom tab navigator; the single place that wires
   together all screens except `LoginScreen` (gated separately in `App.tsx`).
+  The visible bottom tabs currently use pink image icons by default and blue
+  image icons for the active tab, while the center `Appointments` action stays
+  as the large `+` button.
 - `screens/` — one file per screen (Home, Records, Appointments, Prescriptions,
   Vitals, Profile, ScheduleVisit, Login, Notifications). Screens compose shared
   components rather than defining their own primitives. `LoginScreen.tsx` is a
   mobile+OTP mock flow (no real backend) plus biometric login.
+  `HomeScreen.tsx` currently contains the main dashboard: `Family Health Space`,
+  `Upcoming Appointments`, `Lab Reports & Results`, `Document Vault`, support,
+  DSA setup, and privacy cards.
 - `components/` — shared UI primitives (`Card`, `ListRow`, `PrimaryButton`, `Screen`,
   `SectionHeader`, `AccountMenu`) used across most screens.
 - `context/AccountMenuContext.tsx` — exposes `openMenu()` via context so any
@@ -194,6 +203,9 @@ script even for iOS work. The `Executable/*.sh` scripts source both automaticall
   rather than hardcoding colors/spacing/fonts. Only `LoginScreen.tsx` has been
   migrated to `theme/typography.ts` so far — other screens still hardcode
   `fontSize`/`fontWeight`.
+- `assets/` — now includes the current badge/icon artwork used by the dashboard
+  and the bottom navigation (family, appointment, lab, document vault, home,
+  health, profiles, more).
 
 ### DSA Tablet App (`lxc-myrecords-dsa-xda/src/`)
 

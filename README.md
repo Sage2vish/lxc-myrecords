@@ -60,6 +60,10 @@ The MyHealthHub app is a modern, patient-centric mobile application that empower
 - 👨‍👩‍👧 Family Health Space — family member cards, add-member action, family health score
 - ⚡ Quick actions: Health Records, Reports & Visits, Find Nearby Care, Appointments,
   Health App Sync, Family Profiles
+- 📅 Upcoming Appointments card with collapsible top-3 preview, split detail rows,
+  and doctor-gender icons
+- 🧪 Lab Reports & Results card with tabbed Medication / Laboratory / Radiology views
+- 📂 Document Vault card with secure uploads and top-5 preview when expanded
 - 📞 One-call support card (India head office line)
 - 🧑‍⚕️ DSA Assisted Setup card — bridges to in-person agent support
 - 🔒 Privacy/security card
@@ -145,6 +149,7 @@ The repository is a "monorepo" of two completely separate applications. A change
   - `lxc-myhealthhub-xda`: The native Android project (Gradle).
   - `lxc-myhealthhub-ios`: The native iOS project (Xcode/CocoaPods).
 - **Technology**: Built with modern tools including **TypeScript**, **React Navigation 7**, and **TanStack Query** for asynchronous state management. It uses a mock service for now, but is architected for a seamless transition to a live backend.
+- **Current UI pattern**: The MyHealthHub home dashboard now uses rounded badge icons, collapsible cards, tabbed lab results, and a document vault section. The bottom navigation uses pink icons by default and blue icons for the active tab.
 
 ### DSA Tablet App Architecture
 - **Structure**: This app is self-contained within the `lxc-myrecords-dsa-xda` folder.
