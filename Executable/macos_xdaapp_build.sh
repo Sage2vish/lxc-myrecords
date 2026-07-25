@@ -19,6 +19,7 @@
 # Usage:
 #   ./macos_xdaapp_build.sh          # debug build, installed on whatever adb sees
 #   ./macos_xdaapp_build.sh release  # release build (installs, does not auto-launch)
+#   ./macos_xdaapp_build.sh release-only  # release build only, no device required
 #
 # If anything required is missing (toolchain, repo folders, a device/emulator
 # and no AVD to fall back to...) this script stops immediately and prints
@@ -48,6 +49,14 @@ XDA_DIR="$REPO_ROOT/lxc-myhealthhub-xda"
 APP_ID="com.lxcmyhealthhub"
 
 BUILD_TYPE="${1:-debug}"   # debug | release
+
+if [ "$BUILD_TYPE" = "release-only" ] || [ "$BUILD_TYPE" = "release-build" ]; then
+  exec "$SCRIPT_DIR/macos_xdaapp_release_build.sh"
+fi
+
+if [ "$BUILD_TYPE" = "release-clean" ]; then
+  exec "$SCRIPT_DIR/macos_xdaapp_release_build.sh" clean
+fi
 
 # fail TITLE "plain-language explanation" "exact developer fix"
 fail() {
@@ -131,6 +140,12 @@ if [ ${#SERIALS[@]} -eq 0 ]; then
     api="$(echo "$avd" | grep -oE '[0-9]+$')"
     if [ -n "$api" ] && [ "$api" -lt "$LOWEST_API" ]; then
       LOWEST_API="$api"
+      DEFAULT_AVD="$avd"
+    fi
+  done
+
+  for avd in "${AVDS[@]}"; do
+    if [ "$avd" = "OPPO_Reno_10_5G_API_35" ]; then
       DEFAULT_AVD="$avd"
     fi
   done

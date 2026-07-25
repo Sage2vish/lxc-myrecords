@@ -955,7 +955,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radii.card,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    backgroundColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.58)' : 'rgba(255,255,255,0.48)',
+    backgroundColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.58)' : 'rgba(255,255,255,0.68)',
     borderWidth: 1,
     borderColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.66)' : 'rgba(255,255,255,0.24)',
     borderBottomWidth: 0,

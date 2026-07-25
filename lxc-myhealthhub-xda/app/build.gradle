@@ -34,15 +34,14 @@ android {
         }
     }
 
-    // A universal APK bundles native libraries for every CPU architecture
-    // (arm64-v8a, armeabi-v7a, x86, x86_64) even though a single device only
-    // ever needs one. Splitting per-ABI cuts installable APK size roughly 4x.
+    // Keep ABI splits for smaller direct installs, and also publish a universal
+    // APK so test users do not accidentally receive an incompatible CPU split.
     splits {
         abi {
             enable true
             reset()
             include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            universalApk false
+            universalApk true
         }
     }
 

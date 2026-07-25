@@ -23,6 +23,7 @@
 - [🗺️ Build Pipeline](#️-build-pipeline)
 - [🍎 macos_iosapp_build.sh](#-macos_iosapp_buildsh)
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
+- [🏁 macos_xdaapp_release_build.sh](#-macos_xdaapp_release_buildsh)
 - [📦 macos_healthapi_package.sh](#-macos_healthapi_packagesh)
 - [🩹 Error Message Format](#-error-message-format)
 - [⚠️ Compatibility Notes](#️-compatibility-notes)
@@ -46,6 +47,7 @@ build flow — see that app's README.
 |---|---|---|---|
 | [`macos_iosapp_build.sh`](#-macos_iosapp_buildsh) | iOS | Simulator — **iPhone 14** | Any installed simulator, or a physical device |
 | [`macos_xdaapp_build.sh`](#-macos_xdaapp_buildsh) | Android | Whatever's connected, else auto-boots the **lowest-API AVD** | Multiple connected devices — you pick |
+| [`macos_xdaapp_release_build.sh`](#-macos_xdaapp_release_buildsh) | Android release | No device required | Optional clean release build |
 
 Every failure mode — a missing tool, a missing folder, no device connected —
 stops the script immediately with a plain-language explanation *and* the exact
@@ -154,8 +156,10 @@ thin wrapper — see their sections below for exactly what "sandbox flag" and
 ## 🤖 `macos_xdaapp_build.sh`
 
 ```bash
-./macos_xdaapp_build.sh          # debug build
-./macos_xdaapp_build.sh release  # release build (installs, does not auto-launch)
+./macos_xdaapp_build.sh               # debug build
+./macos_xdaapp_build.sh release       # release build, installs, does not auto-launch
+./macos_xdaapp_build.sh release-only  # release build only, no device required
+./macos_xdaapp_build.sh release-clean # clean release build only, no device required
 ```
 
 **What it does, in order:**
@@ -167,7 +171,9 @@ thin wrapper — see their sections below for exactly what "sandbox flag" and
 3. **Pick a target** — uses an already-connected device/emulator if there is
    one (letting you choose if there's more than one). If nothing's connected,
    lists installed AVDs, auto-boots one (lowest API level by default, shown
-   as a numbered pick-list), and waits for it to finish booting.
+   as a numbered pick-list), and waits for it to finish booting. If
+   `OPPO_Reno_10_5G_API_35` exists, it is preferred as the default MyHealthHub
+   phone test emulator. Skipped for `release-only` and `release-clean`.
 4. **JS deps** — `npm install`, skipped if `node_modules` already exists.
 5. **Build** — `assembleDebug` / `assembleRelease` via Gradle. This project
    builds **per-ABI split APKs** (e.g. `MyHealthHub-debug-arm64-v8a.apk`), not
@@ -177,6 +183,38 @@ thin wrapper — see their sections below for exactly what "sandbox flag" and
    `adb shell am start -n com.lxcmyhealthhub/.MainActivity` for debug builds
    (not `monkey` — its exit code is unreliable and was tripping the script's
    error handling on a *successful* launch).
+
+For release APK generation without needing any Android device connected, the
+`release-only` and `release-clean` modes delegate to
+[`macos_xdaapp_release_build.sh`](#-macos_xdaapp_release_buildsh).
+
+---
+
+## 🏁 `macos_xdaapp_release_build.sh`
+
+```bash
+./macos_xdaapp_release_build.sh
+./macos_xdaapp_release_build.sh clean
+```
+
+**What it does, in order:**
+
+1. **Preflight** — confirms the Android toolchain loader, shared React Native
+   folder, and Android native project exist.
+2. **Load toolchain** — sources `frameworks/android/env.sh`, then checks
+   `node` and `java`.
+3. **JS deps** — runs `npm install` only if `node_modules` is missing.
+4. **Release build** — runs `./gradlew assembleRelease` in
+   `lxc-myhealthhub-xda`. Pass `clean` or `--clean` to run `./gradlew clean`
+   before building.
+5. **Artifact report** — prints the generated release files from:
+
+```text
+../lxc-myhealthhub-xda/app/build/outputs/apk/release/
+```
+
+Use this when you only need fresh release APKs and do not want the script to
+find, boot, install to, or launch on an Android device.
 
 ---
 
