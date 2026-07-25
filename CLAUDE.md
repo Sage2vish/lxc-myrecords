@@ -43,6 +43,13 @@ projects, not about forking the JS source per platform.
 Last updated: 2026-07-25. This section exists so a new chat can pick up work
 without re-discovering what's already been verified.
 
+**Branch context:**
+- Current working branch for weather work: `weather-api-integration`
+- New backend project: `lxc-health-api/`
+- Backend deployment target: Hostinger Node app
+- Mobile app should call the backend, and the backend should proxy WeatherAPI.com
+- WeatherAPI keys must stay out of the React Native app
+
 **MyHealthHub — done / verified:**
 - Login screen (`screens/LoginScreen.tsx`) built: mobile+OTP flow (mock, no real
   backend) and biometric login via `react-native-keychain`. It **is** wired as
@@ -102,6 +109,11 @@ storage wired up despite the dependency being present — the login gate in
 `App.tsx` only tracks `isAuthenticated` in local component state, it doesn't
 call a real API or persist a session. See each app's own README for the
 fuller task checklist.
+
+**Weather work status:**
+- `lxc-health-api/` has been scaffolded with `/health` and `/weather/today`.
+- `GET /weather/today` is intended to return Dubai weather for the mobile app.
+- Continue new weather work only on `weather-api-integration` unless the user asks to switch branches.
 
 **Where to start next:** likely real API integration in `api/healthService.ts`
 plus wiring `LoginScreen`'s mock OTP submit to an actual `POST /auth/login`

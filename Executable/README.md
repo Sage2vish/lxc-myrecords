@@ -35,6 +35,12 @@ no manual multi-step setup, no memorizing toolchain paths. They apply to
 MyHealthHub only; the DSA Tablet App (`lxc-myrecords-dsa-xda`) has its own
 build flow — see that app's README.
 
+## Current Context
+
+- Weather work is happening on `weather-api-integration`
+- Backend weather code now lives in [`../lxc-health-api`](../lxc-health-api/)
+- Android release builds remain split by ABI
+
 | Script | Platform | Default target | Also supports |
 |---|---|---|---|
 | [`macos_iosapp_build.sh`](#-macos_iosapp_buildsh) | iOS | Simulator — **iPhone 14** | Any installed simulator, or a physical device |
