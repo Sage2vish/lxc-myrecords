@@ -41,12 +41,16 @@ build flow — see that app's README.
 
 - Weather/API work was merged into `main` on 2026-07-25
 - Backend weather code now lives in [`../lxc-health-api`](../lxc-health-api/)
-- Android release builds remain split by ABI
+- Android release builds include a universal APK plus ABI-specific APKs
+- Android emulator testing prefers the local `OnePlus_Nord_4_OxygenOS_16_API_36`
+  AVD when no physical Android phone is connected. This is an Android 36 Google
+  APIs emulator tuned to OnePlus Nord 4-like screen/RAM/storage values; Android
+  Emulator does not run the real OnePlus OxygenOS vendor ROM.
 
 | Script | Platform | Default target | Also supports |
 |---|---|---|---|
 | [`macos_iosapp_build.sh`](#-macos_iosapp_buildsh) | iOS | Simulator — **iPhone 14** | Any installed simulator, or a physical device |
-| [`macos_xdaapp_build.sh`](#-macos_xdaapp_buildsh) | Android | Whatever's connected, else auto-boots the **lowest-API AVD** | Multiple connected devices — you pick |
+| [`macos_xdaapp_build.sh`](#-macos_xdaapp_buildsh) | Android | Whatever's connected, else auto-boots **OnePlus Nord 4 API 36** when available | Multiple connected devices — you pick |
 | [`macos_xdaapp_release_build.sh`](#-macos_xdaapp_release_buildsh) | Android release | No device required | Optional clean release build |
 
 Every failure mode — a missing tool, a missing folder, no device connected —
@@ -172,8 +176,10 @@ thin wrapper — see their sections below for exactly what "sandbox flag" and
    one (letting you choose if there's more than one). If nothing's connected,
    lists installed AVDs, auto-boots one (lowest API level by default, shown
    as a numbered pick-list), and waits for it to finish booting. If
-   `OPPO_Reno_10_5G_API_35` exists, it is preferred as the default MyHealthHub
-   phone test emulator. Skipped for `release-only` and `release-clean`.
+   `OnePlus_Nord_4_OxygenOS_16_API_36` exists, it is preferred as the default
+   MyHealthHub phone test emulator. If not, `OPPO_Reno_10_5G_API_35` is the
+   fallback preferred test emulator. Skipped for `release-only` and
+   `release-clean`.
 4. **JS deps** — `npm install`, skipped if `node_modules` already exists.
 5. **Build** — `assembleDebug` / `assembleRelease` via Gradle. This project
    builds **per-ABI split APKs** (e.g. `MyHealthHub-debug-arm64-v8a.apk`), not

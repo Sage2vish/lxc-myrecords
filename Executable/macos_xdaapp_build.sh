@@ -144,10 +144,17 @@ if [ ${#SERIALS[@]} -eq 0 ]; then
     fi
   done
 
-  for avd in "${AVDS[@]}"; do
-    if [ "$avd" = "OPPO_Reno_10_5G_API_35" ]; then
-      DEFAULT_AVD="$avd"
-    fi
+  PREFERRED_AVDS=("OnePlus_Nord_4_OxygenOS_16_API_36" "OPPO_Reno_10_5G_API_35")
+  FOUND_PREFERRED_AVD="false"
+  for preferred_avd in "${PREFERRED_AVDS[@]}"; do
+    for avd in "${AVDS[@]}"; do
+      if [ "$avd" = "$preferred_avd" ]; then
+        DEFAULT_AVD="$avd"
+        FOUND_PREFERRED_AVD="true"
+        break
+      fi
+    done
+    [ "$FOUND_PREFERRED_AVD" = "true" ] && break
   done
 
   echo "    Emulators installed on this Mac:"

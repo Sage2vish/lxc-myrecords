@@ -1,4 +1,4 @@
-<h1 align="center">🩺 MyRecords Healthcare Platform</h1>
+<h1 id="myrecords-healthcare-platform" align="center">🩺 MyRecords Healthcare Platform</h1>
 
 <p align="center">
   <a href="https://lexvoraconsulting.com" target="_blank"><strong>lexvoraconsulting.com</strong></a>
@@ -18,45 +18,140 @@
 <p align="center">
   <strong>Lexvora MyRecords Monorepo Guide</strong>
   <br/>
-  <a href="#-overview"><strong>Overview</strong></a>
-  ·
-  <a href="#-the-applications"><strong>Applications</strong></a>
-  ·
-  <a href="#-platform--device-compatibility"><strong>Compatibility</strong></a>
-  ·
-  <a href="#-architecture"><strong>Architecture</strong></a>
-  ·
-  <a href="#-setup-and-running-the-apps"><strong>Setup</strong></a>
-  ·
-  <a href="#-license"><strong>License</strong></a>
+  <sub>Premium GitHub-safe navigation for architecture, compatibility, API deployment, and app builds.</sub>
+</p>
+
+<p align="center">
+  <a href="#-overview"><img src="https://img.shields.io/badge/01-Overview-0A6BFF?style=for-the-badge" alt="Overview"></a>
+  <a href="#-application--engines"><img src="https://img.shields.io/badge/02-Apps_&_Engines-0A6BFF?style=for-the-badge" alt="Applications and Engines"></a>
+  <a href="#-platform--device-compatibility"><img src="https://img.shields.io/badge/03-Compatibility-0A6BFF?style=for-the-badge" alt="Compatibility"></a>
+  <a href="#-architecture"><img src="https://img.shields.io/badge/04-Architecture-111827?style=for-the-badge" alt="Architecture"></a>
+  <a href="#-setup-and-running-the-apps"><img src="https://img.shields.io/badge/05-Setup-111827?style=for-the-badge" alt="Setup"></a>
+  <a href="#-common-commands"><img src="https://img.shields.io/badge/06-Commands-111827?style=for-the-badge" alt="Commands"></a>
 </p>
 
 ### Executive Map
 
-| Level | No. | Section | Level 2 Coverage |
-|---:|---:|---|---|
-| 1 | 01 | [Overview](#-overview) | [Current Context](#current-context) |
-| 1 | 02 | [The Applications](#-the-applications) | [MyHealthHub Mobile App](#1--myhealthhub-mobile-app), [MyRecords DSA Tablet App](#2--myrecords-dsa-tablet-app), [Features](#features) |
-| 1 | 03 | [Platform & Device Compatibility](#-platform--device-compatibility) | [Backend Runtime](#backend-runtime), [MyHealthHub Android Compatibility](#myhealthhub-android-compatibility), [MyHealthHub iPhone Compatibility](#myhealthhub-iphone-compatibility), [DSA Tablet Compatibility](#dsa-tablet-compatibility), [Weather API Contract](#weather-api-contract) |
-| 1 | 04 | [Architecture](#-architecture) | [Mobile Layer](#mobile-layer), [API Layer](#api-layer), [External Provider Boundary](#external-provider-boundary), [Request Flow](#request-flow), [Future Extraction Path](#future-extraction-path) |
-| 1 | 05 | [Developer's Guide](#-developers-guide) | [Core Philosophy](#core-philosophy), [MyHealthHub Architecture](#myhealthhub-architecture), [DSA Tablet App Architecture](#dsa-tablet-app-architecture), [Tech Stack Comparison](#tech-stack-comparison) |
-| 1 | 06 | [Setup and Running the Apps](#-setup-and-running-the-apps) | [Step 1: Set Up The Local Toolchain](#step-1-set-up-the-local-toolchain-critical), [Step 2: Clone the Repository](#step-2-clone-the-repository), [Step 3: Install Dependencies and Run an App](#step-3-install-dependencies-and-run-an-app), [Fastest path: one-shot build scripts](#fastest-path-one-shot-build-scripts) |
-| 1 | 07 | [Common Commands](#-common-commands) | [Hostinger API Deployment Bundle](#hostinger-api-deployment-bundle) |
-| 1 | 08 | [Local macOS Development Setup](#-local-macos-development-setup) | Sandboxed `frameworks/` toolchain for Node, JDK, Android SDK, Gradle, Ruby, and CocoaPods |
-| 1 | 09 | [Repository History](#-project-history) | Major project milestones and integration history |
-| 1 | 10 | [AI Assistant Guide](#-ai-assistant-guide) | Assistant onboarding context and `CLAUDE.md` reference |
-| 1 | 11 | [License](#-license) | Lexvora Consulting ownership and proprietary license reference |
+<table>
+  <thead>
+    <tr>
+      <th width="12%">Level 1</th>
+      <th width="28%">Section</th>
+      <th width="60%">Level 2 Coverage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>00</strong></td>
+      <td><a href="#myrecords-healthcare-platform"><strong>MyRecords Healthcare Platform</strong></a></td>
+      <td>Repository identity, status badges, and Lexvora entry point.</td>
+    </tr>
+    <tr>
+      <td><strong>01</strong></td>
+      <td><a href="#-repository-navigation"><strong>Repository Navigation</strong></a></td>
+      <td><a href="#executive-map">Executive Map</a> · <a href="#premium-quick-paths">Premium Quick Paths</a></td>
+    </tr>
+    <tr>
+      <td><strong>02</strong></td>
+      <td><a href="#-overview"><strong>Overview</strong></a></td>
+      <td><a href="#current-context">Current Context</a></td>
+    </tr>
+    <tr>
+      <td><strong>03</strong></td>
+      <td><a href="#-application--engines"><strong>Application &amp; Engines</strong></a></td>
+      <td><a href="#1--myhealthhub-mobile-app">MyHealthHub Mobile App</a> · <a href="#2--myrecords-dsa-tablet-app">MyRecords DSA Tablet App</a> · <a href="#features">Features</a></td>
+    </tr>
+    <tr>
+      <td><strong>04</strong></td>
+      <td><a href="#-platform--device-compatibility"><strong>Platform &amp; Device Compatibility</strong></a></td>
+      <td><a href="#backend-runtime">Backend Runtime</a> · <a href="#myhealthhub-android-compatibility">Android Compatibility</a> · <a href="#myhealthhub-iphone-compatibility">iPhone Compatibility</a> · <a href="#dsa-tablet-compatibility">DSA Tablet Compatibility</a> · <a href="#weather-api-contract">Weather API Contract</a></td>
+    </tr>
+    <tr>
+      <td><strong>05</strong></td>
+      <td><a href="#-architecture"><strong>Architecture</strong></a></td>
+      <td><a href="#mobile-layer">Mobile Layer</a> · <a href="#api-layer">API Layer</a> · <a href="#external-provider-boundary">External Provider Boundary</a> · <a href="#request-flow">Request Flow</a> · <a href="#future-extraction-path">Future Extraction Path</a></td>
+    </tr>
+    <tr>
+      <td><strong>06</strong></td>
+      <td><a href="#-developers-guide"><strong>Developer's Guide</strong></a></td>
+      <td><a href="#core-philosophy">Core Philosophy</a> · <a href="#myhealthhub-architecture">MyHealthHub Architecture</a> · <a href="#dsa-tablet-app-architecture">DSA Tablet Architecture</a> · <a href="#tech-stack-comparison">Tech Stack Comparison</a></td>
+    </tr>
+    <tr>
+      <td><strong>07</strong></td>
+      <td><a href="#-setup-and-running-the-apps"><strong>Setup and Running the Apps</strong></a></td>
+      <td><a href="#step-1-set-up-the-local-toolchain-critical">Local Toolchain</a> · <a href="#step-2-clone-the-repository">Clone Repository</a> · <a href="#step-3-install-dependencies-and-run-an-app">Install &amp; Run</a> · <a href="#fastest-path-one-shot-build-scripts">One-Shot Build Scripts</a></td>
+    </tr>
+    <tr>
+      <td><strong>08</strong></td>
+      <td><a href="#-common-commands"><strong>Common Commands</strong></a></td>
+      <td><a href="#hostinger-api-deployment-bundle">Hostinger API Deployment Bundle</a></td>
+    </tr>
+    <tr>
+      <td><strong>09</strong></td>
+      <td><a href="#-local-macos-development-setup"><strong>Local macOS Development Setup</strong></a></td>
+      <td>Sandboxed `frameworks/` toolchain for Node, JDK, Android SDK, Gradle, Ruby, and CocoaPods.</td>
+    </tr>
+    <tr>
+      <td><strong>10</strong></td>
+      <td><a href="#-project-history"><strong>Project History</strong></a></td>
+      <td>Major project milestones and integration history.</td>
+    </tr>
+    <tr>
+      <td><strong>11</strong></td>
+      <td><a href="#-ai-assistant-guide"><strong>AI Assistant Guide</strong></a></td>
+      <td>Assistant onboarding context and `CLAUDE.md` reference.</td>
+    </tr>
+    <tr>
+      <td><strong>12</strong></td>
+      <td><a href="#-license"><strong>License</strong></a></td>
+      <td>Lexvora Consulting ownership and proprietary license reference.</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Premium Quick Paths
 
-| Need | Go Directly To | Why |
-|---|---|---|
-| Understand the reusable backend module | [API Layer](#api-layer) | Explains `LXC-Health-API` as a Lexvora service module that can later become a separate repo/package. |
-| Check Android OS and device support | [MyHealthHub Android Compatibility](#myhealthhub-android-compatibility) | Shows Android versions, API levels, device examples, and support status. |
-| Check iPhone and iOS support | [MyHealthHub iPhone Compatibility](#myhealthhub-iphone-compatibility) | Shows supported iOS bands and compatible iPhone families. |
-| Understand secure external API access | [External Provider Boundary](#external-provider-boundary) | Shows why mobile apps call Lexvora APIs instead of WeatherAPI.com directly. |
-| Trace the weather call end to end | [Request Flow](#request-flow) | Walks through phone lat/lon to Node.js API to WeatherAPI.com to home screen rendering. |
-| Prepare Hostinger deployment | [Hostinger API Deployment Bundle](#hostinger-api-deployment-bundle) | Shows the `.tar` packaging path and deploy bundle workflow. |
+<table>
+  <thead>
+    <tr>
+      <th width="34%">Need</th>
+      <th width="26%">Go Directly To</th>
+      <th width="40%">Why It Matters</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Reusable backend module</strong></td>
+      <td><a href="#api-layer">API Layer</a></td>
+      <td>Explains `LXC-Health-API` as a Lexvora service module that can later become a separate repo/package.</td>
+    </tr>
+    <tr>
+      <td><strong>Android OS/device support</strong></td>
+      <td><a href="#myhealthhub-android-compatibility">Android Compatibility</a></td>
+      <td>Shows Android versions, API levels, device examples, and support status.</td>
+    </tr>
+    <tr>
+      <td><strong>iPhone and iOS support</strong></td>
+      <td><a href="#myhealthhub-iphone-compatibility">iPhone Compatibility</a></td>
+      <td>Shows supported iOS bands and compatible iPhone families.</td>
+    </tr>
+    <tr>
+      <td><strong>Secure external API access</strong></td>
+      <td><a href="#external-provider-boundary">External Provider Boundary</a></td>
+      <td>Shows why mobile apps call Lexvora APIs instead of WeatherAPI.com directly.</td>
+    </tr>
+    <tr>
+      <td><strong>Weather call end to end</strong></td>
+      <td><a href="#request-flow">Request Flow</a></td>
+      <td>Walks through phone lat/lon to Node.js API to WeatherAPI.com to home screen rendering.</td>
+    </tr>
+    <tr>
+      <td><strong>Hostinger deployment</strong></td>
+      <td><a href="#hostinger-api-deployment-bundle">Deployment Bundle</a></td>
+      <td>Shows the `.tar` packaging path and deploy bundle workflow.</td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 
@@ -87,12 +182,13 @@ It contains two independently built React Native applications:
 - Weather uses phone latitude/longitude when available and falls back to Dubai
 - Current production API deployment target shown in Hostinger: `https://apis.lexvoraconsulting.com`
 
-## 📱 The Applications
+## 📱 Application & Engines
 
-| App | Who it's for | Platforms | Folder(s) |
+| App / Engine | Who it's for | Platforms | Folder(s) |
 |---|---|---|---|
 | **MyHealthHub** | Patients | Android, iOS | [`lxc-myhealthhub-shared`](./lxc-myhealthhub-shared/), [`lxc-myhealthhub-xda`](./lxc-myhealthhub-xda/), [`lxc-myhealthhub-ios`](./lxc-myhealthhub-ios/) |
 | **DSA Tablet App** | Field agents (Direct Sales Agents) | Android tablet | `lxc-myrecords-dsa-xda` |
+| **LXC-Health-API** | Backend services | Node.js | `lxc-health-api` |
 
 ---
 
@@ -162,9 +258,14 @@ application in easy-to-understand terms.
 
 ### Backend Runtime
 
-| Module | Runtime | Supported Versions | Recommended | Notes |
+| Engine | Frameworks | Hostinger Preset | Recommended Runtime | Deployment / Swagger URL |
 |---|---|---|---|---|
-| `LXC-Health-API` | Node.js | `18.x`, `20.x`, `22.x`, `24.x` on Hostinger | `20.x` | Deploy from `lxc-health-api/publish/`. This module is designed so it can later move into its own repo/package. |
+| `LXC-Health-API` | Node.js, Express.js | `Express` | Node.js `20.x` | `https://apis.lexvoraconsulting.com` |
+
+`LXC-Health-API` deploys from `lxc-health-api/publish/`. It is intentionally
+kept as a separate backend engine so any Lexvora application can reuse it, and
+it can later move into its own repository/package without coupling the mobile
+apps to external providers directly.
 
 ### MyHealthHub Android Compatibility
 
