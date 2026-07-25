@@ -13,145 +13,231 @@
 
 ---
 
-## 📚 Repository Navigation
+## ✨ MyHealthHub Premium Showcase
 
 <p align="center">
-  <strong>Lexvora MyRecords Monorepo Guide</strong>
-  <br/>
-  <sub>Premium GitHub-safe navigation for architecture, compatibility, API deployment, and app builds.</sub>
+  <img src="./lxc-myhealthhub-shared/assets/myhealthhub-icon.png" alt="MyHealthHub logo" width="112" />
+</p>
+
+<h2 align="center">AI Powered Personal Health Ecosystem</h2>
+
+<p align="center"><strong>One App. One Health Identity. One Secure Digital Vault.</strong></p>
+<p align="center">iOS • Android • Web</p>
+
+<p align="center">
+  <a href="https://github.com/Sage2vish/lxc-myrecords"><img src="https://img.shields.io/badge/Star-Repository-111827?style=for-the-badge" alt="Star"></a>
+  <a href="https://github.com/Sage2vish/lxc-myrecords/fork"><img src="https://img.shields.io/badge/Fork-Project-0F766E?style=for-the-badge" alt="Fork"></a>
+  <a href="#setup-and-running-the-apps"><img src="https://img.shields.io/badge/Download-Builds-7C3AED?style=for-the-badge" alt="Download"></a>
+  <a href="#-repository-navigation"><img src="https://img.shields.io/badge/Documentation-Read_More-0A6BFF?style=for-the-badge" alt="Documentation"></a>
+  <a href="https://github.com/Sage2vish/lxc-myrecords/issues"><img src="https://img.shields.io/badge/Issues-Track-B91C1C?style=for-the-badge" alt="Issues"></a>
 </p>
 
 <p align="center">
-  <a href="#-overview"><img src="https://img.shields.io/badge/01-Overview-0A6BFF?style=for-the-badge" alt="Overview"></a>
-  <a href="#-application--engines"><img src="https://img.shields.io/badge/02-Apps_&_Engines-0A6BFF?style=for-the-badge" alt="Applications and Engines"></a>
-  <a href="#-platform--device-compatibility"><img src="https://img.shields.io/badge/03-Compatibility-0A6BFF?style=for-the-badge" alt="Compatibility"></a>
-  <a href="#-architecture"><img src="https://img.shields.io/badge/04-Architecture-111827?style=for-the-badge" alt="Architecture"></a>
-  <a href="#-setup-and-running-the-apps"><img src="https://img.shields.io/badge/05-Setup-111827?style=for-the-badge" alt="Setup"></a>
-  <a href="#-common-commands"><img src="https://img.shields.io/badge/06-Commands-111827?style=for-the-badge" alt="Commands"></a>
+  <img src="https://img.shields.io/badge/React%20Native-0.78%20%7C%200.75-61DAFB?style=for-the-badge" alt="React Native">
+  <img src="https://img.shields.io/badge/TypeScript-5.5-3178C6?style=for-the-badge" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Android-API%2036-34A853?style=for-the-badge" alt="Android">
+  <img src="https://img.shields.io/badge/iOS-15.1%2B-000000?style=for-the-badge" alt="iOS">
+  <img src="https://img.shields.io/badge/Node.js-20.x-339933?style=for-the-badge" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express-API%20Layer-4B5563?style=for-the-badge" alt="Express">
 </p>
 
-### Executive Map
+<p align="center">
+  <img src="https://img.shields.io/badge/ABDM-aware-0EA5E9?style=for-the-badge" alt="ABDM aware">
+  <img src="https://img.shields.io/badge/FHIR-friendly-14B8A6?style=for-the-badge" alt="FHIR friendly">
+  <img src="https://img.shields.io/badge/Security-first-111827?style=for-the-badge" alt="Security first">
+  <img src="https://img.shields.io/badge/Build-Passing-16A34A?style=for-the-badge" alt="Build passing">
+  <img src="https://img.shields.io/badge/Version-main-8B5CF6?style=for-the-badge" alt="Version">
+</p>
 
 <table>
-  <thead>
-    <tr>
-      <th width="12%">Level 1</th>
-      <th width="28%">Section</th>
-      <th width="60%">Level 2 Coverage</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>00</strong></td>
-      <td><a href="#myrecords-healthcare-platform"><strong>MyRecords Healthcare Platform</strong></a></td>
-      <td>Repository identity, status badges, and Lexvora entry point.</td>
-    </tr>
-    <tr>
-      <td><strong>01</strong></td>
-      <td><a href="#-repository-navigation"><strong>Repository Navigation</strong></a></td>
-      <td><a href="#executive-map">Executive Map</a> · <a href="#premium-quick-paths">Premium Quick Paths</a></td>
-    </tr>
-    <tr>
-      <td><strong>02</strong></td>
-      <td><a href="#-overview"><strong>Overview</strong></a></td>
-      <td><a href="#current-context">Current Context</a></td>
-    </tr>
-    <tr>
-      <td><strong>03</strong></td>
-      <td><a href="#-application--engines"><strong>Application &amp; Engines</strong></a></td>
-      <td><a href="#1--myhealthhub-mobile-app">MyHealthHub Mobile App</a> · <a href="#2--myrecords-dsa-tablet-app">MyRecords DSA Tablet App</a> · <a href="#features">Features</a></td>
-    </tr>
-    <tr>
-      <td><strong>04</strong></td>
-      <td><a href="#-platform--device-compatibility"><strong>Platform &amp; Device Compatibility</strong></a></td>
-      <td><a href="#backend-runtime">Backend Runtime</a> · <a href="#myhealthhub-android-compatibility">Android Compatibility</a> · <a href="#myhealthhub-iphone-compatibility">iPhone Compatibility</a> · <a href="#dsa-tablet-compatibility">DSA Tablet Compatibility</a> · <a href="#weather-api-contract">Weather API Contract</a></td>
-    </tr>
-    <tr>
-      <td><strong>05</strong></td>
-      <td><a href="#-architecture"><strong>Architecture</strong></a></td>
-      <td><a href="#mobile-layer">Mobile Layer</a> · <a href="#api-layer">API Layer</a> · <a href="#external-provider-boundary">External Provider Boundary</a> · <a href="#request-flow">Request Flow</a> · <a href="#future-extraction-path">Future Extraction Path</a></td>
-    </tr>
-    <tr>
-      <td><strong>06</strong></td>
-      <td><a href="#-developers-guide"><strong>Developer's Guide</strong></a></td>
-      <td><a href="#core-philosophy">Core Philosophy</a> · <a href="#myhealthhub-architecture">MyHealthHub Architecture</a> · <a href="#dsa-tablet-app-architecture">DSA Tablet Architecture</a> · <a href="#tech-stack-comparison">Tech Stack Comparison</a></td>
-    </tr>
-    <tr>
-      <td><strong>07</strong></td>
-      <td><a href="#-setup-and-running-the-apps"><strong>Setup and Running the Apps</strong></a></td>
-      <td><a href="#step-1-set-up-the-local-toolchain-critical">Local Toolchain</a> · <a href="#step-2-clone-the-repository">Clone Repository</a> · <a href="#step-3-install-dependencies-and-run-an-app">Install &amp; Run</a> · <a href="#fastest-path-one-shot-build-scripts">One-Shot Build Scripts</a></td>
-    </tr>
-    <tr>
-      <td><strong>08</strong></td>
-      <td><a href="#-common-commands"><strong>Common Commands</strong></a></td>
-      <td><a href="#hostinger-api-deployment-bundle">Hostinger API Deployment Bundle</a></td>
-    </tr>
-    <tr>
-      <td><strong>09</strong></td>
-      <td><a href="#-local-macos-development-setup"><strong>Local macOS Development Setup</strong></a></td>
-      <td>Sandboxed `frameworks/` toolchain for Node, JDK, Android SDK, Gradle, Ruby, and CocoaPods.</td>
-    </tr>
-    <tr>
-      <td><strong>10</strong></td>
-      <td><a href="#-project-history"><strong>Project History</strong></a></td>
-      <td>Major project milestones and integration history.</td>
-    </tr>
-    <tr>
-      <td><strong>11</strong></td>
-      <td><a href="#-ai-assistant-guide"><strong>AI Assistant Guide</strong></a></td>
-      <td>Assistant onboarding context and `CLAUDE.md` reference.</td>
-    </tr>
-    <tr>
-      <td><strong>12</strong></td>
-      <td><a href="#-license"><strong>License</strong></a></td>
-      <td>Lexvora Consulting ownership and proprietary license reference.</td>
-    </tr>
-  </tbody>
+  <tr>
+    <td align="center"><strong>MyHealthHub</strong><br/>Patient-focused mobile experience</td>
+    <td align="center"><strong>LXC-Health-API</strong><br/>Reusable Lexvora backend module</td>
+    <td align="center"><strong>Hostinger</strong><br/>Production deployment target</td>
+  </tr>
 </table>
 
-### Premium Quick Paths
+### Screenshots
 
 <table>
-  <thead>
-    <tr>
-      <th width="34%">Need</th>
-      <th width="26%">Go Directly To</th>
-      <th width="40%">Why It Matters</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Reusable backend module</strong></td>
-      <td><a href="#api-layer">API Layer</a></td>
-      <td>Explains `LXC-Health-API` as a Lexvora service module that can later become a separate repo/package.</td>
-    </tr>
-    <tr>
-      <td><strong>Android OS/device support</strong></td>
-      <td><a href="#myhealthhub-android-compatibility">Android Compatibility</a></td>
-      <td>Shows Android versions, API levels, device examples, and support status.</td>
-    </tr>
-    <tr>
-      <td><strong>iPhone and iOS support</strong></td>
-      <td><a href="#myhealthhub-iphone-compatibility">iPhone Compatibility</a></td>
-      <td>Shows supported iOS bands and compatible iPhone families.</td>
-    </tr>
-    <tr>
-      <td><strong>Secure external API access</strong></td>
-      <td><a href="#external-provider-boundary">External Provider Boundary</a></td>
-      <td>Shows why mobile apps call Lexvora APIs instead of WeatherAPI.com directly.</td>
-    </tr>
-    <tr>
-      <td><strong>Weather call end to end</strong></td>
-      <td><a href="#request-flow">Request Flow</a></td>
-      <td>Walks through phone lat/lon to Node.js API to WeatherAPI.com to home screen rendering.</td>
-    </tr>
-    <tr>
-      <td><strong>Hostinger deployment</strong></td>
-      <td><a href="#hostinger-api-deployment-bundle">Deployment Bundle</a></td>
-      <td>Shows the `.tar` packaging path and deploy bundle workflow.</td>
-    </tr>
-  </tbody>
+  <tr>
+    <th>Home</th>
+    <th>Health</th>
+    <th>Reports</th>
+  </tr>
+  <tr>
+    <td>Glass hero, family cards, weather, quick actions</td>
+    <td>Vitals, timelines, and health insights</td>
+    <td>Documents, labs, and medical records</td>
+  </tr>
+  <tr>
+    <th>Appointments</th>
+    <th>Vault</th>
+    <th>Profile</th>
+  </tr>
+  <tr>
+    <td>Upcoming visits and scheduling</td>
+    <td>Secure storage for health assets</td>
+    <td>Identity, settings, and family management</td>
+  </tr>
 </table>
+
+> Add real screenshots under a future `docs/screenshots/` folder to turn this
+> table into a true gallery. The layout is already ready for it.
+
+### Feature Cards
+
+<table>
+  <tr>
+    <td width="33%"><strong>❤️ Health Dashboard</strong><br/>A calm, glassy home surface that keeps the most important health signals visible first.</td>
+    <td width="33%"><strong>📅 Smart Appointments</strong><br/>Appointment previews, scheduled visits, and quick access to the next action.</td>
+    <td width="33%"><strong>📑 Medical Reports</strong><br/>Labs, radiology, and records grouped into a clean, scannable experience.</td>
+  </tr>
+  <tr>
+    <td><strong>💊 Medication</strong><br/>Medication-aware spaces for future prescribing and adherence workflows.</td>
+    <td><strong>🧬 Health Timeline</strong><br/>A structured view of patient history and change over time.</td>
+    <td><strong>🔔 Notifications</strong><br/>Useful reminders and state updates without clutter.</td>
+  </tr>
+  <tr>
+    <td><strong>🔐 Secure Vault</strong><br/>Private storage for records, documents, and sensitive attachments.</td>
+    <td><strong>🤖 AI Assistant</strong><br/>A future-ready layer for intelligent guidance and workflow help.</td>
+    <td><strong>☁ Cloud Sync</strong><br/>The app is structured to connect to a secure backend when the service is ready.</td>
+  </tr>
+</table>
+
+### Architecture
+
+```mermaid
+flowchart TB
+    IOS[iOS]
+    AND[Android]
+    WEB[Web]
+    SHARED[Shared Screens<br/>lxc-myhealthhub-shared]
+    API[LXC-Health-API<br/>Node.js + Express<br/>/v1 routes]
+    AUTH[Authentication]
+    BIZ[Business Services]
+    AI[AI / Integrations]
+    DB[(Database)]
+
+    IOS --> SHARED
+    AND --> SHARED
+    WEB --> SHARED
+    SHARED --> API
+    API --> AUTH --> BIZ --> AI --> DB
+```
+
+### Technology Stack
+
+| Layer | Technology |
+|---|---|
+| Mobile | React Native |
+| Language | TypeScript + JavaScript |
+| Backend | Node.js + Express |
+| Database | SQLite today, backend-ready for future shared services |
+| Cloud | Hostinger |
+| Authentication | Device auth now, OAuth2-ready later |
+| API Docs | Swagger / OpenAPI |
+| External Providers | WeatherAPI.com through `LXC-Health-API` |
+
+### Folder Structure
+
+```text
+MyRecords/
+├── Executable
+├── lxc-health-api
+├── lxc-myhealthhub-ios
+├── lxc-myhealthhub-shared
+│   ├── assets
+│   ├── src
+│   │   ├── api
+│   │   ├── components
+│   │   ├── navigation
+│   │   ├── screens
+│   │   ├── services
+│   │   ├── hooks
+│   │   ├── utils
+│   │   └── theme
+├── lxc-myhealthhub-xda
+├── lxc-myrecords-dsa-xda
+├── docs
+└── README.md
+```
+
+### Roadmap
+
+- [x] Login
+- [x] Dashboard
+- [x] Health Records
+- [x] Reports
+- [ ] Doctor Consultation
+- [ ] Wearables
+- [ ] Apple Health
+- [ ] Google Fit
+- [ ] AI Health Coach
+
+### Project Status
+
+```text
+███████████░░░░░░
+
+65% Complete
+```
+
+### Documentation Links
+
+| Doc | Purpose |
+|---|---|
+| Architecture | How the shared app, native shells, and backend fit together |
+| API Documentation | Swagger/OpenAPI for `LXC-Health-API` |
+| Release Notes | Stable build and deployment notes |
+| Version History | What changed, when, and why |
+| User Guide | End-user workflows for MyHealthHub |
+| Developer Guide | Setup, conventions, and implementation details |
+
+### Contributors
+
+<table>
+  <tr>
+    <td><strong>👨‍💻 Vishal</strong><br/>Enterprise Architect</td>
+    <td><strong>👨‍💻 Navneet</strong><br/>Principal Developer</td>
+  </tr>
+</table>
+
+### License
+
+Proprietary Lexvora Consulting codebase. Internal use and controlled distribution only.
+
+### Contact
+
+| Channel | Link |
+|---|---|
+| Website | [lexvoraconsulting.com](https://lexvoraconsulting.com) |
+| Repository | [GitHub](https://github.com/Sage2vish/lxc-myrecords) |
+| Issues | [Bug tracker](https://github.com/Sage2vish/lxc-myrecords/issues) |
+| Docs | This README plus the app and API subproject READMEs |
+
+### Footer
+
+Made with heart by Lexvora Consulting  
+Copyright 2026
+
+### Premium Extras
+
+<details>
+<summary>GitHub features this README can use later</summary>
+
+- Animated GIFs
+- SVG banners
+- Mermaid flowcharts
+- Collapsible sections
+- Image galleries
+- Task lists
+- Syntax-highlighted code blocks
+- Shields.io badges
+- Release badges
+- CI/CD badges
+
+</details>
 
 ---
 
