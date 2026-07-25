@@ -20,6 +20,7 @@ export const theme = {
       lg: 15,
       xl: 18,
       '2xl': 22,
+      slider: 10,
       pill: 999,
       card: 15,
       strip: 12,

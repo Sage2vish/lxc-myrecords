@@ -178,10 +178,11 @@ script even for iOS work. The `Executable/*.sh` scripts source both automaticall
   `AccountMenuProvider` (for the slide-in `AccountMenu` panel).
 - `navigation/RootNavigator.tsx` — bottom tab navigator; the single place that wires
   together all screens except `LoginScreen` (gated separately in `App.tsx`).
-  The visible bottom tabs currently use pink image icons by default and blue
-  image icons for the active tab, while the center `Appointments` action stays
-  as the large `+` button.
-- `screens/` — one file per screen (Home, Records, Appointments, Prescriptions,
+  The visible bottom tabs now use a five-tab layout: `Home`, `Health`,
+  `Schedules`, `Vault`, and `Reports`. Pink image icons are used by default and
+  blue image icons for the active tab. The shared slider uses the
+  `radii.slider` token.
+- `screens/` — one file per screen (Home, Records, Schedules, Prescriptions,
   Vitals, Profile, ScheduleVisit, Login, Notifications). Screens compose shared
   components rather than defining their own primitives. `LoginScreen.tsx` is a
   mobile+OTP mock flow (no real backend) plus biometric login.
@@ -204,8 +205,8 @@ script even for iOS work. The `Executable/*.sh` scripts source both automaticall
   migrated to `theme/typography.ts` so far — other screens still hardcode
   `fontSize`/`fontWeight`.
 - `assets/` — now includes the current badge/icon artwork used by the dashboard
-  and the bottom navigation (family, appointment, lab, document vault, home,
-  health, profiles, more).
+  and the bottom navigation (family, appointment, schedule, lab, document vault,
+  home, health, reports, vault).
 
 ### DSA Tablet App (`lxc-myrecords-dsa-xda/src/`)
 

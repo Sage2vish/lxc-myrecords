@@ -7,15 +7,16 @@
 // DATE-TIME   : 23-July-2026 | 20:39 Hrs
 //
 // PURPOSE     : Bottom tab navigator for MyHealthHub — the single place that
-//               wires together Home, Records, Appointments, Prescriptions,
+//               wires together Home, Records, Schedules, Prescriptions,
 //               Vitals, Profile, and the center Add/ScheduleVisit action.
 //               Styles the tab bar (icon sizes, center Add button, active/
 //               inactive tint) rather than defining screen content itself.
 // ============================================================================
 
-import React from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {TabActions} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Animated, Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {HomeScreen} from '../screens/HomeScreen';
 import {RecordsScreen} from '../screens/RecordsScreen';
 import {AppointmentsScreen} from '../screens/AppointmentsScreen';
@@ -25,11 +26,13 @@ import {ProfileScreen} from '../screens/ProfileScreen';
 import {ScheduleVisitScreen} from '../screens/ScheduleVisitScreen';
 import {NotificationsScreen} from '../screens/NotificationsScreen';
 import {colors} from '../theme/colors';
+import {radii} from '../theme/radii';
+import {theme} from '../theme/theme-common';
 
 export type RootTabParamList = {
   Home: undefined;
   Records: undefined;
-  Appointments: undefined;
+  Schedules: undefined;
   Prescriptions: undefined;
   Vitals: undefined;
   Profile: undefined;
@@ -39,81 +42,174 @@ export type RootTabParamList = {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-function TabIcon({
-  focused,
-  routeName,
-}: {
-  focused: boolean;
-  routeName: keyof RootTabParamList;
-}) {
-  if (routeName === 'Appointments') {
-    return (
-      <View style={styles.addTab}>
-        <Text style={styles.addTabText}>+</Text>
+type NavItem = {
+  name: keyof RootTabParamList;
+  label: string;
+  screenLabel: string;
+  icon: {
+    active: any;
+    inactive: any;
+  };
+  isCenterAction?: boolean;
+};
+
+const NAV_ITEMS: NavItem[] = [
+  {
+    name: 'Home',
+    label: 'Home',
+    screenLabel: 'Home',
+    icon: {
+      active: require('../../assets/nav-bottom/nav-home-icon-blue.png'),
+      inactive: require('../../assets/nav-bottom/nav-home-icon-pink.png'),
+    },
+  },
+  {
+    name: 'Vitals',
+    label: 'Health',
+    screenLabel: 'Health',
+    icon: {
+      active: require('../../assets/nav-bottom/nav-health-icon-blue.png'),
+      inactive: require('../../assets/nav-bottom/nav-health-icon-pink.png'),
+    },
+  },
+  {
+    name: 'Schedules',
+    label: 'Schedules',
+    screenLabel: 'Schedules',
+    icon: {
+      active: require('../../assets/nav-bottom/nav-schedule-icon-blue.png'),
+      inactive: require('../../assets/nav-bottom/nav-schedule-icon-pink.png'),
+    },
+  },
+  {
+    name: 'Records',
+    label: 'Vault',
+    screenLabel: 'Vault',
+    icon: {
+      active: require('../../assets/nav-bottom/nav-vault-icon-blue.png'),
+      inactive: require('../../assets/nav-bottom/nav-vault-icon-pink.png'),
+    },
+  },
+  {
+    name: 'Profile',
+    label: 'Reports',
+    screenLabel: 'Reports',
+    icon: {
+      active: require('../../assets/nav-bottom/nav-reports-icon-blue.png'),
+      inactive: require('../../assets/nav-bottom/nav-reports-icon-pink.png'),
+    },
+  },
+];
+
+function TabIcon({focused, item}: {focused: boolean; item: NavItem}) {
+  return (
+    <View style={styles.tabStack}>
+      <View style={styles.iconBox}>
+        <Image source={focused ? item.icon.active : item.icon.inactive} style={styles.navImage} />
       </View>
-    );
-  }
-
-  if (routeName === 'Home') {
-    return (
-      <View style={[styles.homeIconFrame, focused && styles.homeIconFrameActive]}>
-        <Image
-          source={
-            focused
-              ? require('../../assets/nav-bottom/nav-home-icon-blue.png')
-              : require('../../assets/nav-bottom/nav-home-icon-pink.png')
-          }
-          style={styles.homeNavImage}
-        />
-        <Text style={[styles.homeNavText, focused && styles.homeNavTextActive]}>Home</Text>
-      </View>
-    );
-  }
-
-  if (routeName === 'Vitals') {
-    return (
-      <Image
-        source={
-          focused
-            ? require('../../assets/nav-bottom/nav-health-icon-blue.png')
-            : require('../../assets/nav-bottom/nav-health-icon-pink.png')
-        }
-        style={styles.navImage}
-      />
-    );
-  }
-
-  if (routeName === 'Records') {
-    return (
-      <Image
-        source={
-          focused
-            ? require('../../assets/nav-bottom/nav-vault-icon-blue.png')
-            : require('../../assets/nav-bottom/nav-vault-icon-pink.png')
-        }
-        style={styles.navImage}
-      />
-    );
-  }
-
-  if (routeName === 'Profile') {
-    return (
-      <Image
-        source={
-          focused
-            ? require('../../assets/nav-bottom/nav-more-icon-blue.png')
-            : require('../../assets/nav-bottom/nav-more-icon-pink.png')
-        }
-        style={styles.navImage}
-      />
-    );
-  }
-
-  return null;
+      <Text style={[styles.tabBarLabel, focused && styles.tabBarLabelActive]}>{item.label}</Text>
+    </View>
+  );
 }
 
-function renderTabBarIcon(focused: boolean, routeName: keyof RootTabParamList) {
-  return <TabIcon focused={focused} routeName={routeName} />;
+function BottomTabBar({
+  state,
+  descriptors,
+  navigation,
+}: {
+  state: any;
+  descriptors: any;
+  navigation: any;
+}) {
+  const visibleRoutes = useMemo(
+    () => NAV_ITEMS.map(item => ({item, route: state.routes.find((candidate: any) => candidate.name === item.name)})),
+    [state.routes],
+  );
+  const [tabWidth, setTabWidth] = useState(0);
+  const translateX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const activeIndex = visibleRoutes.findIndex(({item}) => item.name === state.routes[state.index]?.name);
+    if (activeIndex < 0 || tabWidth === 0) {
+      return;
+    }
+
+    Animated.spring(translateX, {
+      toValue: activeIndex * tabWidth,
+      useNativeDriver: true,
+      damping: 18,
+      stiffness: 180,
+      mass: 0.8,
+    }).start();
+  }, [state.index, state.routes, tabWidth, translateX, visibleRoutes]);
+
+  const indicatorWidth = Math.max(tabWidth - 10, 0);
+  const indicatorOffsetX = 10;
+
+  return (
+    <View
+      style={styles.tabBar}
+      onLayout={event => {
+        const width = event.nativeEvent.layout.width;
+        setTabWidth((width - 0) / visibleRoutes.length);
+      }}>
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.activePill,
+          {
+            width: indicatorWidth,
+            transform: [{translateX: Animated.add(translateX, new Animated.Value(indicatorOffsetX))}],
+          },
+        ]}
+      />
+      {visibleRoutes.map(({item, route}: any, index: number) => {
+        if (!route || !item) {
+          return null;
+        }
+
+        const focused = state.index === state.routes.findIndex((r: any) => r.key === route.key);
+        const descriptor = descriptors[route.key];
+        const options = descriptor.options;
+        const label = item.label || options.tabBarLabel || options.title || route.name;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!focused && !event.defaultPrevented) {
+            navigation.dispatch(TabActions.jumpTo(item.name));
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        return (
+          <Pressable
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={focused ? {selected: true} : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+          onLongPress={onLongPress}
+          style={[styles.tabItem, {width: tabWidth || `${100 / visibleRoutes.length}%`}]}>
+            <View style={styles.tabCell}>
+              <TabIcon focused={focused} item={{...item, label}} />
+            </View>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -122,65 +218,67 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   navImage: {
-    width: 22,
-    height: 22,
+    width: theme.iconNav.size,
+    height: theme.iconNav.size,
     resizeMode: 'contain',
   },
-  homeNavImage: {
-    width: 30,
-    height: 30,
-    resizeMode: 'contain',
+  iconBox: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 28,
+    height: 28,
   },
-  homeNavText: {
-    marginTop: 2,
+  tabStack: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 52,
+    height: 60,
+    gap: 5,
+  },
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderTopColor: colors.border,
+    height: 68,
+    marginTop: 4,
+    paddingBottom: 0,
+    paddingTop: 0,
+    paddingHorizontal: 4,
+    justifyContent: 'center',
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    shadowOffset: {width: 0, height: -6},
+    elevation: 12,
+    overflow: 'hidden',
+  },
+  activePill: {
+    position: 'absolute',
+    top: 4,
+    bottom: 4,
+    left: 0,
+    borderRadius: radii.slider,
+    backgroundColor: '#DCEEFF',
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 68,
+  },
+  tabCell: {
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabBarLabel: {
     color: colors.muted,
     fontSize: 10,
     lineHeight: 12,
     fontWeight: '800',
   },
-  homeNavTextActive: {
+  tabBarLabelActive: {
     color: colors.primary,
-  },
-  homeIconFrame: {
-    width: 60,
-    height: 50,
-    paddingHorizontal: 5,
-    paddingTop: 0,
-    paddingBottom: 5,
-    marginTop: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    borderWidth: 1,
-    borderColor: 'rgba(216, 224, 236, 0.85)',
-    backgroundColor: '#F6FAFF',
-  },
-  homeIconFrameActive: {
-    borderColor: 'rgba(13, 99, 183, 0.28)',
-    backgroundColor: '#EEF6FF',
-  },
-  tabIconActive: {
-    fontWeight: '900',
-  },
-  addTab: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: -22,
-    backgroundColor: colors.accent,
-    shadowColor: colors.accent,
-    shadowOpacity: 0.34,
-    shadowRadius: 10,
-    shadowOffset: {width: 0, height: 6},
-    elevation: 6,
-  },
-  addTabText: {
-    color: '#fff',
-    fontSize: 28,
-    lineHeight: 30,
-    fontWeight: '300',
   },
   hiddenTab: {
     flex: 0,
@@ -192,35 +290,18 @@ const styles = StyleSheet.create({
 export function RootNavigator() {
   return (
     <Tab.Navigator
+      tabBar={props => <BottomTabBar {...props} />}
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: {
-          fontSize: 10,
-          fontWeight: '800',
-          marginTop: 0,
-        },
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-          height: 78,
-          paddingBottom: 3,
-          paddingTop: 4,
-          justifyContent: 'space-evenly',
-          shadowColor: colors.shadow,
-          shadowOpacity: 0.08,
-          shadowRadius: 16,
-          shadowOffset: {width: 0, height: -6},
-          elevation: 12,
-        },
-        tabBarIcon: ({focused}) => renderTabBarIcon(focused, route.name as keyof RootTabParamList),
+        tabBarShowLabel: false,
       })}>
-      <Tab.Screen name="Home" component={HomeScreen} options={{tabBarLabel: ''}} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{tabBarLabel: 'Home'}} />
       <Tab.Screen name="Vitals" component={VitalsScreen} options={{tabBarLabel: 'Health'}} />
-      <Tab.Screen name="Appointments" component={AppointmentsScreen} options={{tabBarLabel: ''}} />
+      <Tab.Screen name="Schedules" component={AppointmentsScreen} options={{tabBarLabel: 'Schedules'}} />
       <Tab.Screen name="Records" component={RecordsScreen} options={{tabBarLabel: 'Vault'}} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{tabBarLabel: 'More'}} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{tabBarLabel: 'Reports'}} />
       <Tab.Screen
         name="Prescriptions"
         component={PrescriptionsScreen}
