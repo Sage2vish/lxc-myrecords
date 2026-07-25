@@ -18,6 +18,8 @@ export const fontSizes = {
   base: 12,
   md: 13,
   lg: 14,
+  lg15: 15,
+  lg16: 16,
   xl: 18,
   '2xl': 24,
   '3xl': 30,
@@ -28,4 +30,7 @@ export const fontWeights = {
   medium: '300' as const,
   bold: '500' as const,
   extrabold: '600' as const,
+  extrabold700: '700' as const,
+  extrabold800: '800' as const,
+  extremebold: '900' as const,
 };

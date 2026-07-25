@@ -16,20 +16,24 @@
 
 import React, {useState} from 'react';
 import {
+  ImageBackground,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useAccountMenu} from '../context/AccountMenuContext';
 import type {RootTabParamList} from '../navigation/RootNavigator';
 import {colors} from '../theme/colors';
+import {getHeroTheme} from '../theme/dayparts';
 import {radii} from '../theme/radii';
+import {fontSizes, fontWeights} from '../theme/typography';
 
 const selfProfile = {name: 'Priya', relation: 'You', initials: 'P', tone: colors.accent};
 
@@ -185,6 +189,10 @@ const documentVaultItems = [
 export function HomeScreen() {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const {openMenu} = useAccountMenu();
+  const heroTheme = getHeroTheme();
+  const heroTextColor =
+    heroTheme.part === 'day' || heroTheme.part === 'afternoon' ? colors.primary : colors.surface;
+  const insets = useSafeAreaInsets();
   const [profilesExpanded, setProfilesExpanded] = useState(true);
   const [appointmentsExpanded, setAppointmentsExpanded] = useState(false);
   const [labExpanded, setLabExpanded] = useState(false);
@@ -192,50 +200,136 @@ export function HomeScreen() {
   const [selectedLabTab, setSelectedLabTab] = useState<(typeof labTabs)[number]>('Medication');
 
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} style={styles.root}>
-      <ScrollView
-        bounces
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}>
-        <View style={styles.hero}>
-          <View style={styles.heroGlow} />
-          <View style={styles.topRow}>
-            <View style={styles.brandRow}>
-              <Image source={require('../../assets/myhealthhub-icon.png')} style={styles.logo} />
-              <View style={styles.brandTextWrap}>
-                <Text style={styles.brandTitle}>MyHealthHub</Text>
-                <Text style={styles.brandSub}>Space</Text>
+      <SafeAreaView
+        edges={['top', 'left', 'right']}
+        style={[
+          styles.root,
+          {backgroundColor: Platform.OS === 'ios' ? 'transparent' : heroTheme.backgroundColor},
+        ]}>
+        {Platform.OS === 'ios' ? (
+          <ImageBackground
+            source={heroTheme.bannerImage}
+            resizeMode="cover"
+            style={[
+              styles.bannerBleed,
+              {
+                top: -insets.top,
+                height: insets.top + 300,
+              },
+            ]}>
+            <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
+            <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
+          </ImageBackground>
+        ) : null}
+        <ScrollView
+          bounces
+          style={[
+            styles.scroll,
+            {backgroundColor: Platform.OS === 'ios' ? 'transparent' : colors.background},
+          ]}
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}>
+          {Platform.OS === 'ios' ? (
+            <View style={[styles.hero, styles.heroIos]}>
+              <View style={styles.heroContent}>
+                <View
+                  style={[
+                    styles.glassHeader,
+                    {marginTop: Math.round(insets.top * 0.12)},
+                  ]}>
+                  <View style={styles.topRow}>
+                    <View style={styles.brandRow}>
+                      <Image source={require('../../assets/myhealthhub-icon.png')} style={styles.logo} />
+                      <View style={styles.brandTextWrap}>
+                        <Text style={[styles.brandTitle, {color: heroTextColor}]}>MyHealthHub</Text>
+                        <Text style={[styles.brandSub, {color: heroTextColor}]}>Space</Text>
+                      </View>
+                    </View>
+                    <View style={styles.headerActions}>
+                      <TouchableOpacity
+                        style={styles.bellButton}
+                        onPress={() => navigation.navigate('Notifications')}>
+                        <Text style={styles.bell}>🔔</Text>
+                        <Text style={styles.badge}>3</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.profileAvatar}
+                        onPress={() => navigation.navigate('Profile')}
+                        onLongPress={openMenu}
+                        delayLongPress={350}>
+                        <Text style={styles.profileAvatarText}>P</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        accessibilityLabel="Account menu"
+                        accessibilityRole="button"
+                        style={styles.menuButton}
+                        onPress={openMenu}>
+                        <Image
+                          source={require('../../assets/nav-more-icon-blue.png')}
+                          style={[styles.menuIcon, styles.menuIconPink]}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+
+                <Text style={[styles.greeting, {color: heroTextColor}]}>Good morning, Priya ☀️</Text>
+                <Text style={[styles.heroSub, {color: heroTextColor}]}>
+                  Take charge of your family’s health, every day.
+                </Text>
               </View>
             </View>
-            <View style={styles.headerActions}>
-              <TouchableOpacity
-                style={styles.bellButton}
-                onPress={() => navigation.navigate('Notifications')}>
-                <Text style={styles.bell}>🔔</Text>
-                <Text style={styles.badge}>3</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.profileAvatar}
-                onPress={() => navigation.navigate('Profile')}
-                onLongPress={openMenu}
-                delayLongPress={350}>
-                <Text style={styles.profileAvatarText}>P</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                accessibilityLabel="Account menu"
-                accessibilityRole="button"
-                style={styles.menuButton}
-                onPress={openMenu}>
-                <Text style={styles.menuDots}>⋮</Text>
-              </TouchableOpacity>
+          ) : (
+          <ImageBackground source={heroTheme.bannerImage} resizeMode="cover" style={styles.hero}>
+            <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
+            <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
+            <View style={styles.heroContent}>
+              <View style={styles.glassHeader}>
+                <View style={styles.topRow}>
+                  <View style={styles.brandRow}>
+                    <Image source={require('../../assets/myhealthhub-icon.png')} style={styles.logo} />
+                    <View style={styles.brandTextWrap}>
+                      <Text style={[styles.brandTitle, {color: heroTextColor}]}>MyHealthHub</Text>
+                      <Text style={[styles.brandSub, {color: heroTextColor}]}>Space</Text>
+                    </View>
+                  </View>
+                  <View style={styles.headerActions}>
+                    <TouchableOpacity
+                      style={styles.bellButton}
+                      onPress={() => navigation.navigate('Notifications')}>
+                      <Text style={styles.bell}>🔔</Text>
+                      <Text style={styles.badge}>3</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.profileAvatar}
+                      onPress={() => navigation.navigate('Profile')}
+                      onLongPress={openMenu}
+                      delayLongPress={350}>
+                      <Text style={styles.profileAvatarText}>P</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      accessibilityLabel="Account menu"
+                      accessibilityRole="button"
+                      style={styles.menuButton}
+                      onPress={openMenu}>
+                      <Image
+                        source={require('../../assets/nav-more-icon-blue.png')}
+                        style={[styles.menuIcon, styles.menuIconPink]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              <Text style={[styles.greeting, {color: heroTextColor}]}>Good morning, Priya ☀️</Text>
+              <Text style={[styles.heroSub, {color: heroTextColor}]}>
+                Take charge of your family’s health, every day.
+              </Text>
             </View>
-          </View>
+          </ImageBackground>
+          )}
 
-          <Text style={styles.greeting}>Good morning, Priya ☀️</Text>
-          <Text style={styles.heroSub}>Take charge of your family’s health, every day.</Text>
-        </View>
-
-        <View style={styles.familyCard}>
+          <View style={styles.familyCard}>
           <View style={styles.cardHeader}>
             <View style={styles.familyTitleRow}>
               <View style={styles.heartBubble}>
@@ -334,7 +428,7 @@ export function HomeScreen() {
           </View>
         </View>
 
-        <View style={styles.appointmentCard}>
+          <View style={styles.appointmentCard}>
           <TouchableOpacity
             accessibilityRole="button"
             activeOpacity={0.85}
@@ -347,7 +441,7 @@ export function HomeScreen() {
               />
             </View>
             <View style={styles.appointmentHeaderLeft}>
-              <Text style={styles.appointmentTitle}>Upcoming Appointments</Text>
+              <Text style={styles.cardTitle}>Upcoming Appointments</Text>
               <Text style={styles.appointmentSubtitle}>Top 3 upcoming visits</Text>
             </View>
             <View style={styles.appointmentHeaderRight}>
@@ -400,7 +494,7 @@ export function HomeScreen() {
           </View>
         </View>
 
-        <View style={styles.labCard}>
+          <View style={styles.labCard}>
           <TouchableOpacity
             accessibilityRole="button"
             activeOpacity={0.85}
@@ -413,7 +507,7 @@ export function HomeScreen() {
               />
             </View>
             <View style={styles.labCardHeaderLeft}>
-              <Text style={styles.labCardTitle}>Lab Reports & Results</Text>
+              <Text style={styles.cardTitle}>Lab Reports & Results</Text>
               <Text style={styles.labCardSubtitle}>Top 3 results in each section</Text>
             </View>
             <View style={styles.labCardHeaderRight}>
@@ -470,7 +564,7 @@ export function HomeScreen() {
           ) : null}
         </View>
 
-        <View style={styles.vaultCard}>
+          <View style={styles.vaultCard}>
           <TouchableOpacity
             accessibilityRole="button"
             activeOpacity={0.85}
@@ -483,7 +577,7 @@ export function HomeScreen() {
               />
             </View>
             <View style={styles.vaultCardHeaderLeft}>
-              <Text style={styles.vaultCardTitle}>Document Vault</Text>
+              <Text style={styles.cardTitle}>Document Vault</Text>
               <Text style={styles.vaultCardSubtitle}>Securely stored uploads and records</Text>
             </View>
             <View style={styles.vaultCardHeaderRight}>
@@ -521,7 +615,7 @@ export function HomeScreen() {
           ) : null}
         </View>
 
-        <View style={styles.quickSection}>
+          <View style={styles.quickSection}>
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <ScrollView
             horizontal
@@ -566,20 +660,29 @@ export function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.privacyCard}>
-          <View style={styles.privacyIcon}><Text style={styles.privacyIconText}>✚</Text></View>
-          <Text style={styles.privacyText}>Your data is safe and secure with enterprise-grade encryption.</Text>
-          <Text style={styles.learnMore}>Learn more  ›</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+          <TouchableOpacity style={styles.privacyCard}>
+            <View style={styles.privacyIcon}><Text style={styles.privacyIconText}>✚</Text></View>
+            <Text style={styles.privacyText}>Your data is safe and secure with enterprise-grade encryption.</Text>
+            <Text style={styles.learnMore}>Learn more  ›</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+    backgroundColor: colors.primaryDark,
+  },
+  scroll: {
+    flex: 1,
     backgroundColor: colors.background,
+  },
+  bannerBleed: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
   },
   content: {
     paddingBottom: 32,
@@ -589,10 +692,44 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingTop: 18,
     paddingBottom: 68,
-    backgroundColor: colors.primary,
     borderBottomLeftRadius: 34,
     borderBottomRightRadius: 34,
+    overflow: 'visible',
+  },
+  heroIos: {
+    paddingTop: 8,
+  },
+  heroImage: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  heroContent: {
+    flex: 1,
+  },
+  glassHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: -11,
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 22,
+    backgroundColor: Platform.OS === 'android' ? 'rgba(13,99,183,0.22)' : 'rgba(255,255,255,0.54)',
+    borderWidth: 1,
+    borderColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.2)',
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: Platform.OS === 'android' ? 0.14 : 0.12,
+    shadowRadius: Platform.OS === 'android' ? 18 : 16,
+    shadowOffset: {width: 0, height: 8},
+    elevation: Platform.OS === 'android' ? 4 : 2,
+  },
+  heroTint: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.12,
   },
   heroGlow: {
     position: 'absolute',
@@ -601,18 +738,35 @@ const styles = StyleSheet.create({
     width: 210,
     height: 210,
     borderRadius: 105,
-    backgroundColor: colors.sky,
     opacity: 0.38,
+  },
+  heroBottomFade: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 72,
+    overflow: 'hidden',
+  },
+  heroBottomFadeBand: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
     flexShrink: 1,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginLeft: 'auto',
   },
   logo: {
     width: 42,
@@ -634,11 +788,6 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.86)',
     fontSize: 13,
     marginTop: -1,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
   },
   bellButton: {
     width: 36,
@@ -681,15 +830,22 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   menuButton: {
-    width: 24,
-    height: 36,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 2,
+    borderColor: '#fff',
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuDots: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '900',
+  menuIcon: {
+    width: 22,
+    height: 22,
+    resizeMode: 'contain',
+  },
+  menuIconPink: {
+    tintColor: '#fff',
   },
   // Good Morning UI
   greeting: {
@@ -749,8 +905,8 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     color: colors.text,
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.bold,
     flexShrink: 1,
   },
   membersCount: {
@@ -769,8 +925,8 @@ const styles = StyleSheet.create({
   },
   viewAllText: {
     color: colors.primary,
-    fontSize: 12,
-    fontWeight: '900',
+    fontSize: fontSizes.sm,
+    fontWeight: '600',
   },
   viewAllArrow: {
     marginLeft: 6,
@@ -1107,31 +1263,31 @@ const styles = StyleSheet.create({
   },
   doctorName: {
     color: colors.text,
-    fontSize: 14,
-    fontWeight: '900',
+    fontSize: fontSizes.lg16,
+    fontWeight: fontWeights.bold,
   },
   appointmentRole: {
     color: colors.muted,
-    fontSize: 11,
-    fontWeight: '700',
+    fontSize: fontSizes.lg,
+    fontWeight: fontWeights.extrabold700,
     marginTop: 2,
   },
   appointmentLocation: {
     marginTop: 3,
     color: colors.muted,
-    fontSize: 10,
-    fontWeight: '700',
+    fontSize: fontSizes.sm,
+    fontWeight: fontWeights.extrabold,
   },
   appointmentDate: {
     color: colors.text,
-    fontSize: 11,
-    fontWeight: '900',
+    fontSize: fontSizes.sm,
+    fontWeight: fontWeights.bold,
   },
   appointmentTime: {
     marginTop: 3,
     color: colors.primary,
-    fontSize: 11,
-    fontWeight: '900',
+    fontSize: fontSizes.sm,
+    fontWeight: fontWeights.bold,
   },
   labCard: {
     marginHorizontal: 9,
