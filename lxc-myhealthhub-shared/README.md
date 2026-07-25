@@ -4,10 +4,13 @@ MyHealthHub is a React Native app (Android and iOS) for patient health records, 
 
 ## Current Work
 
-- Active weather branch context: `weather-api-integration`
-- Mobile app weather data will come from [`../lxc-health-api`](../lxc-health-api/)
-- WeatherAPI.com stays server-side in the backend project
-- First weather target: Dubai current temperature in the home header
+- Weather/API work is merged into `main` as of 2026-07-25
+- Mobile app weather data comes from [`../lxc-health-api`](../lxc-health-api/) first
+- Production WeatherAPI.com access should stay server-side in the backend project
+- Temporary dev fallback support exists through `WEATHER_PROVIDER_DEV_KEY`
+- Phone latitude/longitude is preferred; Dubai is the fallback location
+- Home screen shows city and Celsius temperature below the top glass header,
+  outside the glass header, aligned right in ruby pink
 
 ## History
 
@@ -54,8 +57,8 @@ Git history for individual files was preserved as renames across the split.
 - [ ] API 36 Pixel 8 Pro/Pixel 9 Pro emulator configured
 - [ ] Emulator configured for 2772 x 1240 resolution and 8 GB or 12 GB RAM
 - [x] ARM64-v8a preferred app architecture configured
-- [ ] Backend API connected
-- [ ] WeatherAPI.com proxy endpoint wired into the mobile app
+- [x] WeatherAPI.com proxy endpoint wired into the mobile app
+- [ ] Production mobile request authentication for the backend
 - [ ] Login/authentication implemented
 - [ ] Secure token storage implemented
 - [ ] Real record upload/download implemented
@@ -75,7 +78,7 @@ lxc-myhealthhub-xda/         # Android native app and Gradle config (builder onl
 lxc-myhealthhub-ios/         # iOS native app and Xcode/Podfile config (builder only)
 lxc-myhealthhub-shared/      # this folder — all JS/TS source and assets
 ├── src/
-│   ├── api/                # API client and health service
+│   ├── api/                # API client, health service, weather API integration
 │   ├── components/         # Shared UI components
 │   ├── hooks/              # React Query data hooks
 │   ├── navigation/         # Bottom tab navigation
@@ -105,13 +108,22 @@ The home screen is currently built around a premium card stack:
 - DSA Assisted Setup card
 - Privacy/security card
 - Bottom navigation uses pink icon artwork by default and blue icon artwork for the active tab
+- Weather city/temp renders outside the top glass header, below it, right aligned
+  in ruby pink (`#F41678`) using theme typography tokens
+- Greeting text renders in `greetingGlassSlab`, a separate glass slab with only
+  top corners rounded from `radii.card`; the slab extends behind the Family
+  Health Space card without shifting the card
+- Greeting subtitle uses `colors.greetingSubGrey`
 
 Primary files:
 
 ```text
 src/screens/HomeScreen.tsx       # Main app home/dashboard UI
+src/api/weather.ts               # Device location + backend weather call
+src/api/config.ts                # Central API URL/request-key config
 src/navigation/RootNavigator.tsx  # Bottom tab navigation styling
 src/theme/colors.ts              # MyHealthHub blue/pink color theme
+src/theme/typography.ts          # Shared font size/weight tokens
 src/App.tsx                      # Status bar theme
 assets/myhealthhub-icon.png      # Current app logo/icon asset
 ```
@@ -146,6 +158,29 @@ Text:       #10254A
 ```
 
 No extra icon library or gradient package is required for this version. The UI is built with React Native core components so it is easy to open in VS Code and customize.
+
+## Weather API Contract
+
+The mobile app calls the Hostinger backend first:
+
+```text
+GET https://apis.lexvoraconsulting.com/v1/weather/today?lat=<phone-lat>&lon=<phone-lon>
+```
+
+Relevant env vars:
+
+```text
+WEATHER_API_BASE_URL=https://apis.lexvoraconsulting.com/v1
+WEATHER_API_REQUEST_KEY=
+WEATHER_PROVIDER_DEV_KEY=
+```
+
+`WEATHER_API_REQUEST_KEY` is a placeholder path for later backend request
+authentication. It is sent as `x-api-key` when present, but backend
+authorization is not fully implemented yet.
+
+`WEATHER_PROVIDER_DEV_KEY` is temporary for local/demo fallback only. The
+production model is: mobile app -> Hostinger backend -> WeatherAPI.com.
 
 ## Prerequisites
 

@@ -35,10 +35,12 @@ only the Gradle/native Android project — `app/`, `gradle/`, `build.gradle`,
 
 ## Current Context
 
-- Weather work is on the `weather-api-integration` branch
+- Weather/API work was merged into `main` on 2026-07-25
 - Android release builds are split by ABI
 - For OnePlus phones, `MyHealthHub-arm64-v8a.apk` is the usual release APK
-- The app will use the Hostinger-backed [`../lxc-health-api`](../lxc-health-api/) project for weather data
+- The app uses the Hostinger-backed [`../lxc-health-api`](../lxc-health-api/) project for weather data
+- Weather UI source lives in `../lxc-myhealthhub-shared/src/api/weather.ts`
+  and `../lxc-myhealthhub-shared/src/screens/HomeScreen.tsx`
 
 ## 🕘 History & Status
 

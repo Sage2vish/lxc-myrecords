@@ -38,7 +38,7 @@ build flow — see that app's README.
 
 ## Current Context
 
-- Weather work is happening on `weather-api-integration`
+- Weather/API work was merged into `main` on 2026-07-25
 - Backend weather code now lives in [`../lxc-health-api`](../lxc-health-api/)
 - Android release builds remain split by ABI
 
@@ -68,6 +68,27 @@ developer fix. See [Error Message Format](#-error-message-format).
 
 Use this when you want a manual Hostinger upload bundle with the exact deploy
 contents, kept separate from the working source tree.
+
+Hostinger deployment settings used for this API:
+
+```text
+Framework preset: Express
+Node version: 20.x
+Root directory: ./
+Build command: npm run build
+Start command: npm start
+Domain: apis.lexvoraconsulting.com
+```
+
+Environment variables are prepared in:
+
+```text
+../lxc-health-api/publish/import.env
+```
+
+Replace placeholder secret values inside Hostinger, not in git. The deploy
+archive belongs under `../lxc-health-api/publish/`; do not create or use a
+repo-root `publish/` folder.
 
 ---
 

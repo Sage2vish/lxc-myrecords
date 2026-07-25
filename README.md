@@ -43,11 +43,13 @@ This repository is the home of the **Lexvora MyRecords healthcare platform**. It
 
 ## Current Context
 
-- Active weather branch: `weather-api-integration`
+- Main branch contains the Hostinger weather integration as of 2026-07-25
 - New backend project: [`lxc-health-api`](./lxc-health-api/)
-- MyHealthHub will call the backend, and the backend will call WeatherAPI.com
-- WeatherAPI secrets stay server-side in `lxc-health-api`
-- Initial weather target: Dubai current temperature shown in the MyHealthHub header
+- MyHealthHub calls the backend first, and the backend calls WeatherAPI.com
+- Production WeatherAPI secrets belong in Hostinger environment variables, not in app source
+- Temporary dev fallback support exists in the mobile app so the home temperature can still render during backend setup
+- Weather uses phone latitude/longitude when available and falls back to Dubai
+- Current production API deployment target shown in Hostinger: `https://apis.lexvoraconsulting.com`
 
 ## 📱 The Applications
 
@@ -76,7 +78,7 @@ The MyHealthHub app is a modern, patient-centric mobile application that empower
 - 🧑‍⚕️ DSA Assisted Setup card — bridges to in-person agent support
 - 🔒 Privacy/security card
 - 👤 Profile and settings management
-- 🌤️ Weather header integration now routes through the new backend API, not directly from the app
+- 🌤️ Weather header integration through `/v1/weather/today`; city and Celsius temperature render below the top glass header, outside the header slab, in ruby pink
 
 > **Status**: Android build verified (debug APK builds successfully). iOS build verified end-to-end — builds and launches on both the iOS Simulator and a physical device.
 > **Important iOS note**: when opening the native iOS project in Xcode, use `LxcMyHealthHub.xcworkspace` and not `LxcMyHealthHub.xcodeproj`. The workspace is the correct entry point because CocoaPods-generated targets and framework links live there.
@@ -160,6 +162,8 @@ The repository is a "monorepo" of two completely separate applications. A change
   - `lxc-myhealthhub-ios`: The native iOS project (Xcode/CocoaPods).
 - **Technology**: Built with modern tools including **TypeScript**, **React Navigation 7**, and **TanStack Query** for asynchronous state management. It uses a mock service for now, but is architected for a seamless transition to a live backend.
 - **Current UI pattern**: The MyHealthHub home dashboard now uses rounded badge icons, collapsible cards, tabbed lab results, and a document vault section. The bottom navigation now uses a five-tab layout with `Home`, `Health`, `Schedules`, `Vault`, and `Reports`, with pink icons by default and blue icons for the active tab.
+- **Weather/API pattern**: `lxc-myhealthhub-shared/src/api/weather.ts` reads phone lat/lon and calls `WEATHER_API_BASE_URL/v1/weather/today` through the shared API config. If device location or backend access fails in dev, it can temporarily fall back to WeatherAPI.com using `WEATHER_PROVIDER_DEV_KEY`.
+- **Home hero pattern**: The brand row stays in the top glass header. Weather city/temp stays outside that header. The greeting copy sits in a separate glass slab with only top corners rounded from `radii.card`; the slab grows behind the Family Health Space card without shifting the card.
 - **iOS native setup**: the iPhone build path was verified on a physical device after fixing the CocoaPods/Xcode integration for the monorepo layout. The iOS project resolves the shared JS source from `../lxc-myhealthhub-shared`, and the workspace is the file to open in Xcode.
 
 ### DSA Tablet App Architecture
@@ -250,6 +254,23 @@ All commands should be run from within the specific app's directory (`lxc-myheal
 | **Lint Code** | `npm run lint` | `npm run lint` |
 | **Build Debug APK** | `npm run build:android:debug` | `cd android && ./gradlew assembleDebug` |
 
+### Hostinger API Deployment Bundle
+
+The Node backend is packaged from `lxc-health-api/` using:
+
+```sh
+./Executable/macos_healthapi_package.sh
+```
+
+The script writes deployable archives to:
+
+```text
+lxc-health-api/publish/
+```
+
+Use the `.tar` file for manual Hostinger upload. The accidental root-level
+`publish/` folder is not used and should not exist.
+
 ## 🛠️ Local macOS Development Setup
 
 > **Important**: This repository uses a sandboxed, project-independent toolchain instead of relying on globally installed packages like Node or Java.
@@ -293,6 +314,10 @@ verified tool versions.
   platform-specific code.
 - **2024-07-21 — DSA app renamed.** `lxc-myrecords-dsaapp-xda` was renamed to
   `lxc-myrecords-dsa-xda` for naming consistency with the rest of the repo.
+- **2026-07-25 — Hostinger weather API integration.** Added `lxc-health-api`,
+  Swagger/OpenAPI docs, `/v1/health`, `/v1/weather/today`, centralized provider
+  config, Hostinger packaging, and MyHealthHub home weather UI using device
+  lat/lon with Dubai fallback.
 
 ## 🤖 AI Assistant Guide
 

@@ -10,9 +10,10 @@ This service acts as the private backend layer for weather integration:
 
 ## Branch Context
 
-- Created on the `weather-api-integration` branch
+- Created on the `weather-api-integration` branch and merged into `main` on 2026-07-25
 - Intended to be deployed as a Node app on Hostinger
-- First consumer: MyHealthHub Dubai temperature in the header area
+- First consumer: MyHealthHub home weather display
+- Hostinger app deployment domain used during setup: `apis.lexvoraconsulting.com`
 
 ## Endpoints
 
@@ -23,6 +24,13 @@ This service acts as the private backend layer for weather integration:
 
 `GET /v1/weather/today` accepts `?q=...` directly, or `?lat=...&lon=...`, and
 falls back to `Dubai` automatically if the location lookup fails.
+
+Mobile apps should prefer latitude/longitude because phones already have device
+location:
+
+```text
+GET /v1/weather/today?lat=25.2048&lon=55.2708
+```
 
 ## Environment
 
@@ -35,6 +43,15 @@ Copy `.env.example` to `.env` and set:
 - `WEATHER_WEATHERAPI_FORECASTV1_BASE_URL`
 - `WEATHER_WEATHERAPI_FORECASTV1_API_KEY`
 
+The Hostinger UI can import these from:
+
+```text
+publish/import.env
+```
+
+Replace placeholder secret values inside Hostinger's environment-variable UI.
+Do not commit real production secrets.
+
 ## Runtime
 
 This backend is a Node.js app and must be deployed to a Hostinger plan or
@@ -43,6 +60,9 @@ environment that supports Node.js execution.
 Recommended runtime:
 
 - Node.js 20 LTS
+
+Hostinger hPanel showed support for Node.js 18.x, 20.x, 22.x, and 24.x. Use
+20.x for this API unless a future dependency requires a newer runtime.
 
 If Hostinger asks for a startup command, use:
 
@@ -200,17 +220,53 @@ http://localhost:3000/openapi.json
 In production, replace `localhost` with:
 
 ```text
-https://api.lexvoraconsulting.com
+https://apis.lexvoraconsulting.com
 ```
 
 ## Hostinger deployment
 
-1. Upload this folder to your Node app location on Hostinger
-2. Set the environment variables in Hostinger
-3. Make sure Node.js is enabled for the site/app in Hostinger
-4. Run `npm install`
-5. Run `npm run build`
-6. Start the app with `npm start`
+Use manual upload when you want to control exactly when stable code goes live.
+Do not use GitHub auto-connect unless you want deployments tied directly to
+repository updates.
+
+1. Generate a deploy bundle from the repo root:
+
+   ```bash
+   ./Executable/macos_healthapi_package.sh
+   ```
+
+2. Upload the generated `.tar` from:
+
+   ```text
+   lxc-health-api/publish/
+   ```
+
+3. In Hostinger Review Build Settings:
+   - Framework preset: `Express`
+   - Node version: `20.x`
+   - Root directory: `./`
+   - Build command: `npm run build`
+   - Start command: `npm start`
+
+4. Import or enter environment variables from:
+
+   ```text
+   lxc-health-api/publish/import.env
+   ```
+
+5. Replace `WEATHER_WEATHERAPI_FORECASTV1_API_KEY` with the real WeatherAPI.com
+   key in Hostinger.
+
+6. Deploy and verify:
+
+   ```text
+   https://apis.lexvoraconsulting.com/v1/health
+   https://apis.lexvoraconsulting.com/docs
+   https://apis.lexvoraconsulting.com/v1/weather/today?lat=25.2048&lon=55.2708
+   ```
+
+The root-level repo folder `publish/` is not used. Deployment archives must stay
+under `lxc-health-api/publish/`.
 
 ## App Contract
 
@@ -224,3 +280,15 @@ GET /v1/weather/today?lat=25.2048&lon=55.2708
 
 That keeps the WeatherAPI key private and gives us one place to add caching,
 logging, or new weather fields later.
+
+## Mobile dev fallback
+
+The mobile app has a temporary dev fallback path for weather rendering while
+Hostinger setup is still in progress:
+
+- `lxc-myhealthhub-shared/src/api/config.ts`
+- `lxc-myhealthhub-shared/src/api/weather.ts`
+- env var: `WEATHER_PROVIDER_DEV_KEY`
+
+This is not the production security model. Production should authenticate mobile
+requests to this backend and keep provider keys server-side.
