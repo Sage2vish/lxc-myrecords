@@ -112,6 +112,10 @@ function TabIcon({
   return null;
 }
 
+function renderTabBarIcon(focused: boolean, routeName: keyof RootTabParamList) {
+  return <TabIcon focused={focused} routeName={routeName} />;
+}
+
 const styles = StyleSheet.create({
   tabIcon: {
     fontSize: 18,
@@ -210,7 +214,7 @@ export function RootNavigator() {
           shadowOffset: {width: 0, height: -6},
           elevation: 12,
         },
-        tabBarIcon: ({focused}) => <TabIcon focused={focused} routeName={route.name} />,
+        tabBarIcon: ({focused}) => renderTabBarIcon(focused, route.name as keyof RootTabParamList),
       })}>
       <Tab.Screen name="Home" component={HomeScreen} options={{tabBarLabel: ''}} />
       <Tab.Screen name="Vitals" component={VitalsScreen} options={{tabBarLabel: 'Health'}} />
