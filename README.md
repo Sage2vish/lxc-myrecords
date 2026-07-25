@@ -241,7 +241,7 @@ Copyright 2026
 
 ---
 
-## 📖 Overview
+## 📖 Platform Dossier
 
 This repository is the home of the **Lexvora MyRecords healthcare platform**.
 It contains two independently built React Native applications:
@@ -252,7 +252,7 @@ It contains two independently built React Native applications:
 > **Note**: The two apps do not share code or dependencies. They are versioned
 > and built separately inside the same monorepo.
 
-## Current Context
+### Current Context
 
 **Weather integration status**
 
@@ -268,7 +268,7 @@ It contains two independently built React Native applications:
 - Weather uses phone latitude/longitude when available and falls back to Dubai
 - Current production API deployment target shown in Hostinger: `https://apis.lexvoraconsulting.com`
 
-## 📱 Application & Engines
+### Application & Engines
 
 | App / Engine | Who it's for | Platforms | Folder(s) |
 |---|---|---|---|
@@ -337,7 +337,7 @@ and upload documents — even with zero internet connectivity.
 
 ---
 
-## 🎯 Platform & Device Compatibility
+### Platform & Device Compatibility
 
 This section explains which devices and operating systems are supported by each
 application in easy-to-understand terms.
@@ -391,7 +391,7 @@ apps to external providers directly.
 
 ---
 
-## 🧱 Architecture
+### Architecture Details
 
 The platform is intentionally split into independent layers. The mobile apps
 own the user experience, `LXC-Health-API` owns healthcare-facing backend
@@ -524,7 +524,7 @@ services, and publish workflow. That makes future extraction straightforward:
 
 ---
 
-## 👩‍💻 Developer's Guide
+### Developer's Guide
 
 This section provides a deeper look into the architecture and technology choices for developers working on the codebase.
 
@@ -582,7 +582,7 @@ release decisions.
 
 ---
 
-## 🚀 Setup and Running the Apps
+### Setup and Running the Apps
 
 Follow these steps to get a local development environment running.
 
@@ -632,7 +632,7 @@ is missing:
 ./Executable/macos_xdaapp_build.sh          # Android debug/release build
 ```
 
-## ⚡️ Common Commands
+### Common Commands
 
 All commands should be run from within the specific app's directory (`lxc-myhealthhub-shared` or `lxc-myrecords-dsa-xda`).
 
@@ -662,7 +662,7 @@ lxc-health-api/publish/
 Use the `.tar` file for manual Hostinger upload. The accidental root-level
 `publish/` folder is not used and should not exist.
 
-## 🛠️ Local macOS Development Setup
+### Local macOS Development Setup
 
 > **Important**: This repository uses a sandboxed, project-independent toolchain instead of relying on globally installed packages like Node or Java.
 
@@ -692,7 +692,7 @@ machine, without changing global package-manager state. See
 [`lxc-myhealthhub-shared/README.md`](./lxc-myhealthhub-shared/README.md) for the exact
 verified tool versions.
 
-## 📜 Project History
+### Project History
 - **Initial build-out** — MyHealthHub (patient-facing, Android-first) and the DSA
   tablet app (field-agent, offline-first with SQLite) were developed as two separate
   React Native apps under this repo.
@@ -710,13 +710,13 @@ verified tool versions.
   config, Hostinger packaging, and MyHealthHub home weather UI using device
   lat/lon with Dubai fallback.
 
-## 🤖 AI Assistant Guide
+### AI Assistant Guide
 
 This repository includes a `CLAUDE.md` file containing detailed context for AI coding assistants. It covers the repository layout, the unique macOS toolchain setup, and architectural conventions. To ensure the best results when using an AI assistant, please provide it with the contents of this file.
 
 ---
 
-## © License
+### License
 
 This project is the intellectual property of **Lexvora Consulting**. All rights
 reserved. © 2024–2026 Lexvora Consulting. See [`LICENSE`](./LICENSE) for the
