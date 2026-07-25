@@ -1,11 +1,7 @@
-<p align="center">
-  <a href="https://lexvoraconsulting.com" target="_blank">
-    <h1 align="center">🩺 MyRecords Healthcare Platform</h1>
-  </a>
-</p>
+<h1 align="center">🩺 MyRecords Healthcare Platform</h1>
 
 <p align="center">
-  <a href="https://lexvoraconsulting.com" target="_blank"><strong> lexvoraconsulting.com</strong></a>
+  <a href="https://lexvoraconsulting.com" target="_blank"><strong>lexvoraconsulting.com</strong></a>
 </p>
 
 <p align="center">
@@ -25,7 +21,7 @@
 - [👩‍💻 Developer's Guide](#-developers-guide)
 - [🚀 Setup and Running the Apps](#-setup-and-running-the-apps)
 - [⚡️ Common Commands](#️-common-commands)
-- [�️ Local macOS Development Setup](#️-local-macos-development-setup)
+- [🛠️ Local macOS Development Setup](#-local-macos-development-setup)
 - [📜 Repository History](#-repository-history)
 - [🤖 AI Assistant Guide](#-ai-assistant-guide)
 - [© License](#-license)
@@ -34,14 +30,18 @@
 
 ## 📖 Overview
 
-This repository is the home of the **Lexvora MyRecords healthcare platform**. It contains two distinct React Native applications:
+This repository is the home of the **Lexvora MyRecords healthcare platform**.
+It contains two independently built React Native applications:
 
-1.  **MyHealthHub**: A patient-facing mobile app for managing health records.
-2.  **DSA Tablet App**: An offline-first tablet app for field agents.
+1. **MyHealthHub**: a patient-facing mobile app for managing health records.
+2. **DSA Tablet App**: an offline-first tablet app for field agents.
 
-> **Note**: These projects are developed independently within this monorepo. They do not share code or dependencies and are versioned and built separately.
+> **Note**: The two apps do not share code or dependencies. They are versioned
+> and built separately inside the same monorepo.
 
 ## Current Context
+
+**Weather integration status**
 
 - Main branch contains the Hostinger weather integration as of 2026-07-25
 - New backend project: [`lxc-health-api`](./lxc-health-api/)
@@ -62,7 +62,9 @@ This repository is the home of the **Lexvora MyRecords healthcare platform**. It
 
 ### 1. 🏥 MyHealthHub Mobile App
 
-The MyHealthHub app is a modern, patient-centric mobile application that empowers patients to manage their health information, connect with providers, and stay informed about their care.
+The MyHealthHub app is a modern, patient-centric mobile application that helps
+patients manage health information, connect with providers, and stay informed
+about their care.
 
 **Key Features:**
 - 🗂️ View and manage health records, prescriptions, and vitals
@@ -78,10 +80,16 @@ The MyHealthHub app is a modern, patient-centric mobile application that empower
 - 🧑‍⚕️ DSA Assisted Setup card — bridges to in-person agent support
 - 🔒 Privacy/security card
 - 👤 Profile and settings management
-- 🌤️ Weather header integration through `/v1/weather/today`; city and Celsius temperature render below the top glass header, outside the header slab, in ruby pink
+- 🌤️ Weather integration through `/v1/weather/today`; city and Celsius temperature render below the top glass header, outside the header slab, in ruby pink
 
-> **Status**: Android build verified (debug APK builds successfully). iOS build verified end-to-end — builds and launches on both the iOS Simulator and a physical device.
-> **Important iOS note**: when opening the native iOS project in Xcode, use `LxcMyHealthHub.xcworkspace` and not `LxcMyHealthHub.xcodeproj`. The workspace is the correct entry point because CocoaPods-generated targets and framework links live there.
+> **Status**: Android build verified (debug APK builds successfully). iOS build
+> verified end-to-end and launches on both the iOS Simulator and a physical
+> device.
+>
+> **Important iOS note**: when opening the native iOS project in Xcode, use
+> `LxcMyHealthHub.xcworkspace` and not `LxcMyHealthHub.xcodeproj`. The
+> workspace is the correct entry point because CocoaPods-generated targets and
+> framework links live there.
 
 > For detailed setup and development instructions, see the app's dedicated README:
 > **➡️ `lxc-myhealthhub-shared/README.md`**
@@ -113,27 +121,40 @@ and upload documents — even with zero internet connectivity.
 
 ## 🎯 Platform & Device Compatibility
 
-This section explains which devices and operating systems are supported by each application in easy-to-understand terms.
+This section explains which devices and operating systems are supported by each
+application in easy-to-understand terms.
+
+### Node.js Backend Compatibility
+
+The weather backend in [`lxc-health-api`](./lxc-health-api/) is a Node.js
+service and should be deployed with a supported Node runtime.
+
+- **Recommended runtime:** Node.js 20.x
+- **Hostinger support shown in setup:** 18.x, 20.x, 22.x, 24.x
+- **Deployment note:** the API package is versioned separately and uploaded from
+  `lxc-health-api/publish/`
 
 ### 🏥 MyHealthHub (Patient App)
 
 This application is designed for patients to use on their personal smartphones.
 
 #### **For Android Users**
-*   **Supported OS:** Android 10 or any newer version.
-*   **Compatible Devices:** The app is designed for modern Android smartphones released from **late 2019 onwards**. This includes, but is not limited to:
-    *   Samsung Galaxy S10 series and newer
-    *   Google Pixel 4 and newer
-    *   OnePlus 7 series and newer
-    *   And any other phone that originally came with Android 10 or has been updated to it.
-*   **How to Check:** You can find your Android version in `Settings > About phone > Android version`.
+- **Supported OS:** Android 10 or any newer version.
+- **Compatible Devices:** The app is designed for modern Android smartphones
+  released from **late 2019 onwards**. This includes, but is not limited to:
+  - Samsung Galaxy S10 series and newer
+  - Google Pixel 4 and newer
+  - OnePlus 7 series and newer
+  - Any other phone that originally came with Android 10 or has been updated to it
+- **How to Check:** You can find your Android version in `Settings > About phone > Android version`.
 
 #### **For iPhone Users**
-*   **Supported OS:** iOS 15.1 or any newer version.
-*   **Compatible Devices:** The app works on the **iPhone 6s and all newer models**. This includes:
-    *   iPhone SE (all generations)
-    *   iPhone 7, 8, X, 11, 12, 13, 14, 15 and their Plus/Pro/Max variants.
-*   **How to Check:** You can find your iOS version in `Settings > General > About`.
+- **Supported OS:** iOS 15.1 or any newer version.
+- **Compatible Devices:** The app works on the **iPhone 6s and all newer models**.
+  This includes:
+  - iPhone SE (all generations)
+  - iPhone 7, 8, X, 11, 12, 13, 14, 15 and their Plus/Pro/Max variants
+- **How to Check:** You can find your iOS version in `Settings > General > About`.
 
 ---
 
@@ -153,17 +174,32 @@ This application is built specifically for field agents to use on Android tablet
 This section provides a deeper look into the architecture and technology choices for developers working on the codebase.
 
 ### Core Philosophy
-The repository is a "monorepo" of two completely separate applications. A change in one app does not affect the other. This allows for tailored technology choices for each app's specific needs.
+The repository is a monorepo of two separate applications. A change in one app
+does not affect the other. That allows each app to keep its own technology and
+release decisions.
 
 ### MyHealthHub Architecture
 - **Structure**: The app is split into three folders to cleanly separate the shared JavaScript/TypeScript code from the native Android and iOS build projects.
   - `lxc-myhealthhub-shared`: Contains all app logic, screens, components, and assets. **99% of development happens here.**
   - `lxc-myhealthhub-xda`: The native Android project (Gradle).
   - `lxc-myhealthhub-ios`: The native iOS project (Xcode/CocoaPods).
-- **Technology**: Built with modern tools including **TypeScript**, **React Navigation 7**, and **TanStack Query** for asynchronous state management. It uses a mock service for now, but is architected for a seamless transition to a live backend.
-- **Current UI pattern**: The MyHealthHub home dashboard now uses rounded badge icons, collapsible cards, tabbed lab results, and a document vault section. The bottom navigation now uses a five-tab layout with `Home`, `Health`, `Schedules`, `Vault`, and `Reports`, with pink icons by default and blue icons for the active tab.
-- **Weather/API pattern**: `lxc-myhealthhub-shared/src/api/weather.ts` reads phone lat/lon and calls `WEATHER_API_BASE_URL/v1/weather/today` through the shared API config. If device location or backend access fails in dev, it can temporarily fall back to WeatherAPI.com using `WEATHER_PROVIDER_DEV_KEY`.
-- **Home hero pattern**: The brand row stays in the top glass header. Weather city/temp stays outside that header. The greeting copy sits in a separate glass slab with only top corners rounded from `radii.card`; the slab grows behind the Family Health Space card without shifting the card.
+- **Technology**: Built with modern tools including **TypeScript**, **React
+  Navigation 7**, and **TanStack Query** for asynchronous state management. It
+  uses a mock service for now, but is architected for a seamless transition to
+  a live backend.
+- **Current UI pattern**: The MyHealthHub home dashboard now uses rounded badge
+  icons, collapsible cards, tabbed lab results, and a document vault section.
+  The bottom navigation uses a five-tab layout with `Home`, `Health`,
+  `Schedules`, `Vault`, and `Reports`, with pink icons by default and blue
+  icons for the active tab.
+- **Weather/API pattern**: `lxc-myhealthhub-shared/src/api/weather.ts` reads
+  phone lat/lon and calls `WEATHER_API_BASE_URL/v1/weather/today` through the
+  shared API config. If device location or backend access fails in dev, it can
+  temporarily fall back to WeatherAPI.com using `WEATHER_PROVIDER_DEV_KEY`.
+- **Home hero pattern**: The brand row stays in the top glass header. Weather
+  city/temp stays outside that header. The greeting copy sits in a separate
+  glass slab with only top corners rounded from `radii.card`; the slab grows
+  behind the Family Health Space card without shifting the card.
 - **iOS native setup**: the iPhone build path was verified on a physical device after fixing the CocoaPods/Xcode integration for the monorepo layout. The iOS project resolves the shared JS source from `../lxc-myhealthhub-shared`, and the workspace is the file to open in Xcode.
 
 ### DSA Tablet App Architecture
@@ -191,7 +227,7 @@ The repository is a "monorepo" of two completely separate applications. A change
 
 ---
 
-##  Setup and Running the Apps
+## 🚀 Setup and Running the Apps
 
 Follow these steps to get a local development environment running.
 
