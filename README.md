@@ -128,13 +128,47 @@ and upload documents — even with zero internet connectivity.
 This section explains which devices and operating systems are supported by each
 application in easy-to-understand terms.
 
-| Component | Target | Supported / Recommended | Notes |
+### Backend Runtime
+
+| Module | Runtime | Supported Versions | Recommended | Notes |
+|---|---|---|---|---|
+| `LXC-Health-API` | Node.js | `18.x`, `20.x`, `22.x`, `24.x` on Hostinger | `20.x` | Deploy from `lxc-health-api/publish/`. This module is designed so it can later move into its own repo/package. |
+
+### MyHealthHub Android Compatibility
+
+| Android Version | API Level | Support Status | Compatible Device Examples | Notes |
+|---|---:|---|---|---|
+| Android 16 | API 36 | Target platform | Pixel 8 Pro, Pixel 9 Pro, modern Samsung/OnePlus flagships when updated | Current Android project target baseline. |
+| Android 15 | API 35 | Supported | Pixel 6+, Samsung Galaxy S21+, OnePlus 9+, OPPO Reno modern models | Verified local framework currently has Android SDK Platform 35. |
+| Android 14 | API 34 | Supported | Pixel 4a 5G+, Galaxy S20+, OnePlus 8+, many 2020+ phones | Good production compatibility band. |
+| Android 13 | API 33 | Supported | Pixel 4+, Galaxy S10/S20+, OnePlus 7T+, many 2019+ phones | Supported by the app baseline. |
+| Android 12 / 12L | API 31 / 32 | Supported | Pixel 3+, Galaxy S10+, OnePlus 7+, tablets on Android 12L | Compatible with current React Native baseline. |
+| Android 11 | API 30 | Supported | Pixel 2+, Galaxy S9/S10+, OnePlus 6T+ | Supported, but test on real device before release. |
+| Android 10 | API 29 | Minimum supported | Galaxy S10 series, Pixel 4, OnePlus 7 series, OPPO Reno class devices | Minimum Android version for MyHealthHub. |
+| Android 9 and below | API 28 and below | Not supported | Older phones released before Android 10 | Outside current app support. |
+
+### MyHealthHub iPhone Compatibility
+
+| iPhone / iOS Band | Minimum iOS | Support Status | Compatible Device Examples | Notes |
+|---|---:|---|---|---|
+| Latest iPhones | iOS 17 / 18+ | Supported | iPhone 15, 15 Plus, 15 Pro, 15 Pro Max, newer models | Preferred modern test band. |
+| Recent iPhones | iOS 16+ | Supported | iPhone 12, 13, 14 series and SE 3rd generation | Strong production compatibility band. |
+| Older supported iPhones | iOS 15.1+ | Supported | iPhone 6s, 6s Plus, SE 1st generation, 7, 7 Plus, 8, 8 Plus, X, XS, XR, 11 series | iOS `15.1` is the minimum supported iOS version. |
+| Below iOS 15.1 | Below iOS 15.1 | Not supported | Devices that cannot install iOS 15.1 or newer | Outside current app support. |
+
+### DSA Tablet Compatibility
+
+| App | Device Type | OS Support | Device Examples | Notes |
+|---|---|---|---|---|
+| DSA Tablet App | Android tablets | Modern Android tablet versions | Samsung Galaxy Tab series, Lenovo Android tablets, other enterprise Android tablets | Built for field-agent tablet workflows. |
+| DSA Tablet App | Phones | Not intended | Android phones | Use MyHealthHub for phone workflows. |
+| DSA Tablet App | iPad | Not supported today | iPad / iPadOS | Future iPad support would need its own native builder folder. |
+
+### Weather API Contract
+
+| Consumer | Preferred Location Input | Fallback | API Contract |
 |---|---|---|---|
-| `LXC-Health-API` backend module | Node.js | Recommended: Node.js `20.x` | Hostinger showed support for `18.x`, `20.x`, `22.x`, and `24.x`. Deploy the packaged archive from `lxc-health-api/publish/`. This module is designed so it can later move into its own repo/package. |
-| MyHealthHub app | Android smartphones | Android `10+` | Best fit for modern phones released from late 2019 onward, including Galaxy S10+, Pixel 4+, and OnePlus 7+. |
-| MyHealthHub app | iPhone | iOS `15.1+` | Works on iPhone 6s and newer, including SE, 7, 8, X, 11, 12, 13, 14, 15, and Plus/Pro/Max variants. |
-| DSA Tablet App | Android tablets | Modern Android tablet devices | Built for Android tablets only. Not intended for phones or iPads. |
-| Weather API contract | Mobile weather flow | Phone lat/lon preferred | If location is unavailable, the weather backend falls back to Dubai. |
+| MyHealthHub mobile app | Phone latitude and longitude | Dubai | `GET /v1/weather/today?lat=<lat>&lon=<lon>` |
 
 ---
 
@@ -271,7 +305,7 @@ services, and publish workflow. That makes future extraction straightforward:
 
 ---
 
-## �‍💻 Developer's Guide
+## 👩‍💻 Developer's Guide
 
 This section provides a deeper look into the architecture and technology choices for developers working on the codebase.
 
