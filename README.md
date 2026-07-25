@@ -13,18 +13,50 @@
 
 ---
 
-## 📚 Table of Contents
+## 📚 Repository Navigation
 
-- [📖 Overview](#-overview)
-- [📱 The Applications](#-the-applications)
-- [🎯 Platform & Device Targets](#-platform--device-targets)
-- [👩‍💻 Developer's Guide](#-developers-guide)
-- [🚀 Setup and Running the Apps](#-setup-and-running-the-apps)
-- [⚡️ Common Commands](#️-common-commands)
-- [🛠️ Local macOS Development Setup](#-local-macos-development-setup)
-- [📜 Repository History](#-repository-history)
-- [🤖 AI Assistant Guide](#-ai-assistant-guide)
-- [© License](#-license)
+<p align="center">
+  <strong>Lexvora MyRecords Monorepo Guide</strong>
+  <br/>
+  <a href="#-overview"><strong>Overview</strong></a>
+  ·
+  <a href="#-the-applications"><strong>Applications</strong></a>
+  ·
+  <a href="#-platform--device-compatibility"><strong>Compatibility</strong></a>
+  ·
+  <a href="#-architecture"><strong>Architecture</strong></a>
+  ·
+  <a href="#-setup-and-running-the-apps"><strong>Setup</strong></a>
+  ·
+  <a href="#-license"><strong>License</strong></a>
+</p>
+
+### Executive Map
+
+| Level | No. | Section | Level 2 Coverage |
+|---:|---:|---|---|
+| 1 | 01 | [Overview](#-overview) | [Current Context](#current-context) |
+| 1 | 02 | [The Applications](#-the-applications) | [MyHealthHub Mobile App](#1--myhealthhub-mobile-app), [MyRecords DSA Tablet App](#2--myrecords-dsa-tablet-app), [Features](#features) |
+| 1 | 03 | [Platform & Device Compatibility](#-platform--device-compatibility) | [Backend Runtime](#backend-runtime), [MyHealthHub Android Compatibility](#myhealthhub-android-compatibility), [MyHealthHub iPhone Compatibility](#myhealthhub-iphone-compatibility), [DSA Tablet Compatibility](#dsa-tablet-compatibility), [Weather API Contract](#weather-api-contract) |
+| 1 | 04 | [Architecture](#-architecture) | [Mobile Layer](#mobile-layer), [API Layer](#api-layer), [External Provider Boundary](#external-provider-boundary), [Request Flow](#request-flow), [Future Extraction Path](#future-extraction-path) |
+| 1 | 05 | [Developer's Guide](#-developers-guide) | [Core Philosophy](#core-philosophy), [MyHealthHub Architecture](#myhealthhub-architecture), [DSA Tablet App Architecture](#dsa-tablet-app-architecture), [Tech Stack Comparison](#tech-stack-comparison) |
+| 1 | 06 | [Setup and Running the Apps](#-setup-and-running-the-apps) | [Step 1: Set Up The Local Toolchain](#step-1-set-up-the-local-toolchain-critical), [Step 2: Clone the Repository](#step-2-clone-the-repository), [Step 3: Install Dependencies and Run an App](#step-3-install-dependencies-and-run-an-app), [Fastest path: one-shot build scripts](#fastest-path-one-shot-build-scripts) |
+| 1 | 07 | [Common Commands](#-common-commands) | [Hostinger API Deployment Bundle](#hostinger-api-deployment-bundle) |
+| 1 | 08 | [Local macOS Development Setup](#-local-macos-development-setup) | Sandboxed `frameworks/` toolchain for Node, JDK, Android SDK, Gradle, Ruby, and CocoaPods |
+| 1 | 09 | [Repository History](#-project-history) | Major project milestones and integration history |
+| 1 | 10 | [AI Assistant Guide](#-ai-assistant-guide) | Assistant onboarding context and `CLAUDE.md` reference |
+| 1 | 11 | [License](#-license) | Lexvora Consulting ownership and proprietary license reference |
+
+### Premium Quick Paths
+
+| Need | Go Directly To | Why |
+|---|---|---|
+| Understand the reusable backend module | [API Layer](#api-layer) | Explains `LXC-Health-API` as a Lexvora service module that can later become a separate repo/package. |
+| Check Android OS and device support | [MyHealthHub Android Compatibility](#myhealthhub-android-compatibility) | Shows Android versions, API levels, device examples, and support status. |
+| Check iPhone and iOS support | [MyHealthHub iPhone Compatibility](#myhealthhub-iphone-compatibility) | Shows supported iOS bands and compatible iPhone families. |
+| Understand secure external API access | [External Provider Boundary](#external-provider-boundary) | Shows why mobile apps call Lexvora APIs instead of WeatherAPI.com directly. |
+| Trace the weather call end to end | [Request Flow](#request-flow) | Walks through phone lat/lon to Node.js API to WeatherAPI.com to home screen rendering. |
+| Prepare Hostinger deployment | [Hostinger API Deployment Bundle](#hostinger-api-deployment-bundle) | Shows the `.tar` packaging path and deploy bundle workflow. |
 
 ---
 
