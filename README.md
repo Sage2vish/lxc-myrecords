@@ -44,8 +44,12 @@ It contains two independently built React Native applications:
 **Weather integration status**
 
 - Main branch contains the Hostinger weather integration as of 2026-07-25
-- New backend project: [`lxc-health-api`](./lxc-health-api/)
-- MyHealthHub calls the backend first, and the backend calls WeatherAPI.com
+- Reusable backend module: [`lxc-health-api`](./lxc-health-api/)
+- `LXC-Health-API` is not only a MyHealthHub helper. It is a shared Lexvora API
+  module that any Lexvora app can consume, and it is eligible to become its own
+  repository or package later.
+- MyHealthHub calls `LXC-Health-API` first, and `LXC-Health-API` calls
+  WeatherAPI.com internally.
 - Production WeatherAPI secrets belong in Hostinger environment variables, not in app source
 - Temporary dev fallback support exists in the mobile app so the home temperature can still render during backend setup
 - Weather uses phone latitude/longitude when available and falls back to Dubai
@@ -124,48 +128,146 @@ and upload documents — even with zero internet connectivity.
 This section explains which devices and operating systems are supported by each
 application in easy-to-understand terms.
 
-### Node.js Backend Compatibility
-
-The weather backend in [`lxc-health-api`](./lxc-health-api/) is a Node.js
-service and should be deployed with a supported Node runtime.
-
-- **Recommended runtime:** Node.js 20.x
-- **Hostinger support shown in setup:** 18.x, 20.x, 22.x, 24.x
-- **Deployment note:** the API package is versioned separately and uploaded from
-  `lxc-health-api/publish/`
-
-### 🏥 MyHealthHub (Patient App)
-
-This application is designed for patients to use on their personal smartphones.
-
-#### **For Android Users**
-- **Supported OS:** Android 10 or any newer version.
-- **Compatible Devices:** The app is designed for modern Android smartphones
-  released from **late 2019 onwards**. This includes, but is not limited to:
-  - Samsung Galaxy S10 series and newer
-  - Google Pixel 4 and newer
-  - OnePlus 7 series and newer
-  - Any other phone that originally came with Android 10 or has been updated to it
-- **How to Check:** You can find your Android version in `Settings > About phone > Android version`.
-
-#### **For iPhone Users**
-- **Supported OS:** iOS 15.1 or any newer version.
-- **Compatible Devices:** The app works on the **iPhone 6s and all newer models**.
-  This includes:
-  - iPhone SE (all generations)
-  - iPhone 7, 8, X, 11, 12, 13, 14, 15 and their Plus/Pro/Max variants
-- **How to Check:** You can find your iOS version in `Settings > General > About`.
+| Component | Target | Supported / Recommended | Notes |
+|---|---|---|---|
+| `LXC-Health-API` backend module | Node.js | Recommended: Node.js `20.x` | Hostinger showed support for `18.x`, `20.x`, `22.x`, and `24.x`. Deploy the packaged archive from `lxc-health-api/publish/`. This module is designed so it can later move into its own repo/package. |
+| MyHealthHub app | Android smartphones | Android `10+` | Best fit for modern phones released from late 2019 onward, including Galaxy S10+, Pixel 4+, and OnePlus 7+. |
+| MyHealthHub app | iPhone | iOS `15.1+` | Works on iPhone 6s and newer, including SE, 7, 8, X, 11, 12, 13, 14, 15, and Plus/Pro/Max variants. |
+| DSA Tablet App | Android tablets | Modern Android tablet devices | Built for Android tablets only. Not intended for phones or iPads. |
+| Weather API contract | Mobile weather flow | Phone lat/lon preferred | If location is unavailable, the weather backend falls back to Dubai. |
 
 ---
 
-### 🚐 DSA Tablet App (Field Agent App)
+## 🧱 Architecture
 
-This application is built specifically for field agents to use on Android tablets.
+The platform is intentionally split into independent layers. The mobile apps
+own the user experience, `LXC-Health-API` owns healthcare-facing backend
+contracts, and external providers stay behind the backend boundary. This makes
+the system secure, reusable, and loosely coupled.
 
-#### **For Android Tablet Users**
-*   **Supported OS:** Designed for modern versions of the Android operating system.
-*   **Compatible Devices:** The app is intended for use on Android tablets. Specific device compatibility is being finalized, but it is built to perform well on standard, modern tablets from major manufacturers.
-*   **Note:** This app is not intended for use on smartphones or Apple iPads.
+`LXC-Health-API` is a separate module inside this monorepo today, but it should
+be treated as a product-grade service boundary. Any Lexvora app can call it in
+the future, and the folder is eligible to be extracted into its own repository
+or published package when the platform grows.
+
+```mermaid
+flowchart LR
+    subgraph Mobile["MyHealthHub Mobile Shells"]
+        IOS["iOS Native Builder\nlxc-myhealthhub-ios"]
+        AND["Android Native Builder\nlxc-myhealthhub-xda"]
+        SHARED["Shared React Native Screens\nlxc-myhealthhub-shared"]
+        IOS --> SHARED
+        AND --> SHARED
+    end
+
+    subgraph APIBox["Reusable Lexvora API Module"]
+        API["LXC-Health-API\nNode.js + Express\n/v1 routes"]
+        REGISTRY["Central Provider Registry\napis.weather.weatherapi.forecastv1"]
+        SWAGGER["Swagger / OpenAPI\n/docs + /openapi.json"]
+        API --> REGISTRY
+        API --> SWAGGER
+    end
+
+    SHARED -->|GET /v1/weather/today\nlat/lon from phone| API
+    API -->|WeatherAPI.com request| WEATHER["External WeatherAPI.com"]
+
+    subgraph Security["Security + Coupling Rules"]
+        S1["Mobile apps call Lexvora APIs, not provider APIs"]
+        S2["Provider keys stay in Hostinger env vars"]
+        S3["External providers can change without app rewrites"]
+        S4["API contracts are versioned under /v1"]
+    end
+
+    API --- Security
+
+    classDef mobile fill:#EAF4FF,stroke:#0D63B7,color:#073B86,stroke-width:1.5px;
+    classDef api fill:#FFF4F8,stroke:#F41678,color:#7A1847,stroke-width:1.5px;
+    classDef ext fill:#F4F7FB,stroke:#66758C,color:#10254A,stroke-width:1.5px;
+    classDef sec fill:#F8FAFC,stroke:#94A3B8,color:#334155,stroke-width:1px;
+    class IOS,AND,SHARED mobile
+    class API,REGISTRY,SWAGGER api
+    class WEATHER ext
+    class S1,S2,S3,S4 sec
+```
+
+### Mobile Layer
+
+MyHealthHub is split into three folders so native build concerns and shared app
+logic stay clean:
+
+| Layer | Folder | Responsibility |
+|---|---|---|
+| iOS native shell | [`lxc-myhealthhub-ios`](./lxc-myhealthhub-ios/) | Xcode project, CocoaPods, iOS build and signing setup |
+| Android native shell | [`lxc-myhealthhub-xda`](./lxc-myhealthhub-xda/) | Gradle project, Android manifest, APK/AAB build setup |
+| Shared app source | [`lxc-myhealthhub-shared`](./lxc-myhealthhub-shared/) | Screens, navigation, assets, theme, API callers, React Native app logic |
+
+Both iOS and Android render the same shared screens. That means a screen change,
+theme token update, or API call flow usually happens once in
+`lxc-myhealthhub-shared` and is then built by both native shells.
+
+### API Layer
+
+`LXC-Health-API` lives in [`lxc-health-api`](./lxc-health-api/) and is the
+backend contract layer for health-related API capabilities. It is currently
+deployed as a Hostinger Node.js app, but it is designed as a reusable Lexvora
+service module.
+
+| API Capability | Current Status | Notes |
+|---|---|---|
+| Runtime | Node.js + Express | Recommended Hostinger runtime: Node.js `20.x` |
+| Versioning | `/v1/...` | Keeps mobile contracts stable as new versions are introduced |
+| Documentation | Swagger at `/docs` | Raw OpenAPI available at `/openapi.json` |
+| Health check | `GET /v1/health` | Confirms the service is alive |
+| Weather | `GET /v1/weather/today` | Accepts `lat`/`lon` or `q`; falls back to Dubai |
+| Provider registry | `apis.weather.weatherapi.forecastv1` | Keeps external provider URLs and keys in one common place |
+
+### External Provider Boundary
+
+The mobile apps do not need to know WeatherAPI.com URLs, query rules, or secret
+keys. They only call Lexvora-owned endpoints. `LXC-Health-API` then talks to
+the external provider internally.
+
+This gives the platform several advantages:
+
+- **Security**: provider API keys stay in Hostinger environment variables.
+- **Loose coupling**: mobile apps are not tied to WeatherAPI.com directly.
+- **Provider flexibility**: WeatherAPI.com can be replaced or supplemented later
+  without changing every mobile app screen.
+- **Shared reuse**: other Lexvora apps can use the same weather endpoint without
+  copying provider logic.
+- **Version safety**: `/v1` contracts can keep working while `/v2` evolves.
+- **Testing clarity**: Swagger lets the backend be tested online before mobile
+  apps depend on it.
+
+### Request Flow
+
+Current weather flow:
+
+1. The phone provides latitude and longitude when available.
+2. `lxc-myhealthhub-shared/src/api/weather.ts` calls
+   `GET /v1/weather/today?lat=<lat>&lon=<lon>`.
+3. `LXC-Health-API` reads the WeatherAPI.com provider config from the central
+   API registry.
+4. `LXC-Health-API` calls WeatherAPI.com using server-side credentials.
+5. The backend normalizes the provider response into an app-friendly JSON shape.
+6. MyHealthHub renders the city and Celsius temperature on the home screen.
+
+If phone location or provider lookup fails, the backend falls back to Dubai so
+the app can still show a predictable weather result.
+
+### Future Extraction Path
+
+`LXC-Health-API` is intentionally kept in its own folder with its own
+`package.json`, `tsconfig.json`, README, env contract, Swagger config, routes,
+services, and publish workflow. That makes future extraction straightforward:
+
+| Future Step | Why It Is Possible |
+|---|---|
+| Move to a separate repository | The module already has its own source, package metadata, docs, and deployment bundle |
+| Publish as an internal package | API registry, service modules, and typed contracts can be packaged independently |
+| Serve multiple Lexvora apps | The API contract is app-agnostic and versioned under `/v1` |
+| Add more providers | External APIs are hidden behind backend services and central config |
+| Add auth and rate limits | Mobile callers already route through one backend boundary |
 
 ---
 
