@@ -70,6 +70,7 @@ The MyHealthHub app is a modern, patient-centric mobile application that empower
 - 👤 Profile and settings management
 
 > **Status**: Android build verified (debug APK builds successfully). iOS build verified end-to-end — builds and launches on both the iOS Simulator and a physical device.
+> **Important iOS note**: when opening the native iOS project in Xcode, use `LxcMyHealthHub.xcworkspace` and not `LxcMyHealthHub.xcodeproj`. The workspace is the correct entry point because CocoaPods-generated targets and framework links live there.
 
 > For detailed setup and development instructions, see the app's dedicated README:
 > **➡️ `lxc-myhealthhub-shared/README.md`**
@@ -150,6 +151,7 @@ The repository is a "monorepo" of two completely separate applications. A change
   - `lxc-myhealthhub-ios`: The native iOS project (Xcode/CocoaPods).
 - **Technology**: Built with modern tools including **TypeScript**, **React Navigation 7**, and **TanStack Query** for asynchronous state management. It uses a mock service for now, but is architected for a seamless transition to a live backend.
 - **Current UI pattern**: The MyHealthHub home dashboard now uses rounded badge icons, collapsible cards, tabbed lab results, and a document vault section. The bottom navigation now uses a five-tab layout with `Home`, `Health`, `Schedules`, `Vault`, and `Reports`, with pink icons by default and blue icons for the active tab.
+- **iOS native setup**: the iPhone build path was verified on a physical device after fixing the CocoaPods/Xcode integration for the monorepo layout. The iOS project resolves the shared JS source from `../lxc-myhealthhub-shared`, and the workspace is the file to open in Xcode.
 
 ### DSA Tablet App Architecture
 - **Structure**: This app is self-contained within the `lxc-myrecords-dsa-xda` folder.

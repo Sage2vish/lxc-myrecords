@@ -40,7 +40,7 @@ projects, not about forking the JS source per platform.
 
 ## Current status — read this first
 
-Last updated: 2026-07-24. This section exists so a new chat can pick up work
+Last updated: 2026-07-25. This section exists so a new chat can pick up work
 without re-discovering what's already been verified.
 
 **MyHealthHub — done / verified:**
@@ -59,6 +59,17 @@ without re-discovering what's already been verified.
   Simulator via `npx react-native run-ios`. Physical-device build also verified
   against a connected iPhone 14 Pro Max ("Sage 14Pro", signing team
   `6EERS23K5D` already set in the pbxproj).
+- Xcode usage note: open `lxc-myhealthhub-ios/LxcMyHealthHub.xcworkspace`
+  rather than `LxcMyHealthHub.xcodeproj`. The workspace is required because
+  CocoaPods-generated targets and framework links are part of the build.
+- Monorepo iOS build fixes applied:
+  - `lxc-myhealthhub-ios/Podfile` now resolves Node from the pinned local
+    toolchain and exports the environment CocoaPods needs.
+  - `lxc-myhealthhub-ios/LxcMyHealthHub.xcodeproj/project.pbxproj` now sets the
+    React Native bundle script project root correctly for
+    `../lxc-myhealthhub-shared`.
+  - `Executable/macos_iosapp_build.sh` now re-applies the sandbox workaround
+    before each build, so Xcode upgrades do not break the CocoaPods scripts.
 - Fixed a real build breakage: Xcode auto-upgrading `project.pbxproj` sets
   `ENABLE_USER_SCRIPT_SANDBOXING = YES`, which makes CocoaPods' "[CP] Embed Pods
   Frameworks" script phase fail with a sandbox `rsync`/`unlink` denial on
