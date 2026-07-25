@@ -1,4 +1,4 @@
-import {env} from '../config/env.js';
+import {apis} from '../config/apis.js';
 
 export type CurrentWeatherResponse = {
   location: {
@@ -34,11 +34,28 @@ export type WeatherSummary = {
   source: 'weatherapi.com';
 };
 
-export async function fetchCurrentWeather(city: string): Promise<WeatherSummary> {
-  const url = new URL('/current.json', env.weatherApiBaseUrl);
-  url.searchParams.set('key', env.weatherApiKey);
-  url.searchParams.set('q', city);
+type LocationQuery = {
+  lat?: number;
+  lon?: number;
+  city?: string;
+  q?: string;
+};
+
+export async function fetchCurrentWeather(location: LocationQuery): Promise<WeatherSummary> {
+  const {baseUrl, apiKey} = apis.weather.weatherapi.forecastv1;
+  const url = new URL('/current.json', baseUrl);
+  url.searchParams.set('key', apiKey);
   url.searchParams.set('aqi', 'no');
+
+  if (location.q) {
+    url.searchParams.set('q', location.q);
+  } else if (typeof location.lat === 'number' && typeof location.lon === 'number') {
+    url.searchParams.set('q', `${location.lat},${location.lon}`);
+  } else if (location.city) {
+    url.searchParams.set('q', location.city);
+  } else {
+    throw new Error('Either lat/lon or city is required');
+  }
 
   const response = await fetch(url, {
     headers: {

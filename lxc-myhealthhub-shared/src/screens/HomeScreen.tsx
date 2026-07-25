@@ -14,7 +14,7 @@
 //               card.
 // ============================================================================
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ImageBackground,
   Image,
@@ -29,6 +29,7 @@ import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useAccountMenu} from '../context/AccountMenuContext';
+import {fetchDeviceWeather, type WeatherSummary} from '../api/weather';
 import type {RootTabParamList} from '../navigation/RootNavigator';
 import {colors} from '../theme/colors';
 import {getHeroTheme} from '../theme/dayparts';
@@ -186,6 +187,22 @@ const documentVaultItems = [
   },
 ] as const;
 
+const defaultWeather: WeatherSummary = {
+  requestedLocation: {city: 'Dubai'},
+  version: 'local-dev-fallback',
+  city: 'Dubai',
+  region: 'Dubai',
+  country: 'United Arab Emirates',
+  tempC: 39.3,
+  feelsLikeC: 45.2,
+  condition: 'Sunny',
+  conditionCode: 1000,
+  icon: '//cdn.weatherapi.com/weather/64x64/day/113.png',
+  isDay: true,
+  localtime: '2026-07-25 10:58',
+  source: 'weatherapi.com',
+};
+
 export function HomeScreen() {
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const {openMenu} = useAccountMenu();
@@ -198,6 +215,27 @@ export function HomeScreen() {
   const [labExpanded, setLabExpanded] = useState(false);
   const [vaultExpanded, setVaultExpanded] = useState(false);
   const [selectedLabTab, setSelectedLabTab] = useState<(typeof labTabs)[number]>('Medication');
+  const [weather, setWeather] = useState<WeatherSummary>(defaultWeather);
+
+  useEffect(() => {
+    let mounted = true;
+
+    fetchDeviceWeather()
+      .then(result => {
+        if (mounted) {
+          setWeather(result);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setWeather(defaultWeather);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
       <SafeAreaView
@@ -214,11 +252,17 @@ export function HomeScreen() {
               styles.bannerBleed,
               {
                 top: -insets.top,
-                height: insets.top + 300,
+                height: insets.top + 350,
               },
             ]}>
             <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
             <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
+            <View pointerEvents="none" style={styles.heroBottomFade}>
+              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeTop]} />
+              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeMid]} />
+              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeLow]} />
+              <View style={styles.heroBottomFadeBand} />
+            </View>
           </ImageBackground>
         ) : null}
         <ScrollView
@@ -270,19 +314,34 @@ export function HomeScreen() {
                         />
                       </TouchableOpacity>
                     </View>
-                  </View>
                 </View>
+              </View>
 
-                <Text style={[styles.greeting, {color: heroTextColor}]}>Good morning, Priya ☀️</Text>
-                <Text style={[styles.heroSub, {color: heroTextColor}]}>
-                  Take charge of your family’s health, every day.
+              <View style={styles.weatherRow}>
+                <Text style={styles.weatherCity}>{weather?.city ?? 'Dubai'}</Text>
+                <Text style={styles.weatherTemp}>
+                  {weather ? `${Math.round(weather.tempC)}°C` : '--°C'}
                 </Text>
+              </View>
+
+                <View style={styles.greetingGlassSlab}>
+                  <Text style={[styles.greeting, {color: heroTextColor}]}>Good Morning, Paaji</Text>
+                  <Text style={styles.greetingHeroSub}>
+                    Take charge of your family’s health, every day.
+                  </Text>
+                </View>
               </View>
             </View>
           ) : (
           <ImageBackground source={heroTheme.bannerImage} resizeMode="cover" style={styles.hero}>
             <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
             <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
+            <View pointerEvents="none" style={styles.heroBottomFade}>
+              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeTop]} />
+              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeMid]} />
+              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeLow]} />
+              <View style={styles.heroBottomFadeBand} />
+            </View>
             <View style={styles.heroContent}>
               <View style={styles.glassHeader}>
                 <View style={styles.topRow}>
@@ -321,10 +380,19 @@ export function HomeScreen() {
                 </View>
               </View>
 
-              <Text style={[styles.greeting, {color: heroTextColor}]}>Good morning, Priya ☀️</Text>
-              <Text style={[styles.heroSub, {color: heroTextColor}]}>
-                Take charge of your family’s health, every day.
-              </Text>
+              <View style={styles.weatherRow}>
+                <Text style={styles.weatherCity}>{weather?.city ?? 'Dubai'}</Text>
+                <Text style={styles.weatherTemp}>
+                  {weather ? `${Math.round(weather.tempC)}°C` : '--°C'}
+                </Text>
+              </View>
+
+              <View style={styles.greetingGlassSlab}>
+                <Text style={[styles.greeting, {color: heroTextColor}]}>Good Morning, Paaji</Text>
+                <Text style={styles.greetingHeroSub}>
+                  Take charge of your family’s health, every day.
+                </Text>
+              </View>
             </View>
           </ImageBackground>
           )}
@@ -745,12 +813,21 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: 72,
+    height: 96,
     overflow: 'hidden',
   },
   heroBottomFadeBand: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  heroBottomFadeTop: {
+    opacity: 0,
+  },
+  heroBottomFadeMid: {
+    opacity: 0.34,
+  },
+  heroBottomFadeLow: {
+    opacity: 0.72,
   },
   topRow: {
     flexDirection: 'row',
@@ -767,6 +844,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     marginLeft: 'auto',
+  },
+  weatherRow: {
+    alignSelf: 'stretch',
+    alignItems: 'flex-end',
+    marginTop: 8,
+    marginBottom: 4,
+    paddingRight: 12,
+  },
+  weatherTemp: {
+    color: '#F41678',
+    fontSize: fontSizes.xl,
+    lineHeight: 22,
+    fontWeight: fontWeights.bold,
+  },
+  weatherCity: {
+    color: '#F41678',
+    fontSize: fontSizes.lg15,
+    lineHeight: 16,
+    fontWeight: fontWeights.bold,
   },
   logo: {
     width: 42,
@@ -848,23 +944,44 @@ const styles = StyleSheet.create({
     tintColor: '#fff',
   },
   // Good Morning UI
+  greetingGlassSlab: {
+    marginHorizontal: -9,
+    marginTop: 30,
+    marginBottom: 0,
+    paddingHorizontal: 16,
+    paddingTop: 5,
+    paddingBottom: 48,
+    borderTopLeftRadius: radii.card,
+    borderTopRightRadius: radii.card,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    backgroundColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.58)' : 'rgba(255,255,255,0.48)',
+    borderWidth: 1,
+    borderColor: Platform.OS === 'android' ? 'rgba(255,255,255,0.66)' : 'rgba(255,255,255,0.24)',
+    borderBottomWidth: 0,
+    shadowColor: Platform.OS === 'android' ? '#DFF4FF' : '#000',
+    shadowOpacity: Platform.OS === 'android' ? 0.05 : 0.1,
+    shadowRadius: 18,
+    shadowOffset: {width: 0, height: 8},
+    elevation: Platform.OS === 'android' ? 1 : 2,
+  },
   greeting: {
-    marginTop: 18,
     color: '#fff',
-    fontSize: 24,
+    fontSize: fontSizes.xl,
     lineHeight: 30,
-    fontWeight: '300',
+    fontWeight: fontWeights.bold,
     letterSpacing: -0.5,
   },
-  heroSub: {
-    marginTop: 6,
-    color: 'rgba(255,255,255,0.88)',
-    fontSize: 13,
-    lineHeight: 18,
+  greetingHeroSub: {
+    marginTop: 2,
+    color: colors.greetingSubGrey,
+    fontSize: fontSizes.md,
+    fontWeight: fontWeights.bold,
+    lineHeight: 14,
   },
   familyCard: {
     marginHorizontal: 9,
-    marginTop: -48,
+    marginTop: -108,
     padding: 8,
     borderRadius: radii.card,
     backgroundColor: colors.surface,
@@ -1065,7 +1182,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: colors.accentSoft,
     borderWidth: 1,
-    borderColor: colors.accent,
+    borderColor: colors.accent2,
   },
   youPill: {
     paddingHorizontal: 6,

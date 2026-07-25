@@ -1,16 +1,18 @@
 import express from 'express';
-import {weatherRouter} from './routes/weather.js';
+import swaggerUi from 'swagger-ui-express';
+import {openApiSpec} from './config/openapi.js';
+import {v1Router} from './routes/v1.js';
 
 export function createApp() {
   const app = express();
 
   app.use(express.json());
-
-  app.get('/health', (_req, res) => {
-    res.json({ok: true});
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
+  app.get('/openapi.json', (_req, res) => {
+    res.json(openApiSpec);
   });
 
-  app.use('/weather', weatherRouter);
+  app.use('/v1', v1Router);
 
   app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const message = err instanceof Error ? err.message : 'Unexpected server error';

@@ -21,8 +21,8 @@ export const fontSizes = {
   lg15: 15,
   lg16: 16,
   xl: 18,
-  '2xl': 24,
-  '3xl': 30,
+  xl2: 24,
+  xl3: 30,
 };
 
 export const fontWeights = {
