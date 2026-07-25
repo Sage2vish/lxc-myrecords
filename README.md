@@ -13,7 +13,7 @@
 
 ---
 
-## ✨ MyHealthHub Premium Showcase
+<h2 id="myhealthhub-premium-showcase">✨ MyHealthHub Premium Showcase</h2>
 
 <p align="center">
   <img src="./lxc-myhealthhub-shared/assets/myhealthhub-icon.png" alt="MyHealthHub logo" width="112" />
@@ -28,7 +28,7 @@
   <a href="https://github.com/Sage2vish/lxc-myrecords"><img src="https://img.shields.io/badge/Star-Repository-111827?style=for-the-badge" alt="Star"></a>
   <a href="https://github.com/Sage2vish/lxc-myrecords/fork"><img src="https://img.shields.io/badge/Fork-Project-0F766E?style=for-the-badge" alt="Fork"></a>
   <a href="#setup-and-running-the-apps"><img src="https://img.shields.io/badge/Download-Builds-7C3AED?style=for-the-badge" alt="Download"></a>
-  <a href="#-repository-navigation"><img src="https://img.shields.io/badge/Documentation-Read_More-0A6BFF?style=for-the-badge" alt="Documentation"></a>
+  <a href="#myhealthhub-premium-showcase"><img src="https://img.shields.io/badge/Documentation-Read_More-0A6BFF?style=for-the-badge" alt="Documentation"></a>
   <a href="https://github.com/Sage2vish/lxc-myrecords/issues"><img src="https://img.shields.io/badge/Issues-Track-B91C1C?style=for-the-badge" alt="Issues"></a>
 </p>
 
@@ -218,7 +218,7 @@ Proprietary Lexvora Consulting codebase. Internal use and controlled distributio
 
 ### Footer
 
-Made with heart by Lexvora Consulting  
+Made with ❤️ by Lexvora Consulting  
 Copyright 2026
 
 ### Premium Extras
