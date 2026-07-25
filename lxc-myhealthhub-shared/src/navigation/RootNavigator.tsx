@@ -56,14 +56,17 @@ function TabIcon({
 
   if (routeName === 'Home') {
     return (
-      <Image
-        source={
-          focused
-            ? require('../../assets/nav-home-icon-blue.png')
-            : require('../../assets/nav-home-icon-pink.png')
-        }
-        style={styles.navImage}
-      />
+      <View style={[styles.homeIconFrame, focused && styles.homeIconFrameActive]}>
+        <Image
+          source={
+            focused
+              ? require('../../assets/nav-bottom/nav-home-icon-blue.png')
+              : require('../../assets/nav-bottom/nav-home-icon-pink.png')
+          }
+          style={styles.homeNavImage}
+        />
+        <Text style={[styles.homeNavText, focused && styles.homeNavTextActive]}>Home</Text>
+      </View>
     );
   }
 
@@ -72,8 +75,8 @@ function TabIcon({
       <Image
         source={
           focused
-            ? require('../../assets/nav-health-icon-blue.png')
-            : require('../../assets/nav-health-icon-pink.png')
+            ? require('../../assets/nav-bottom/nav-health-icon-blue.png')
+            : require('../../assets/nav-bottom/nav-health-icon-pink.png')
         }
         style={styles.navImage}
       />
@@ -85,8 +88,8 @@ function TabIcon({
       <Image
         source={
           focused
-            ? require('../../assets/nav-vault-icon-blue.png')
-            : require('../../assets/nav-vault-icon-pink.png')
+            ? require('../../assets/nav-bottom/nav-vault-icon-blue.png')
+            : require('../../assets/nav-bottom/nav-vault-icon-pink.png')
         }
         style={styles.navImage}
       />
@@ -98,8 +101,8 @@ function TabIcon({
       <Image
         source={
           focused
-            ? require('../../assets/nav-more-icon-blue.png')
-            : require('../../assets/nav-more-icon-pink.png')
+            ? require('../../assets/nav-bottom/nav-more-icon-blue.png')
+            : require('../../assets/nav-bottom/nav-more-icon-pink.png')
         }
         style={styles.navImage}
       />
@@ -118,6 +121,39 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     resizeMode: 'contain',
+  },
+  homeNavImage: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+  },
+  homeNavText: {
+    marginTop: 2,
+    color: colors.muted,
+    fontSize: 10,
+    lineHeight: 12,
+    fontWeight: '800',
+  },
+  homeNavTextActive: {
+    color: colors.primary,
+  },
+  homeIconFrame: {
+    width: 60,
+    height: 50,
+    paddingHorizontal: 5,
+    paddingTop: 0,
+    paddingBottom: 5,
+    marginTop: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'rgba(216, 224, 236, 0.85)',
+    backgroundColor: '#F6FAFF',
+  },
+  homeIconFrameActive: {
+    borderColor: 'rgba(13, 99, 183, 0.28)',
+    backgroundColor: '#EEF6FF',
   },
   tabIconActive: {
     fontWeight: '900',
@@ -164,9 +200,9 @@ export function RootNavigator() {
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
-          height: 68,
-          paddingBottom: 8,
-          paddingTop: 6,
+          height: 78,
+          paddingBottom: 3,
+          paddingTop: 4,
           justifyContent: 'space-evenly',
           shadowColor: colors.shadow,
           shadowOpacity: 0.08,
@@ -176,7 +212,7 @@ export function RootNavigator() {
         },
         tabBarIcon: ({focused}) => <TabIcon focused={focused} routeName={route.name} />,
       })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{tabBarLabel: ''}} />
       <Tab.Screen name="Vitals" component={VitalsScreen} options={{tabBarLabel: 'Health'}} />
       <Tab.Screen name="Appointments" component={AppointmentsScreen} options={{tabBarLabel: ''}} />
       <Tab.Screen name="Records" component={RecordsScreen} options={{tabBarLabel: 'Vault'}} />

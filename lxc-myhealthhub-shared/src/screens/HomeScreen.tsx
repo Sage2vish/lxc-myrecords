@@ -29,6 +29,7 @@ import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useAccountMenu} from '../context/AccountMenuContext';
 import type {RootTabParamList} from '../navigation/RootNavigator';
 import {colors} from '../theme/colors';
+import {radii} from '../theme/radii';
 
 const selfProfile = {name: 'Priya', relation: 'You', initials: 'P', tone: colors.accent};
 
@@ -38,7 +39,16 @@ const familyMembers = [
   {name: 'Meera', relation: 'Mother', initials: 'M', tone: '#8B6FE8'},
 ];
 
-const quickActions = [
+type QuickActionKind = 'records' | 'reports' | 'nearby' | 'appointments' | 'sync' | 'profiles';
+
+type QuickAction = {
+  key: QuickActionKind;
+  title: string;
+  tone: string;
+  accent: string;
+};
+
+const quickActions: QuickAction[] = [
   {key: 'records', title: 'Health\nRecords', tone: colors.primarySoft, accent: colors.primary},
   {key: 'reports', title: 'Reports &\nVisits', tone: colors.purpleSoft, accent: '#7D5AF2'},
   {key: 'nearby', title: 'Find Nearby\nCare', tone: '#EAF7FF', accent: colors.sky},
@@ -700,7 +710,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 9,
     marginTop: -48,
     padding: 8,
-    borderRadius: 22,
+    borderRadius: radii.card,
     backgroundColor: colors.surface,
     shadowColor: colors.shadow,
     shadowOpacity: 0.14,
@@ -837,7 +847,7 @@ const styles = StyleSheet.create({
   profileGroupCard: {
     marginTop: 16,
     padding: 10,
-    borderRadius: 18,
+    borderRadius: radii.strip,
     backgroundColor: colors.primarySoft,
   },
   membersRow: {
@@ -937,7 +947,7 @@ const styles = StyleSheet.create({
   healthStrip: {
     marginTop: 9,
     minHeight: 50,
-    borderRadius: 18,
+    borderRadius: radii.strip,
     paddingVertical: 8,
     paddingHorizontal: 10,
     backgroundColor: colors.primarySoft,
@@ -1000,7 +1010,7 @@ const styles = StyleSheet.create({
   appointmentCard: {
     marginHorizontal: 9,
     marginTop: 9,
-    borderRadius: 20,
+    borderRadius: radii.card,
     padding: 10,
     backgroundColor: colors.surface,
     shadowColor: colors.shadow,
@@ -1046,7 +1056,7 @@ const styles = StyleSheet.create({
   appointmentListCard: {
     marginTop: 10,
     padding: 8,
-    borderRadius: 16,
+    borderRadius: radii.strip,
     backgroundColor: colors.primarySoft,
   },
   appointmentItem: {
@@ -1126,7 +1136,7 @@ const styles = StyleSheet.create({
   labCard: {
     marginHorizontal: 9,
     marginTop: 9,
-    borderRadius: 20,
+    borderRadius: radii.card,
     padding: 10,
     backgroundColor: colors.surface,
     shadowColor: colors.shadow,
@@ -1196,7 +1206,7 @@ const styles = StyleSheet.create({
   labListCard: {
     marginTop: 10,
     padding: 8,
-    borderRadius: 16,
+    borderRadius: radii.card,
     backgroundColor: colors.primarySoft,
   },
   labItem: {
@@ -1251,7 +1261,7 @@ const styles = StyleSheet.create({
   vaultCard: {
     marginHorizontal: 9,
     marginTop: 9,
-    borderRadius: 20,
+    borderRadius: radii.card,
     padding: 10,
     backgroundColor: colors.surface,
     shadowColor: colors.shadow,
@@ -1297,7 +1307,7 @@ const styles = StyleSheet.create({
   vaultListCard: {
     marginTop: 10,
     padding: 8,
-    borderRadius: 16,
+    borderRadius: radii.card,
     backgroundColor: colors.primarySoft,
   },
   vaultItem: {
@@ -1555,7 +1565,7 @@ const styles = StyleSheet.create({
   supportCard: {
     flex: 1,
     minHeight: 146,
-    borderRadius: 18,
+    borderRadius: 10,
     padding: 12,
   },
   oneCallCard: {
