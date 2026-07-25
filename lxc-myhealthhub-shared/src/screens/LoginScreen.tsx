@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
   },
   brandTitle: {
     color: colors.primaryDark,
-    fontSize: fontSizes['2xl'],
+    fontSize: fontSizes.xl2,
     fontWeight: fontWeights.extrabold,
   },
   brandSub: {

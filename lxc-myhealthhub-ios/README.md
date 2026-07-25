@@ -32,6 +32,12 @@ This folder is the **iOS builder** for the MyHealthHub app. It contains only
 the Xcode project and CocoaPods config — `LxcMyHealthHub.xcodeproj`,
 `LxcMyHealthHub.xcworkspace`, `Podfile` — there is no JS/TS source here.
 
+## Current Context
+
+- Weather work is being done on the `weather-api-integration` branch
+- iOS will consume weather data from the Hostinger-backed [`../lxc-health-api`](../lxc-health-api/) project
+- Open `LxcMyHealthHub.xcworkspace` in Xcode, not the `.xcodeproj`
+
 ## 🕘 History & Status
 
 This is the `ios/` folder from the original `lxc-myhealthhub-mobile` project,

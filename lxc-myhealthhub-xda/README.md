@@ -33,6 +33,13 @@ This folder is the **Android builder** for the MyHealthHub app. It contains
 only the Gradle/native Android project — `app/`, `gradle/`, `build.gradle`,
 `settings.gradle` — there is no JS/TS source here.
 
+## Current Context
+
+- Weather work is on the `weather-api-integration` branch
+- Android release builds are split by ABI
+- For OnePlus phones, `MyHealthHub-arm64-v8a.apk` is the usual release APK
+- The app will use the Hostinger-backed [`../lxc-health-api`](../lxc-health-api/) project for weather data
+
 ## 🕘 History & Status
 
 This is the `android/` folder from the original `lxc-myhealthhub-mobile`

@@ -3,6 +3,12 @@
 **Lexvora Consulting | Field Agent DSA Application**
 Android Tablet APK | React Native | SQLite Local Storage
 
+## Repository Context
+
+- This app is independent from MyHealthHub
+- Weather/API work is happening in the separate `lxc-health-api` folder for MyHealthHub
+- Keep DSA changes isolated unless the user explicitly asks to touch this app
+
 ---
 
 ## 🕘 History

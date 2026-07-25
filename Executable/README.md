@@ -23,6 +23,7 @@
 - [🗺️ Build Pipeline](#️-build-pipeline)
 - [🍎 macos_iosapp_build.sh](#-macos_iosapp_buildsh)
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
+- [📦 macos_healthapi_package.sh](#-macos_healthapi_packagesh)
 - [🩹 Error Message Format](#-error-message-format)
 - [⚠️ Compatibility Notes](#️-compatibility-notes)
 
@@ -35,6 +36,12 @@ no manual multi-step setup, no memorizing toolchain paths. They apply to
 MyHealthHub only; the DSA Tablet App (`lxc-myrecords-dsa-xda`) has its own
 build flow — see that app's README.
 
+## Current Context
+
+- Weather work is happening on `weather-api-integration`
+- Backend weather code now lives in [`../lxc-health-api`](../lxc-health-api/)
+- Android release builds remain split by ABI
+
 | Script | Platform | Default target | Also supports |
 |---|---|---|---|
 | [`macos_iosapp_build.sh`](#-macos_iosapp_buildsh) | iOS | Simulator — **iPhone 14** | Any installed simulator, or a physical device |
@@ -43,6 +50,24 @@ build flow — see that app's README.
 Every failure mode — a missing tool, a missing folder, no device connected —
 stops the script immediately with a plain-language explanation *and* the exact
 developer fix. See [Error Message Format](#-error-message-format).
+
+## 📦 `macos_healthapi_package.sh`
+
+```bash
+./macos_healthapi_package.sh
+./macos_healthapi_package.sh 2026-07-25-1108
+```
+
+**What it does, in order:**
+
+1. Confirms the `lxc-health-api` folder and required release files exist.
+2. Creates `lxc-health-api/publish/` if needed.
+3. Writes a timestamped `.tar` archive named `lxc-health-api-YYYY-MM-DD-HHMM.tar`.
+4. Includes `package.json`, `package-lock.json`, `tsconfig.json`, `src/`, and `publish/import.env`.
+5. Excludes Mac metadata such as `src/.DS_Store`.
+
+Use this when you want a manual Hostinger upload bundle with the exact deploy
+contents, kept separate from the working source tree.
 
 ---
 

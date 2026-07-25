@@ -13,6 +13,9 @@
 declare module 'react-native-config' {
   const Config: {
     API_BASE_URL?: string;
+    WEATHER_API_BASE_URL?: string;
+    WEATHER_API_REQUEST_KEY?: string;
+    WEATHER_PROVIDER_DEV_KEY?: string;
   };
 
   export default Config;

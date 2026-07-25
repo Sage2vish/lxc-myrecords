@@ -2,6 +2,13 @@
 
 MyHealthHub is a React Native app (Android and iOS) for patient health records, appointments, prescriptions, vitals, and profile management.
 
+## Current Work
+
+- Active weather branch context: `weather-api-integration`
+- Mobile app weather data will come from [`../lxc-health-api`](../lxc-health-api/)
+- WeatherAPI.com stays server-side in the backend project
+- First weather target: Dubai current temperature in the home header
+
 ## History
 
 This folder is the JS/TS "common area" for the MyHealthHub app. It was originally a
@@ -48,6 +55,7 @@ Git history for individual files was preserved as renames across the split.
 - [ ] Emulator configured for 2772 x 1240 resolution and 8 GB or 12 GB RAM
 - [x] ARM64-v8a preferred app architecture configured
 - [ ] Backend API connected
+- [ ] WeatherAPI.com proxy endpoint wired into the mobile app
 - [ ] Login/authentication implemented
 - [ ] Secure token storage implemented
 - [ ] Real record upload/download implemented

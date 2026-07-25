@@ -41,6 +41,14 @@ This repository is the home of the **Lexvora MyRecords healthcare platform**. It
 
 > **Note**: These projects are developed independently within this monorepo. They do not share code or dependencies and are versioned and built separately.
 
+## Current Context
+
+- Active weather branch: `weather-api-integration`
+- New backend project: [`lxc-health-api`](./lxc-health-api/)
+- MyHealthHub will call the backend, and the backend will call WeatherAPI.com
+- WeatherAPI secrets stay server-side in `lxc-health-api`
+- Initial weather target: Dubai current temperature shown in the MyHealthHub header
+
 ## 📱 The Applications
 
 | App | Who it's for | Platforms | Folder(s) |
@@ -68,6 +76,7 @@ The MyHealthHub app is a modern, patient-centric mobile application that empower
 - 🧑‍⚕️ DSA Assisted Setup card — bridges to in-person agent support
 - 🔒 Privacy/security card
 - 👤 Profile and settings management
+- 🌤️ Weather header integration now routes through the new backend API, not directly from the app
 
 > **Status**: Android build verified (debug APK builds successfully). iOS build verified end-to-end — builds and launches on both the iOS Simulator and a physical device.
 > **Important iOS note**: when opening the native iOS project in Xcode, use `LxcMyHealthHub.xcworkspace` and not `LxcMyHealthHub.xcodeproj`. The workspace is the correct entry point because CocoaPods-generated targets and framework links live there.
