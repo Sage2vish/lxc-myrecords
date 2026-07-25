@@ -34,8 +34,10 @@ the Xcode project and CocoaPods config — `LxcMyHealthHub.xcodeproj`,
 
 ## Current Context
 
-- Weather work is being done on the `weather-api-integration` branch
-- iOS will consume weather data from the Hostinger-backed [`../lxc-health-api`](../lxc-health-api/) project
+- Weather/API work was merged into `main` on 2026-07-25
+- iOS consumes weather data from the Hostinger-backed [`../lxc-health-api`](../lxc-health-api/) project
+- Weather UI source lives in `../lxc-myhealthhub-shared/src/api/weather.ts`
+  and `../lxc-myhealthhub-shared/src/screens/HomeScreen.tsx`
 - Open `LxcMyHealthHub.xcworkspace` in Xcode, not the `.xcodeproj`
 
 ## 🕘 History & Status

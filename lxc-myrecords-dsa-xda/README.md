@@ -6,7 +6,8 @@ Android Tablet APK | React Native | SQLite Local Storage
 ## Repository Context
 
 - This app is independent from MyHealthHub
-- Weather/API work is happening in the separate `lxc-health-api` folder for MyHealthHub
+- Weather/API work for MyHealthHub lives in the separate `lxc-health-api` folder
+  and was merged into `main` on 2026-07-25
 - Keep DSA changes isolated unless the user explicitly asks to touch this app
 
 ---
@@ -168,7 +169,8 @@ npx react-native-permissions setup android --feature=PhotoLibrary
 - PIN stored in AsyncStorage (encrypt with `react-native-keychain` for production)
 - All data local until backend sync is ready
 - `sync_status` field tracks what needs to push to backend
-- Hostinger backend URL: `https://lexvoraconsulting.com/api/v1`
+- MyHealthHub Hostinger weather API URL: `https://apis.lexvoraconsulting.com/v1`
+  (not wired into this DSA app)
 
 ---
 
