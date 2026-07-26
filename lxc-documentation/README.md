@@ -207,13 +207,13 @@ To keep the docs premium and easy to maintain:
 
 If you want this hub to become the main entry point for the repo, the next files to add should be:
 
-- `architecture.md`
-- `compatibility.md`
-- `deployment.md`
-- `release-runbook.md`
-- `api-contract.md`
-- `coding-standards.md`
-- `writing-standards.md`
+- [architecture.md](./architecture.md)
+- [compatibility.md](./compatibility.md)
+- [deployment.md](./deployment.md)
+- [release-runbook.md](./release-runbook.md)
+- [api-contract.md](./api-contract.md)
+- [coding-standards.md](./coding-standards.md)
+- [writing-standards.md](./writing-standards.md)
 
 ---
 
