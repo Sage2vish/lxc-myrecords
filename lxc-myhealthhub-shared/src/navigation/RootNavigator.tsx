@@ -25,9 +25,11 @@ import {VitalsScreen} from '../screens/VitalsScreen';
 import {ProfileScreen} from '../screens/ProfileScreen';
 import {ScheduleVisitScreen} from '../screens/ScheduleVisitScreen';
 import {NotificationsScreen} from '../screens/NotificationsScreen';
+import {AppSettingsScreen} from '../screens/AppSettingsScreen';
 import {colors} from '../theme/colors';
 import {radii} from '../theme/radii';
 import {theme} from '../theme/theme-common';
+import type {SettingsSectionKey} from '../features/settings/settingsData';
 
 export type RootTabParamList = {
   Home: undefined;
@@ -38,6 +40,7 @@ export type RootTabParamList = {
   Profile: undefined;
   ScheduleVisit: undefined;
   Notifications: undefined;
+  Settings: {section?: SettingsSectionKey} | undefined;
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -315,6 +318,11 @@ export function RootNavigator() {
       <Tab.Screen
         name="Notifications"
         component={NotificationsScreen}
+        options={{tabBarButton: () => null, tabBarItemStyle: styles.hiddenTab}}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={AppSettingsScreen}
         options={{tabBarButton: () => null, tabBarItemStyle: styles.hiddenTab}}
       />
     </Tab.Navigator>

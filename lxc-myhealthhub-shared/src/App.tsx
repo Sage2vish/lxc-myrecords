@@ -26,6 +26,7 @@ import {AccountMenuProvider} from './context/AccountMenuContext';
 import {RootNavigator, RootTabParamList} from './navigation/RootNavigator';
 import {LoginScreen} from './screens/LoginScreen';
 import {colors} from './theme/colors';
+import type {SettingsSectionKey} from './features/settings/settingsData';
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,11 @@ export default function App() {
   const handleViewProfile = () => {
     setMenuVisible(false);
     navigationRef.current?.navigate('Profile');
+  };
+
+  const handleOpenSettings = (section?: SettingsSectionKey) => {
+    setMenuVisible(false);
+    navigationRef.current?.navigate('Settings', section ? {section} : undefined);
   };
 
   const handleLogout = () => {
@@ -57,7 +63,8 @@ export default function App() {
               <AccountMenu
                 visible={menuVisible}
                 onClose={() => setMenuVisible(false)}
-                onViewProfile={handleViewProfile}
+                onOpenProfile={handleViewProfile}
+                onOpenSettings={handleOpenSettings}
                 onLogout={handleLogout}
               />
             </View>
