@@ -15,7 +15,7 @@ import {spacing} from './spacing';
 
 export const commonTheme = {
   glass: {
-    backdrop: 'rgba(10, 18, 36, 0.54)',
+    backdrop: 'rgba(10, 18, 36, 0.34)',
     panel: 'rgba(252, 253, 255, 0.90)',
     panelSoft: 'rgba(255, 255, 255, 0.82)',
     edge: 'rgba(255, 255, 255, 0.70)',

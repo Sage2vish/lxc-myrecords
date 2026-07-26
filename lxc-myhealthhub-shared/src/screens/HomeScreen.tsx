@@ -30,6 +30,7 @@ import {useNavigation} from '@react-navigation/native';
 import type {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {useAccountMenu} from '../context/AccountMenuContext';
 import {fetchDeviceWeather, type WeatherSummary} from '../api/weather';
+import {upcomingAppointmentsPreview} from '../features/appointments/appointmentsData';
 import type {RootTabParamList} from '../navigation/RootNavigator';
 import {colors} from '../theme/colors';
 import {getHeroTheme} from '../theme/dayparts';
@@ -60,33 +61,6 @@ const quickActions: QuickAction[] = [
   {key: 'appointments', title: 'Appointments', tone: colors.accentSoft, accent: colors.accent},
   {key: 'sync', title: 'Health App\nSync', tone: '#EAF7FF', accent: colors.primary},
   {key: 'profiles', title: 'Family\nProfiles', tone: colors.purpleSoft, accent: '#7D5AF2'},
-];
-
-const appointments = [
-  {
-    name: 'Dr. Ananya Sharma',
-    role: 'Cardiologist',
-    gender: 'female',
-    date: '24 May 2025, Sat',
-    time: '11:30 AM',
-    location: 'HealthPlus Clinic, Bengaluru',
-  },
-  {
-    name: 'Dr. Mehul Joshi',
-    role: 'Orthopedist',
-    gender: 'male',
-    date: '27 May 2025, Tue',
-    time: '09:15 AM',
-    location: 'Apollo Speciality, Bengaluru',
-  },
-  {
-    name: 'Dr. Kavya Rao',
-    role: 'Pediatrician',
-    gender: 'female',
-    date: '29 May 2025, Thu',
-    time: '04:00 PM',
-    location: 'Motherhood Hospital, Bengaluru',
-  },
 ];
 
 const labTabs = ['Medication', 'Laboratory', 'Radiology'] as const;
@@ -238,82 +212,82 @@ export function HomeScreen() {
   }, []);
 
   return (
-      <SafeAreaView
-        edges={['top', 'left', 'right']}
-        style={[
-          styles.root,
-          {backgroundColor: Platform.OS === 'ios' ? 'transparent' : heroTheme.backgroundColor},
-        ]}>
-        {Platform.OS === 'ios' ? (
-          <ImageBackground
-            source={heroTheme.bannerImage}
-            resizeMode="cover"
-            style={[
-              styles.bannerBleed,
-              {
-                top: -insets.top,
-                height: insets.top + 350,
-              },
-            ]}>
-            <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
-            <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
-            <View pointerEvents="none" style={styles.heroBottomFade}>
-              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeTop]} />
-              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeMid]} />
-              <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeLow]} />
-              <View style={styles.heroBottomFadeBand} />
-            </View>
-          </ImageBackground>
-        ) : null}
-        <ScrollView
-          bounces
+    <SafeAreaView
+      edges={['top', 'left', 'right']}
+      style={[
+        styles.root,
+        {backgroundColor: Platform.OS === 'ios' ? 'transparent' : heroTheme.backgroundColor},
+      ]}>
+      {Platform.OS === 'ios' ? (
+        <ImageBackground
+          source={heroTheme.bannerImage}
+          resizeMode="cover"
           style={[
-            styles.scroll,
-            {backgroundColor: Platform.OS === 'ios' ? 'transparent' : colors.background},
-          ]}
-          contentContainerStyle={styles.content}
-          showsVerticalScrollIndicator={false}>
-          {Platform.OS === 'ios' ? (
-            <View style={[styles.hero, styles.heroIos]}>
-              <View style={styles.heroContent}>
-                <View
-                  style={[
-                    styles.glassHeader,
-                    {marginTop: Math.round(insets.top * 0.12)},
-                  ]}>
-                  <View style={styles.topRow}>
-                    <View style={styles.brandRow}>
-                      <Image source={require('../../assets/myhealthhub-icon.png')} style={styles.logo} />
-                      <View style={styles.brandTextWrap}>
-                        <Text style={[styles.brandTitle, {color: heroTextColor}]}>MyHealthHub</Text>
-                        <Text style={[styles.brandSub, {color: heroTextColor}]}>Space</Text>
-                      </View>
+            styles.bannerBleed,
+            {
+              top: -insets.top,
+              height: insets.top + 350,
+            },
+          ]}>
+          <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
+          <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
+          <View pointerEvents="none" style={styles.heroBottomFade}>
+            <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeTop]} />
+            <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeMid]} />
+            <View style={[styles.heroBottomFadeBand, styles.heroBottomFadeLow]} />
+            <View style={styles.heroBottomFadeBand} />
+          </View>
+        </ImageBackground>
+      ) : null}
+      <ScrollView
+        bounces
+        style={[
+          styles.scroll,
+          {backgroundColor: Platform.OS === 'ios' ? 'transparent' : colors.background},
+        ]}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}>
+        {Platform.OS === 'ios' ? (
+          <View style={[styles.hero, styles.heroIos]}>
+            <View style={styles.heroContent}>
+              <View
+                style={[
+                  styles.glassHeader,
+                  {marginTop: Math.round(insets.top * 0.12)},
+                ]}>
+                <View style={styles.topRow}>
+                  <View style={styles.brandRow}>
+                    <Image source={require('../../assets/myhealthhub-icon.png')} style={styles.logo} />
+                    <View style={styles.brandTextWrap}>
+                      <Text style={[styles.brandTitle, {color: heroTextColor}]}>MyHealthHub</Text>
+                      <Text style={[styles.brandSub, {color: heroTextColor}]}>Space</Text>
                     </View>
-                    <View style={styles.headerActions}>
-                      <TouchableOpacity
-                        style={styles.bellButton}
-                        onPress={() => navigation.navigate('Notifications')}>
-                        <Text style={styles.bell}>🔔</Text>
-                        <Text style={styles.badge}>3</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={styles.profileAvatar}
-                        onPress={() => navigation.navigate('Profile')}
-                        onLongPress={openMenu}
-                        delayLongPress={350}>
-                        <Text style={styles.profileAvatarText}>P</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        accessibilityLabel="Account menu"
-                        accessibilityRole="button"
-                        style={styles.menuButton}
-                        onPress={openMenu}>
-                        <Image
-                          source={require('../../assets/nav-more-icon-blue.png')}
-                          style={[styles.menuIcon, styles.menuIconPink]}
-                        />
-                      </TouchableOpacity>
-                    </View>
+                  </View>
+                  <View style={styles.headerActions}>
+                    <TouchableOpacity
+                      style={styles.bellButton}
+                      onPress={() => navigation.navigate('Notifications')}>
+                      <Text style={styles.bell}>🔔</Text>
+                      <Text style={styles.badge}>3</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.profileAvatar}
+                      onPress={() => navigation.navigate('Profile')}
+                      onLongPress={openMenu}
+                      delayLongPress={350}>
+                      <Text style={styles.profileAvatarText}>P</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      accessibilityLabel="Account menu"
+                      accessibilityRole="button"
+                      style={styles.menuButton}
+                      onPress={openMenu}>
+                      <Image
+                        source={require('../../assets/nav-more-icon-blue.png')}
+                        style={[styles.menuIcon, styles.menuIconPink]}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
 
@@ -324,15 +298,15 @@ export function HomeScreen() {
                 </Text>
               </View>
 
-                <View style={styles.greetingGlassSlab}>
-                  <Text style={[styles.greeting, {color: heroTextColor}]}>Good Morning, Paaji</Text>
-                  <Text style={styles.greetingHeroSub}>
-                    Take charge of your family’s health, every day.
-                  </Text>
-                </View>
+              <View style={styles.greetingGlassSlab}>
+                <Text style={[styles.greeting, {color: heroTextColor}]}>Good Morning, Paaji</Text>
+                <Text style={styles.greetingHeroSub}>
+                  Take charge of your family’s health, every day.
+                </Text>
               </View>
             </View>
-          ) : (
+          </View>
+        ) : (
           <ImageBackground source={heroTheme.bannerImage} resizeMode="cover" style={styles.hero}>
             <View style={[styles.heroTint, {backgroundColor: heroTheme.backgroundColor}]} />
             <View style={[styles.heroGlow, {backgroundColor: heroTheme.glowColor}]} />
@@ -395,7 +369,7 @@ export function HomeScreen() {
               </View>
             </View>
           </ImageBackground>
-          )}
+        )}
 
           <View style={styles.familyCard}>
           <View style={styles.cardHeader}>
@@ -524,7 +498,7 @@ export function HomeScreen() {
           </TouchableOpacity>
 
           <View style={styles.appointmentListCard}>
-            {(appointmentsExpanded ? appointments.slice(0, 3) : appointments.slice(0, 1)).map(
+            {(appointmentsExpanded ? upcomingAppointmentsPreview.slice(0, 3) : upcomingAppointmentsPreview.slice(0, 1)).map(
               (appointment, index, visibleAppointments) => (
                 <View
                   key={`${appointment.name}-${appointment.date}`}
@@ -752,9 +726,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-  content: {
-    paddingBottom: 32,
-  },
   hero: {
     minHeight: 208,
     paddingHorizontal: 18,
@@ -766,13 +737,6 @@ const styles = StyleSheet.create({
   },
   heroIos: {
     paddingTop: 8,
-  },
-  heroImage: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
   },
   heroContent: {
     flex: 1,
@@ -943,7 +907,6 @@ const styles = StyleSheet.create({
   menuIconPink: {
     tintColor: '#fff',
   },
-  // Good Morning UI
   greetingGlassSlab: {
     marginHorizontal: -9,
     marginTop: 30,
@@ -978,6 +941,9 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.md,
     fontWeight: fontWeights.bold,
     lineHeight: 14,
+  },
+  content: {
+    paddingBottom: 32,
   },
   familyCard: {
     marginHorizontal: 9,
