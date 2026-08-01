@@ -51,7 +51,7 @@ The goal is simple:
 |---|---|---|
 | Product Overview | Explains what the ecosystem is and why it exists | `README.md`, `overview.md` |
 | Mobile App | Screens, UI patterns, shared code, and release behavior | `myhealthhub-mobile.md`, `screens.md` |
-| Backend API | Node.js service, weather proxy, Swagger, env vars | `lxc-health-api.md`, `api-contract.md` |
+| Backend API | Node.js service, weather proxy, Swagger, env vars | `lxc-api.md`, `api-contract.md` |
 | Architecture | Shared modules, separation of concerns, data flow | `architecture.md`, `system-design.md` |
 | Deployment | Hostinger, build artifacts, release flow, env setup | `deployment.md`, `release-runbook.md` |
 | Standards | Coding, naming, docs, and file organization | `coding-standards.md`, `writing-standards.md` |

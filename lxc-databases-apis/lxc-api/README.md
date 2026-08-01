@@ -1,11 +1,11 @@
-# lxc-health-api
+# lxc-api
 
-Hostinger-ready Node API for MyHealthHub.
+Hostinger-ready Node API for Lexvora Consulting APIs & Databases.
 
-This service acts as the private backend layer for weather integration:
+This service acts as the private backend layer for weather and future API management:
 
 - App calls this API
-- This API calls WeatherAPI.com
+- This API can call WeatherAPI.com or future backend services
 - WeatherAPI key stays on the server
 
 ## Branch Context
@@ -306,7 +306,7 @@ repository updates.
 2. Upload the generated `.tar` from:
 
    ```text
-   lxc-health-api/publish/
+   lxc-databases-apis/lxc-api/publish/
    ```
 
 3. In Hostinger Review Build Settings:
@@ -319,7 +319,7 @@ repository updates.
 4. Import or enter environment variables from:
 
    ```text
-   lxc-health-api/publish/import.env
+   lxc-databases-apis/lxc-api/publish/import.env
    ```
 
 5. Replace `WEATHER_WEATHERAPI_FORECASTV1_API_KEY` with the real WeatherAPI.com
@@ -334,7 +334,7 @@ repository updates.
    ```
 
 The root-level repo folder `publish/` is not used. Deployment archives must stay
-under `lxc-health-api/publish/`.
+under `lxc-databases-apis/lxc-api/publish/`.
 
 ## App Contract
 

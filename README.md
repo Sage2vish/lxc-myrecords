@@ -144,7 +144,9 @@ flowchart TB
 ```text
 MyRecords/
 ├── Executable
-├── lxc-health-api
+├── lxc-databases-apis
+│   ├── lxc-api
+│   └── lxc-databases
 ├── lxc-myhealthhub-ios
 ├── lxc-myhealthhub-shared
 │   ├── assets
@@ -257,7 +259,7 @@ It contains two independently built React Native applications:
 **Weather integration status**
 
 - Main branch contains the Hostinger weather integration as of 2026-07-25
-- Reusable backend module: [`lxc-health-api`](./lxc-health-api/)
+- Reusable backend module: [`lxc-api`](./lxc-databases-apis/lxc-api/)
 - `LXC-Health-API` is not only a MyHealthHub helper. It is a shared Lexvora API
   module that any Lexvora app can consume, and it is eligible to become its own
   repository or package later.
@@ -274,7 +276,7 @@ It contains two independently built React Native applications:
 |---|---|---|---|
 | **MyHealthHub** | Patients | Android, iOS | [`lxc-myhealthhub-shared`](./lxc-myhealthhub-shared/), [`lxc-myhealthhub-xda`](./lxc-myhealthhub-xda/), [`lxc-myhealthhub-ios`](./lxc-myhealthhub-ios/) |
 | **DSA Tablet App** | Field agents (Direct Sales Agents) | Android tablet | `lxc-myrecords-dsa-xda` |
-| **LXC-Health-API** | Backend services | Node.js | `lxc-health-api` |
+| **LXC-DBs-APIs** | Backend services | Node.js | `lxc-databases-apis` |
 
 ---
 
@@ -348,7 +350,7 @@ application in easy-to-understand terms.
 |---|---|---|---|---|
 | `LXC-Health-API` | Node.js, Express.js | `Express` | Node.js `20.x` | `https://apis.lexvoraconsulting.com` |
 
-`LXC-Health-API` deploys from `lxc-health-api/publish/`. It is intentionally
+`LXC-DBs-APIs` deploys from `lxc-databases-apis/lxc-api/publish/`. It is intentionally
 kept as a separate backend engine so any Lexvora application can reuse it, and
 it can later move into its own repository/package without coupling the mobile
 apps to external providers directly.
@@ -460,7 +462,7 @@ theme token update, or API call flow usually happens once in
 
 ### API Layer
 
-`LXC-Health-API` lives in [`lxc-health-api`](./lxc-health-api/) and is the
+`LXC-DBs-APIs` lives in [`lxc-databases-apis`](./lxc-databases-apis/) and is the
 backend contract layer for health-related API capabilities. It is currently
 deployed as a Hostinger Node.js app, but it is designed as a reusable Lexvora
 service module.
@@ -647,7 +649,7 @@ All commands should be run from within the specific app's directory (`lxc-myheal
 
 ### Hostinger API Deployment Bundle
 
-The Node backend is packaged from `lxc-health-api/` using:
+The Node backend is packaged from `lxc-databases-apis/lxc-api/` using:
 
 ```sh
 ./Executable/macos_healthapi_package.sh
@@ -656,7 +658,7 @@ The Node backend is packaged from `lxc-health-api/` using:
 The script writes deployable archives to:
 
 ```text
-lxc-health-api/publish/
+lxc-databases-apis/lxc-api/publish/
 ```
 
 Use the `.tar` file for manual Hostinger upload. The accidental root-level
@@ -705,7 +707,7 @@ verified tool versions.
   platform-specific code.
 - **2024-07-21 — DSA app renamed.** `lxc-myrecords-dsaapp-xda` was renamed to
   `lxc-myrecords-dsa-xda` for naming consistency with the rest of the repo.
-- **2026-07-25 — Hostinger weather API integration.** Added `lxc-health-api`,
+- **2026-07-25 — Hostinger weather API integration.** Added `lxc-databases-apis/lxc-api`,
   Swagger/OpenAPI docs, `/v1/health`, `/v1/weather/today`, centralized provider
   config, Hostinger packaging, and MyHealthHub home weather UI using device
   lat/lon with Dubai fallback.

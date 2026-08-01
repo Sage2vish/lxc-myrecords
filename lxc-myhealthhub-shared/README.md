@@ -5,7 +5,7 @@ MyHealthHub is a React Native app (Android and iOS) for patient health records, 
 ## Current Work
 
 - Weather/API work is merged into `main` as of 2026-07-25
-- Mobile app weather data comes from [`../lxc-health-api`](../lxc-health-api/) first
+- Mobile app weather data comes from [`../lxc-databases-apis/lxc-api`](../lxc-databases-apis/lxc-api/) first
 - Production WeatherAPI.com access should stay server-side in the backend project
 - Temporary dev fallback support exists through `WEATHER_PROVIDER_DEV_KEY`
 - Phone latitude/longitude is preferred; Dubai is the fallback location

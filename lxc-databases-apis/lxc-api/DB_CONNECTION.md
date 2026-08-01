@@ -1,6 +1,6 @@
 # Database Connection
 
-This note keeps the MySQL connection workflow in one place for `lxc-health-api`.
+This note keeps the MySQL connection workflow in one place for `lxc-api`.
 
 ## Working Hostinger values
 

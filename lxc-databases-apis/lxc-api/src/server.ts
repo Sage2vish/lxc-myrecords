@@ -11,7 +11,7 @@ app.listen(env.port, () => {
   const weatherKey = process.env.WEATHER_WEATHERAPI_FORECASTV1_API_KEY ? 'set' : 'missing';
 
   console.log('========================================');
-  console.log('lxc-health-api is ready');
+  console.log('lxc-api is ready');
   console.log(`port: ${env.port}`);
   console.log('routes: /docs, /openapi.json, /v1/health, /v1/weather/today');
   console.log(`weather provider url: ${weatherConfig}`);

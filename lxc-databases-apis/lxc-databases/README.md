@@ -1,6 +1,6 @@
-# lxc-health-db
+# lxc-databases
 
-Dedicated database workspace for the MyRecords / MyHealthHub platform.
+Dedicated database workspace for the Lexvora Consulting APIs & Databases stack.
 
 This folder is reserved for database-related design, schema planning,
 integration notes, migrations, and deployment context. It is intended to be the
@@ -89,7 +89,7 @@ core data shapes:
 ## Suggested Folder Structure
 
 ```text
-lxc-health-db/
+lxc-databases/
 ├── README.md
 ├── schema/
 ├── migrations/

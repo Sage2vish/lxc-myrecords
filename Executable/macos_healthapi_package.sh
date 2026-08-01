@@ -5,8 +5,8 @@
 # AUTHOR      : OpenAI Codex
 # DATE-TIME   : 25-July-2026
 #
-# PURPOSE     : Package the lxc-health-api release files into a timestamped
-#               .tar archive inside lxc-health-api/publish/ for manual Hostinger
+# PURPOSE     : Package the lxc-api release files into a timestamped
+#               .tar archive inside lxc-databases-apis/lxc-api/publish/ for manual Hostinger
 #               deployment. Includes package.json, package-lock.json, tsconfig.json,
 #               src/, and publish/import.env.
 # ============================================================================
@@ -15,11 +15,11 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-API_DIR="$REPO_ROOT/lxc-health-api"
+API_DIR="$REPO_ROOT/lxc-databases-apis/lxc-api"
 PUBLISH_DIR="$API_DIR/publish"
 
 STAMP="${1:-$(date +%Y-%m-%d-%H%M)}"
-ARCHIVE_NAME="lxc-health-api-${STAMP}.tar"
+ARCHIVE_NAME="lxc-api-${STAMP}.tar"
 ARCHIVE_PATH="$PUBLISH_DIR/$ARCHIVE_NAME"
 
 fail() {
@@ -33,7 +33,7 @@ fail() {
 }
 
 if [ ! -d "$API_DIR" ]; then
-  fail "lxc-health-api folder" \
+  fail "lxc-api folder" \
     "The backend project folder isn't present where this script expects it." \
     "Expected directory not found: $API_DIR"
 fi
