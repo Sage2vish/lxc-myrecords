@@ -1,5 +1,6 @@
-/* Tokens pulled from lexvoraconsulting_web/resources/css/main-theme.css so
-   the apim showcase matches the main site rather than inventing a palette. */
+/* lxc-apim's own theme — deliberately distinct from lexvoraconsulting_web's
+   dark-navy/gold brand palette. This is a dev/admin tool, styled like one:
+   indigo accent, slate neutrals, clean sans-serif. */
 * {
   margin: 0;
   padding: 0;
@@ -7,18 +8,17 @@
 }
 
 :root {
-  --dark: #061421;
-  --dark-2: #0b2233;
-  --blue: #102d40;
-  --gold: #b88445;
-  --gold-light: #d2a15f;
-  --cream: #f7f3ed;
+  --dark: #0f172a;
+  --dark-2: #1e293b;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --bg: #f8fafc;
   --paper: #ffffff;
-  --text: #101820;
-  --muted: #5c6670;
-  --border: rgba(184, 132, 69, 0.28);
-  --card-bg: #081722;
-  --card-border: rgba(216, 173, 114, 0.38);
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: rgba(99, 102, 241, 0.25);
+  --card-bg: #111827;
+  --card-border: rgba(129, 140, 248, 0.35);
 }
 
 html {
@@ -26,8 +26,8 @@ html {
 }
 
 body {
-  font-family: Calibri, "Segoe UI", Arial, sans-serif;
-  background: var(--cream);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
   color: var(--text);
 }
 
@@ -44,74 +44,100 @@ a {
   padding: 14px 5vw;
   min-height: 74px;
   color: #fff;
-  background: rgba(5, 14, 22, 0.96);
+  background: var(--dark);
   border-bottom: 1px solid var(--border);
 }
 
 .brand {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 22px;
-  letter-spacing: 0.02em;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
 }
 
 .brand-accent {
-  color: var(--gold-light);
+  color: var(--accent-light);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
 .site-nav a {
   text-decoration: none;
   font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--gold-light);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--accent-light);
+}
+
+.site-nav form {
+  display: inline;
+}
+
+.site-nav button.link-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--accent-light);
+  padding: 0;
+}
+
+.session-email {
+  font-size: 13px;
+  color: #cbd5e1;
+  font-weight: 400;
 }
 
 /* ===================== Hero ===================== */
 
 .hero {
-  padding: 72px 5vw 40px;
+  padding: 64px 5vw 36px;
   background: var(--dark);
   color: #fff;
   text-align: center;
 }
 
 .eyebrow {
-  color: var(--gold-light);
-  font-family: "Montserrat", "Calibri", "Segoe UI", Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
+  color: var(--accent-light);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .hero h1 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(32px, 4.5vw, 56px);
-  line-height: 1.1;
-  font-weight: 500;
-  margin-bottom: 16px;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.15;
+  font-weight: 800;
+  margin-bottom: 14px;
 }
 
 .hero .lead {
-  color: #dce6ec;
+  color: #cbd5e1;
   font-size: 16px;
   max-width: 560px;
   margin: 0 auto;
 }
 
 .gold-line {
-  width: 58px;
-  height: 2px;
-  background: var(--gold-light);
-  margin: 20px auto 0;
+  width: 52px;
+  height: 3px;
+  background: var(--accent);
+  margin: 18px auto 0;
+  border-radius: 2px;
 }
 
 /* ===================== Catalog ===================== */
 
 .catalog {
-  padding: 56px 5vw 72px;
+  padding: 48px 5vw 72px;
   max-width: 1100px;
   margin: 0 auto;
 }
@@ -126,14 +152,15 @@ a {
   background: var(--card-bg);
   color: #fff;
   border: 1px solid var(--card-border);
-  padding: 26px 22px;
+  border-radius: 8px;
+  padding: 24px 22px;
   min-height: 160px;
   display: flex;
   flex-direction: column;
 }
 
 .service-card h3 {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.35;
   margin-bottom: 10px;
 }
@@ -141,7 +168,7 @@ a {
 .service-card p {
   font-size: 14px;
   line-height: 1.55;
-  color: #c7d2d9;
+  color: #cbd5e1;
   flex-grow: 1;
 }
 
@@ -154,15 +181,15 @@ a {
 .service-card-links a {
   text-decoration: none;
   font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--gold-light);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--accent-light);
 }
 
 .catalog-empty {
   background: var(--paper);
   border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 40px;
   text-align: center;
   color: var(--muted);
@@ -173,15 +200,179 @@ a {
 }
 
 .catalog-empty-detail {
-  font-family: monospace;
+  font-family: ui-monospace, Menlo, monospace;
   font-size: 13px;
-  color: #b3261e;
+  color: #dc2626;
 }
 
 .catalog-empty-hint code {
-  background: rgba(184, 132, 69, 0.12);
+  background: rgba(99, 102, 241, 0.1);
   padding: 2px 6px;
-  border-radius: 3px;
+  border-radius: 4px;
+}
+
+/* ===================== Buttons ===================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  padding: 13px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===================== Forms / auth pages ===================== */
+
+.page-narrow {
+  min-height: calc(100vh - 74px - 66px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 5vw;
+  background: var(--bg);
+}
+
+.form-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 36px 30px;
+}
+
+.form-card h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.form-card .form-sub {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+.form-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 1px;
+}
+
+.form-error {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.form-success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #15803d;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.form-note {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ===================== Dashboard ===================== */
+
+.dashboard {
+  padding: 48px 5vw 72px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.dashboard h1 {
+  font-size: clamp(26px, 3vw, 36px);
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.dashboard .form-sub {
+  color: var(--muted);
+  margin-bottom: 32px;
+}
+
+.dashboard-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.dashboard-links a {
+  display: block;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 22px;
+  text-decoration: none;
+  color: var(--dark);
+  font-weight: 700;
+}
+
+.dashboard-links a:hover {
+  border-color: var(--accent-light);
+}
+
+.degraded-banner {
+  background: #451a03;
+  color: #fdba74;
+  border-bottom: 1px solid var(--border);
+  padding: 12px 5vw;
+  font-size: 13px;
+  text-align: center;
 }
 
 /* ===================== Footer ===================== */

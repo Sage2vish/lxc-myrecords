@@ -53,13 +53,14 @@ npm run db:seed         # applies .../seeds/*.sql (roles, products)
 npm run db:seed:admin   # bcrypt-hashes a password and creates the default admin user
 ```
 
-## 🖥️ Showcase UI theme
+## 🖥️ UI theme
 
-The showcase/catalog UI matches the brand theme from the `lexvoraconsulting_web`
-site (sibling repo, not inside this monorepo): dark navy + gold header
-(`#061421` / `#b88445` / `#d2a15f`), cream body (`#f7f3ed`), Georgia serif for
-hero headings, Montserrat uppercase eyebrow labels, gold-gradient buttons, and
-the `.service-card` pattern already used on that site's `our-products.html`.
+`lxc-apim`'s UI is **deliberately its own palette, distinct from
+`lexvoraconsulting_web`'s brand theme** (dark navy + gold) — this is a
+dev/admin tool, styled like one: indigo accent (`#6366f1`/`#818cf8`), slate
+neutrals (`#0f172a` dark, `#f8fafc` light background), clean system
+sans-serif. Tokens live in `public/css/theme.css`. (An earlier pass matched
+the main site's theme instead — that direction was explicitly reversed.)
 
 ## 🛠️ Stack
 
@@ -67,7 +68,7 @@ Mirrors `lxc-api`'s Express/TypeScript setup — its own separate codebase, not
 shared code:
 
 `express` · `typescript` · `tsx` · `mysql2` · `jsonwebtoken` · `bcrypt` ·
-`zod` · `cors` · `ejs` · `swagger-ui-express`
+`zod` · `cors` · `cookie-parser` · `ejs` · `swagger-ui-express`
 
 **Node version note:** pinned to **24.18.0**, not `lxc-api`'s 20.x — the
 locally pinned toolchain at `frameworks/node/` only has 24.18.0 installed,
@@ -104,11 +105,37 @@ This is the live status for building `lxc-apim`, updated as work lands.
 ### Phase 3 — Admin/catalog API
 - [ ] CRUD for `apim_products`, `apim_users`/roles, tokens
 
-### Phase 4 — Showcase UI 🟡
-- [x] EJS catalog landing page (`views/catalog.ejs` + `public/css/theme.css`),
-      reads live from `apim_products`, gracefully shows a "not connected /
-      empty" state instead of crashing when the DB isn't reachable or seeded
-- [ ] Admin login + panel views (depends on Phase 2 auth API)
+### Phase 4 — Browser UI (login-gated) ✅
+- [x] Pages: `/login`, `POST /logout`, `/dashboard` (landing after login),
+      `/catalog` (its own page, separate from dashboard), `/change-password`
+      (admin-only), `/users/new` (create additional accounts)
+- [x] Session: JWT issued on login, stored in an httpOnly cookie (same auth
+      core intended for the future `/v1/auth/login` API, different
+      transport) — `src/middleware/auth.ts`
+- [x] Root `/` redirects to `/dashboard` if logged in, else `/login`
+- [x] Degraded-mode banner shown site-wide when logged in via the DB-down
+      fallback (see below) — `/catalog`, `/change-password`, and
+      `/users/new` all refuse to operate (503, clear message) while degraded
+
+**Two bootstrap accounts** (`scripts/seed-admin.mjs`, create-once — never
+overwrites `password_hash`/`is_active` on repeat idempotent runs, so restarting
+the dev server doesn't undo a password change):
+
+| Account | Password | DB-down fallback? | Notes |
+|---|---|---|---|
+| `admin` | `admin@1234` (default) | **Yes** — hardcoded literal check in `src/services/authService.ts`, works even if MySQL is unreachable | Forced to `/change-password` on first login while DB is reachable and still on the default password |
+| `superadmin` | `superadmin@#$1234` (fixed, never changed by the app) | No — DB-row only | Auto-disabled (`apim_users.is_active = 0`) the moment admin's password changes away from default; re-enable by flipping that flag directly in MySQL |
+
+> ⚠️ **Temporary dev backdoors**, explicitly requested (2026-08-02 — no
+> public deployment yet). **Must be revisited before `lxc-apim` is exposed
+> anywhere real** — especially the DB-down code-level bypass for `admin`,
+> which doesn't depend on the database at all.
+
+**Catalog (`/catalog`) is env-aware:** `APIM_ENV=local` (the dev default)
+overrides each product's displayed URL to its localhost equivalent
+(`src/config/localUrls.ts`: `lxc-api` → `:3000`, `lxc-apim` → `:3100`)
+instead of the DB-seeded production URL. The eventual Build to Publish flow
+will set `APIM_ENV=production` to switch back.
 
 Run it locally against the **real remote Hostinger database** with:
 
@@ -119,19 +146,20 @@ Run it locally against the **real remote Hostinger database** with:
 Choose option 1 or 2 (First Time / Regular — identical logic, different
 messaging) once `lxc-apim/.env` exists — both run with zero prompts,
 checking/applying `db:migrate` + `db:seed` + `db:seed:admin` on every run
-(idempotent, so cheap), then run an explicit health check before opening
-`http://localhost:3100` automatically. If `.env` doesn't exist yet, use
-option 3 (Custom) once to set the real MySQL password interactively (hidden
-input, saved only to the gitignored local `.env`) — after that, options 1/2
-need no further input. Run this yourself in a terminal — don't route the
-password prompt through an AI assistant.
+(idempotent, so cheap), best-effort start `lxc-api` too (skipped with a clear
+message if `lxc-api/.env` isn't set up — it needs its own WeatherAPI.com
+key), then run an explicit health check before opening `http://localhost:3100`
+automatically. If `lxc-apim/.env` doesn't exist yet, use option 3 (Custom)
+once to set the real MySQL password interactively (hidden input, saved only
+to the gitignored local `.env`) — after that, options 1/2 need no further
+input. Run this yourself in a terminal — don't route the password prompt
+through an AI assistant.
 
-> ⚠️ **Temporary dev backdoor.** `db:seed:admin` with no `SEED_ADMIN_*` env
-> vars set creates/keeps a known login: **`admin` / `admin@1234`**.
-> Intentional for now (2026-08-02 — no auth API or public deployment yet),
-> but this **must be replaced or removed before `lxc-apim` is exposed
-> anywhere real**. To use a real credential instead, run
-> `SEED_ADMIN_EMAIL=... SEED_ADMIN_PASSWORD=... npm run db:seed:admin` once.
+**Deferred from this pass** (still queued): surfacing each API's Swagger
+endpoint list directly on its catalog card, and the role/authorization
+middleware needed to make `/users/new` actually enforce who can create
+accounts (today any authenticated session can, since only `admin`/
+`superadmin` exist).
 
 ### Phase 5 — Swagger / docs
 - [ ] `lxc-apim`'s own `src/config/openapi.ts`

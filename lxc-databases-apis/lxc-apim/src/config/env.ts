@@ -1,5 +1,9 @@
 export const env = {
   port: Number(process.env.PORT ?? 3100),
+  // 'local' | 'production' — controls whether the catalog shows localhost
+  // links or the real seeded production URLs. The eventual "Build to
+  // Publish" flow sets this to 'production' when packaging for Hostinger.
+  apimEnv: process.env.APIM_ENV === 'production' ? 'production' : 'local',
   mysql: {
     host: process.env.MYSQL_HOST ?? '',
     port: Number(process.env.MYSQL_PORT ?? 3306),

@@ -135,24 +135,33 @@ option 2 is terser for everyday use). Neither ever asks a question:
    silently asking questions.
 3. **Load toolchain** — `frameworks/android/env.sh` (Node).
 4. **Dependencies** — `npm install`, skipped if `node_modules` already exists.
-5. **Database** — runs `npm run db:migrate` then `npm run db:seed` every
-   time. Both are idempotent (migrations track what's applied in
-   `apim_schema_migrations`; seeds are `ON DUPLICATE KEY UPDATE`), so this
-   doubles as "is everything actually in place" — it fixes gaps instead of
-   just detecting them, at negligible cost on repeat runs.
-6. **Server + explicit health check** — starts `npm run dev` in the
-   background (connected to the **real** remote Hostinger database, not a
-   local one), polls `http://localhost:3100/v1/health` and prints a clear
-   `✓ Health check passed` / `✗ Health check failed` line, **then** opens the
-   browser only once that check passes. Ctrl+C stops the server and returns
-   to this menu.
+5. **Database** — runs `npm run db:migrate`, `npm run db:seed`, then
+   `npm run db:seed:admin` every time. All three are idempotent (migrations
+   track what's applied in `apim_schema_migrations`; seed/seed-admin are
+   create-once/`ON DUPLICATE KEY UPDATE`), so this doubles as "is everything
+   actually in place" — it fixes gaps instead of just detecting them, at
+   negligible cost on repeat runs. Prints a `✓` line per sub-step (schema,
+   baseline data, admin account).
+6. **`lxc-api`, best-effort** — also starts `lxc-api` in the background so
+   the catalog's `localhost:3000` link is actually live, not just a label.
+   Skipped cleanly with a message (not a failure) if `lxc-api/.env` isn't set
+   up yet — that needs a real WeatherAPI.com key, a separate secret this
+   script doesn't manage.
+7. **Server + explicit health check** — starts `npm run dev` for `lxc-apim`
+   in the background (connected to the **real** remote Hostinger database,
+   not a local one), polls `http://localhost:3100/v1/health` and prints a
+   clear `✓ Health check passed` / `✗ Health check failed` line, then prints
+   `✓ All set` and opens the browser only once that check passes. Ctrl+C
+   stops **both** servers (`lxc-apim` and, if started, `lxc-api`) and
+   returns to this menu.
 
 **Option 3 — Custom Run/Test Local (Dev APIM — Remote DB):** the interactive
 path. Prompts for the MySQL user (defaulting to whatever's already saved, or
 the known Hostinger admin user) and the real MySQL password (hidden input,
 never echoed or hardcoded anywhere in this script), generates a random dev
-`JWT_SECRET`, and writes/overwrites `lxc-apim/.env`. Then runs the same
-database + server + health-check sequence as options 1/2.
+`JWT_SECRET`, and writes/overwrites `lxc-apim/.env` (including
+`APIM_ENV=local`). Then runs the same database + `lxc-api` + server +
+health-check sequence as options 1/2.
 
 **Option 4 — Make Build to Publish (PROD APIM — local DB):** not built yet.
 Selecting it just re-shows the menu; this will later become `lxc-apim`'s own

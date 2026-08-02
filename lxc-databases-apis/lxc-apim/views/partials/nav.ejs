@@ -1,0 +1,23 @@
+<header class="site-header">
+  <div class="brand">LXC <span class="brand-accent">APIM</span></div>
+  <nav class="site-nav">
+    <% if (typeof session !== 'undefined' && session) { %>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/catalog">Catalog</a>
+      <a href="/users/new">Create User</a>
+      <% if (session.email === 'admin' && !session.degraded) { %>
+        <a href="/change-password">Change Password</a>
+      <% } %>
+      <a href="/docs">API Docs</a>
+      <span class="session-email"><%= session.email %></span>
+      <form action="/logout" method="POST"><button type="submit" class="link-button">Logout</button></form>
+    <% } else { %>
+      <a href="/docs">API Docs</a>
+    <% } %>
+  </nav>
+</header>
+<% if (typeof session !== 'undefined' && session && session.degraded) { %>
+  <div class="degraded-banner">
+    ⚠ Database connection unavailable — running in degraded mode. Catalog, user management, and password changes won't work until the connection is restored.
+  </div>
+<% } %>

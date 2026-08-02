@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXC APIM — Create User</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body>
+  <%- include('partials/nav', {session}) %>
+
+  <main class="page-narrow">
+    <div class="form-card">
+      <h1>Create User</h1>
+      <p class="form-sub">Add a new apim account.</p>
+
+      <% if (error) { %>
+        <div class="form-error"><%= error %></div>
+      <% } %>
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="form-success"><%= success %></div>
+      <% } %>
+
+      <% if (roles.length > 0) { %>
+        <form method="POST" action="/users/new">
+          <div class="form-field">
+            <label for="email">Email</label>
+            <input type="text" id="email" name="email" required autofocus />
+          </div>
+          <div class="form-field">
+            <label for="displayName">Display Name</label>
+            <input type="text" id="displayName" name="displayName" />
+          </div>
+          <div class="form-field">
+            <label for="role">Role</label>
+            <select id="role" name="role" required>
+              <% roles.forEach(function (role) { %>
+                <option value="<%= role.slug %>"><%= role.name %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" autocomplete="new-password" required minlength="8" />
+          </div>
+          <div class="form-field">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required minlength="8" />
+          </div>
+          <button type="submit" class="btn">Create User</button>
+        </form>
+      <% } %>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Lexvora Consulting</p>
+  </footer>
+</body>
+</html>

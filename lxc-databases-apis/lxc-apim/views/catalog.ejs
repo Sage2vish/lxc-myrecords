@@ -7,15 +7,10 @@
   <link rel="stylesheet" href="/css/theme.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="brand">LXC <span class="brand-accent">APIM</span></div>
-    <nav class="site-nav">
-      <a href="/docs">API Docs</a>
-    </nav>
-  </header>
+  <%- include('partials/nav', {session}) %>
 
   <section class="hero">
-    <p class="eyebrow">Lexvora Consulting</p>
+    <p class="eyebrow">Lexvora Consulting<% if (apimEnv === 'local') { %> · Local Dev<% } %></p>
     <h1>API Management &amp; Showcase</h1>
     <p class="lead">Every API Lexvora Consulting builds, in one catalog.</p>
     <div class="gold-line"></div>
@@ -46,6 +41,9 @@
           </div>
         <% }); %>
       </div>
+      <% if (apimEnv === 'local') { %>
+        <p class="form-note">Links point at localhost — the matching webapp needs to be running locally for them to respond.</p>
+      <% } %>
     <% } %>
   </main>
 

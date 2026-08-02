@@ -180,13 +180,13 @@ README for the fuller task checklist.
   array, generated from the `apim_products` table rather than hardcoded, so
   it shows a dropdown across every registered LXC API (starting with
   `lxc-api`), not just `lxc-apim`'s own endpoints.
-- Showcase UI theme must match the `lexvoraconsulting_web` site (a **separate
-  sibling repo**, not inside this monorepo, at
-  `/Users/SageVish/Documents/Development Work/git-repos/lexvoraconsulting_web`):
-  dark navy + gold header (`#061421` / `#b88445` / `#d2a15f`), cream body
-  (`#f7f3ed`), Georgia serif hero headings, Montserrat uppercase eyebrow
-  labels, gold-gradient buttons, `.service-card` pattern from that site's
-  `our-products.html`.
+- **UI theme reversed course (2026-08-02):** an earlier pass matched
+  `lexvoraconsulting_web`'s dark-navy/gold brand theme; that was explicitly
+  overturned — `lxc-apim` now uses its **own** distinct palette (indigo
+  `#6366f1`/`#818cf8` accent, slate `#0f172a`/`#f8fafc` neutrals, clean
+  system sans-serif), styled like a dev/admin tool rather than matching the
+  marketing site. Tokens in `public/css/theme.css`. Don't reintroduce the
+  gold/navy/Georgia/Montserrat lexvora theme here without being asked.
 - Database: `lxc-databases-apis/lxc-databases/api-apimgmt-db/` holds **only
   `.sql` files** (`migrations/0001`–`0005`, `seeds/0001`–`0002`) — no code,
   no `package.json`, no `node_modules`. By explicit instruction, that folder
@@ -214,52 +214,86 @@ README for the fuller task checklist.
   If a real Node 20.x ever gets installed into `frameworks/node/`, this
   pin can be revisited, but don't assume 20.x is available there without
   checking first.
-- `lxc-apim`'s own Phase 0 (scaffold) and Phase 1 (database) are done and
-  verified (`npm run build` clean, `/v1/health` responds, all
-  migrate/seed/seed-admin scripts pass `node --check`). A first-cut Phase 4
-  showcase page also exists: `GET /` renders `views/catalog.ejs` (themed per
-  `lexvoraconsulting_web`), reading live from `apim_products` via
-  `src/routes/showcase.ts`, and degrades gracefully (renders an
-  empty/error state instead of crashing) if the DB isn't reachable or
-  seeded yet — verified locally against a deliberately-bad host. Live task
-  tracker: `lxc-databases-apis/lxc-apim/README.md`. Still to build: the auth
-  API itself, admin/catalog CRUD, admin-panel showcase views, the multi-spec
-  Swagger wiring, and Hostinger deployment for `apim.lexvoraconsulting.com`.
+- **Phase 0/1 done and verified**, and **Phase 4 (browser UI) is now
+  substantially built**, not just a first-cut catalog page:
+  - Pages: `/login`, `POST /logout`, `/dashboard` (landing after login),
+    `/catalog` (its own page, separate from dashboard, env-aware URLs — see
+    below), `/change-password` (admin-only), `/users/new` (create additional
+    accounts). Root `/` redirects to `/dashboard` if logged in, else
+    `/login`.
+  - Session = a JWT issued on login and stored in an httpOnly cookie
+    (`src/middleware/auth.ts`) — the same auth core intended for the future
+    `/v1/auth/login` API, just a different transport (cookie vs.
+    `Authorization` header) for the browser UI vs. programmatic clients.
+  - **Two bootstrap accounts** (`scripts/seed-admin.mjs`, now create-once —
+    uses a SELECT-then-INSERT guard, never overwrites `password_hash`/
+    `is_active` on repeat idempotent runs, which is important since this
+    script runs on every dev startup):
+    - `admin` / `admin@1234` (default) — has a **DB-down code-level
+      fallback** (`src/services/authService.ts`): a literal hardcoded check
+      that logs `admin` in even if the MySQL query itself throws, so
+      health-check/diagnostics stay reachable during a DB outage. Forced to
+      `/change-password` on first login while the DB is reachable and still
+      on the default password.
+    - `superadmin` / `superadmin@#$1234` (fixed, the app never changes it) —
+      DB-row only, no DB-down fallback. Auto-disabled
+      (`apim_users.is_active = 0`) the instant admin's password changes away
+      from the default; re-enable by flipping that flag directly in MySQL.
+    - Both are **temporary, explicitly-requested dev backdoors** (2026-08-02,
+      no public deployment yet) — must be revisited before `lxc-apim` is
+      exposed anywhere real, especially the DB-down bypass, which doesn't
+      depend on the database at all.
+  - A session logged in via the DB-down fallback is marked "degraded": a
+    site-wide banner shows, and `/catalog`, `/change-password`, `/users/new`
+    all refuse to operate (503, clear message) rather than crashing.
+  - `APIM_ENV` (`local` | `production`, `src/config/env.ts`) controls the
+    catalog's displayed URLs: `local` (the dev default) overrides each
+    product to its localhost equivalent (`src/config/localUrls.ts`:
+    `lxc-api` → `:3000`, `lxc-apim` → `:3100`) instead of the DB-seeded
+    production URL. The eventual Build to Publish flow will set this to
+    `production`.
+  - Verified locally against a deliberately-bad DB host: unauthenticated `/`
+    redirects to `/login`; wrong credentials with DB down → 401; the
+    `admin`/`admin@1234` backdoor pair with DB down → succeeds, degraded,
+    dashboard shows the banner; `/catalog`, `/change-password`, `/users/new`
+    all correctly return 503 while degraded; logout clears the session and
+    redirects to `/login`.
+  - **Deferred, still queued:** surfacing each API's Swagger endpoint list
+    directly on its catalog card; role/authorization middleware to actually
+    gate who can reach `/users/new` (today any authenticated session can,
+    since only `admin`/`superadmin` exist); the `/v1/auth/login` JSON API
+    itself for programmatic clients.
+  - Live task tracker: `lxc-databases-apis/lxc-apim/README.md`.
 - **Run it locally against the real remote database:**
-  `Executable/macos_apim_run.sh` is a new, separate script (not merged
-  into `macos_healthapi_package.sh`, which stays `lxc-api`-only) with a
-  5-option interactive menu:
-  - **1) First Time** and **2) Regular** — Default Run/Test Local (Dev APIM
-    — Remote DB). These two run the **identical underlying sequence**; they
-    only differ in messaging (option 1 prints a short explainer for
-    newcomers, option 2 is terser). Neither ever asks a question. Both
-    require `lxc-apim/.env` to already exist (fail with a pointer to option
-    3 if not); otherwise: load the toolchain, `npm install` if needed, run
-    `db:migrate` + `db:seed` + `db:seed:admin` on every invocation (all
-    idempotent, so this is cheap and doubles as an "is everything actually
-    in place" check that fixes gaps rather than just detecting them, with a
-    visible ✓ line per step), start `npm run dev` in the background, run an
-    **explicit health check** against `http://localhost:3100/v1/health`
-    printing a clear pass/fail line, then print "✓ All set" and only open
-    the browser once that health check passes.
-  - **⚠️ Temporary dev backdoor:** `db:seed:admin` with no `SEED_ADMIN_*` env
-    vars set creates/keeps a known login — **`admin` / `admin@1234`** — in
-    `apim_users`. Explicitly requested (2026-08-02) for this early-dev stage
-    (no auth API or public deployment exists yet), but this **must be
-    replaced or removed before `lxc-apim` is exposed anywhere real**. To use
-    a real credential instead: `SEED_ADMIN_EMAIL=... SEED_ADMIN_PASSWORD=...
-    npm run db:seed:admin` once, from `lxc-apim`.
+  `Executable/macos_apim_run.sh` is a separate script (not merged into
+  `macos_healthapi_package.sh`, which stays `lxc-api`-only) with a 5-option
+  interactive menu:
+  - **1) First Time** and **2) Regular** — identical underlying sequence,
+    only messaging differs. Neither ever asks a question. Both require
+    `lxc-apim/.env` to already exist (fail with a pointer to option 3 if
+    not); otherwise: load the toolchain, `npm install` if needed, run
+    `db:migrate` + `db:seed` + `db:seed:admin` on every invocation
+    (idempotent, doubles as an "is everything actually in place" check, with
+    a visible ✓ line per step), **best-effort start `lxc-api` too**
+    (`start_lxc_api_if_possible` — skipped with a clear message if
+    `lxc-api/.env` isn't set up; that needs its own separate secret, a real
+    WeatherAPI.com key, which this script doesn't manage), start `npm run
+    dev` for `lxc-apim`, run an **explicit health check** against
+    `http://localhost:3100/v1/health`, then open the browser. Ctrl+C stops
+    both servers (apim tracked via `$server_pid`, api via
+    `$API_SERVER_PID`) and returns to the menu.
   - **3) Custom Run/Test Local (Dev APIM — Remote DB)** — the interactive
     path: prompts for MySQL user/password (hidden input, defaults to
     whatever's already in `.env`), writes/overwrites `lxc-apim/.env`
-    (gitignored, never committed, never hardcoded in the script itself),
-    then runs the same database + server + health-check sequence as 1/2.
+    (gitignored, never committed, never hardcoded in the script itself,
+    includes `APIM_ENV=local`), then runs the same database + lxc-api +
+    server + health-check sequence as 1/2.
   - **4) Make Build to Publish (PROD APIM — local DB)** — placeholder, just
     re-shows the menu. Not built yet.
   - **q) Quit**
 
   This script is meant to be run directly by the user in their own
-  terminal, not executed on their behalf by an AI assistant, since option 2
+  terminal, not executed on their behalf by an AI assistant, since option 3
   prompts for a real secret. The real Hostinger MySQL password (once
   supplied by the user) lives only in `lxc-apim/.env` — never in this
   script, never committed.
@@ -276,7 +310,9 @@ README for the fuller task checklist.
 `lxc-api`, then real API request auth for the mobile app, then wiring
 `LoginScreen`'s mock OTP submit to an actual `POST /auth/login` and
 persisting the session via `react-native-keychain` — or, on the `lxc-apim`
-branch, continuing `lxc-apim`'s Phase 2 (the product-aware auth API).
+branch, continuing `lxc-apim`'s Phase 2/3 (the `/v1/auth/login` JSON API,
+role/authorization middleware, admin/catalog CRUD API) and Phase 5
+(multi-spec Swagger).
 
 ### Executable build scripts
 

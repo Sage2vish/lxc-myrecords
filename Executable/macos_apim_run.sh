@@ -41,6 +41,16 @@ ENV_FILE="$APIM_DIR/.env"
 PORT="3100"
 LOG_FILE="/tmp/lxc-apim-dev.log"
 
+# lxc-api — started alongside lxc-apim so the catalog's localhost link for
+# lxc-api actually responds. Best-effort: if its .env isn't set up (needs a
+# real WeatherAPI.com key, a separate secret this script doesn't manage),
+# this is skipped with a clear message rather than blocking the apim flow.
+API_DIR="$REPO_ROOT/lxc-databases-apis/lxc-api"
+API_ENV_FILE="$API_DIR/.env"
+API_PORT="3000"
+API_LOG_FILE="/tmp/lxc-api-dev.log"
+API_SERVER_PID=""
+
 # fail TITLE "plain-language explanation" "exact developer fix"
 fail() {
   echo ""
@@ -106,6 +116,43 @@ ensure_db_ready() {
   echo "    ✓ Admin account present"
 }
 
+# Best-effort: starts lxc-api in the background too, so the catalog's
+# localhost:3000 link for lxc-api is actually live, not just a label. Skips
+# cleanly (no failure) if lxc-api/.env isn't set up yet — that needs a real
+# WeatherAPI.com key, unrelated to anything this script manages.
+start_lxc_api_if_possible() {
+  if [ ! -f "$API_ENV_FILE" ]; then
+    echo "    lxc-api/.env not found — skipping (catalog's lxc-api link won't respond)."
+    echo "    To enable: cp $API_DIR/.env.example $API_ENV_FILE and set a real WeatherAPI.com key."
+    return
+  fi
+
+  if [ ! -d "$API_DIR/node_modules" ]; then
+    echo "    Installing lxc-api dependencies (first run)"
+    (cd "$API_DIR" && npm install)
+  fi
+
+  ( cd "$API_DIR" && set -a && source "$API_ENV_FILE" && set +a && npm run dev ) > "$API_LOG_FILE" 2>&1 &
+  API_SERVER_PID=$!
+
+  local tries=0
+  while [ "$tries" -lt 15 ]; do
+    if curl -s "http://localhost:${API_PORT}/v1/health" >/dev/null 2>&1; then
+      echo "    ✓ lxc-api running at http://localhost:${API_PORT}"
+      return
+    fi
+    if ! kill -0 "$API_SERVER_PID" 2>/dev/null; then
+      echo "    ✗ lxc-api failed to start — see $API_LOG_FILE (continuing without it)"
+      API_SERVER_PID=""
+      return
+    fi
+    tries=$((tries + 1))
+    sleep 1
+  done
+
+  echo "    ✗ lxc-api didn't respond in time — see $API_LOG_FILE (continuing without it)"
+}
+
 # Starts the dev server in the background, explicitly health-checks it,
 # opens the browser only once that health check passes, then attaches to
 # the logs in the foreground so Ctrl+C cleanly stops the server and returns
@@ -114,7 +161,7 @@ start_server_and_health_check() {
   ( cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run dev ) > "$LOG_FILE" 2>&1 &
   local server_pid=$!
 
-  trap 'echo ""; echo "Stopping lxc-apim..."; kill "$server_pid" 2>/dev/null; wait "$server_pid" 2>/dev/null; trap - INT TERM' INT TERM
+  trap 'echo ""; echo "Stopping lxc-apim..."; kill "$server_pid" 2>/dev/null; wait "$server_pid" 2>/dev/null; [ -n "$API_SERVER_PID" ] && kill "$API_SERVER_PID" 2>/dev/null; trap - INT TERM' INT TERM
 
   echo "    Checking server health..."
   echo "    Waiting for http://localhost:${PORT}/v1/health"
@@ -135,6 +182,7 @@ start_server_and_health_check() {
   if [ "$healthy" != "1" ]; then
     echo "    ✗ Health check failed — see $LOG_FILE"
     kill "$server_pid" 2>/dev/null
+    [ -n "$API_SERVER_PID" ] && kill "$API_SERVER_PID" 2>/dev/null
     trap - INT TERM
     return 1
   fi
@@ -144,11 +192,12 @@ start_server_and_health_check() {
   echo "✓ All set — opening http://localhost:${PORT} ;-)"
   open "http://localhost:${PORT}"
 
-  echo "==> Running — Ctrl+C stops the server and returns to this menu"
+  echo "==> Running — Ctrl+C stops the server(s) and returns to this menu"
   tail -f "$LOG_FILE" &
   local tail_pid=$!
   wait "$server_pid" 2>/dev/null
   kill "$tail_pid" 2>/dev/null
+  [ -n "$API_SERVER_PID" ] && kill "$API_SERVER_PID" 2>/dev/null
   trap - INT TERM
 }
 
@@ -156,7 +205,7 @@ start_server_and_health_check() {
 # messaging differs. Always confirms dependencies, always applies
 # migrations/seed data, always health-checks before opening the browser.
 run_default_sequence() {
-  echo "==> [1/5] Preflight checks"
+  echo "==> [1/6] Preflight checks"
   preflight
 
   if [ ! -f "$ENV_FILE" ]; then
@@ -165,17 +214,20 @@ run_default_sequence() {
       "Run option 3 (Custom Run/Test Local) once to set the MySQL password — it writes $ENV_FILE, and options 1/2 will use it silently from then on."
   fi
 
-  echo "==> [2/5] Loading toolchain"
+  echo "==> [2/6] Loading toolchain"
   # shellcheck disable=SC1091
   source "$FRAMEWORKS_ROOT/android/env.sh"
 
-  echo "==> [3/5] Dependencies"
+  echo "==> [3/6] Dependencies"
   ensure_deps
 
-  echo "==> [4/5] Database — migrate + seed + admin account (idempotent, safe to re-run)"
+  echo "==> [4/6] Database — migrate + seed + admin account (idempotent, safe to re-run)"
   ensure_db_ready
 
-  echo "==> [5/5] Server + health check"
+  echo "==> [5/6] lxc-api (best-effort, so the catalog's local link is live)"
+  start_lxc_api_if_possible
+
+  echo "==> [6/6] Server + health check"
   start_server_and_health_check
 }
 
@@ -194,14 +246,14 @@ run_regular() {
 }
 
 run_custom() {
-  echo "==> [1/5] Preflight checks"
+  echo "==> [1/6] Preflight checks"
   preflight
 
-  echo "==> [2/5] Loading toolchain"
+  echo "==> [2/6] Loading toolchain"
   # shellcheck disable=SC1091
   source "$FRAMEWORKS_ROOT/android/env.sh"
 
-  echo "==> [3/5] Dependencies"
+  echo "==> [3/6] Dependencies"
   ensure_deps
 
   echo ""
@@ -239,6 +291,7 @@ run_custom() {
 
   cat > "$ENV_FILE" <<EOF
 PORT=${PORT}
+APIM_ENV=local
 MYSQL_HOST=srv1878.hstgr.io
 MYSQL_PORT=3306
 MYSQL_DATABASE=u450600831_lxc_hlthapi_db
@@ -250,10 +303,13 @@ EOF
 
   echo "==> Wrote $ENV_FILE"
 
-  echo "==> [4/5] Database — migrate + seed + admin account (idempotent, safe to re-run)"
+  echo "==> [4/6] Database — migrate + seed + admin account (idempotent, safe to re-run)"
   ensure_db_ready
 
-  echo "==> [5/5] Server + health check"
+  echo "==> [5/6] lxc-api (best-effort, so the catalog's local link is live)"
+  start_lxc_api_if_possible
+
+  echo "==> [6/6] Server + health check"
   start_server_and_health_check
 }
 
