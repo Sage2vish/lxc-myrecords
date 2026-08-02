@@ -33,9 +33,23 @@ Use this space for:
 - API management and health-domain data should live in separate subfolders
   unless we intentionally merge them later
 
-## Database Options
+## Database Provider — Decided
 
-The platform can use either of these as the primary database choice:
+**MySQL**, on the existing Hostinger instance already documented in
+[`../lxc-api/DB_CONNECTION.md`](../lxc-api/DB_CONNECTION.md). Not MongoDB Atlas,
+not Supabase — that earlier options analysis is kept below for historical
+context only.
+
+- `lxc-api` and `lxc-apim` are separate codebases that **share this one MySQL
+  database**. Tables are split by prefix instead of by database:
+  - `api_*` — owned by `lxc-api`
+  - `apim_*` — owned by `lxc-apim`
+  - This prefixed schema lives under [`api-apimgmt-db/`](./api-apimgmt-db/).
+- `health-db` uses the same MySQL platform, kept as its own domain (patient,
+  visit, and record data) separate from the api/apim tables above.
+
+<details>
+<summary>Earlier MongoDB Atlas vs. Supabase analysis (superseded — MySQL was chosen)</summary>
 
 ### MongoDB Atlas
 
@@ -78,26 +92,16 @@ Typical strengths:
 - Strong SQL querying and reporting
 - Good fit for normalized health data
 
-## Decision Context
-
-Choose based on the shape of the data and the way the application will grow:
-
-- Pick `MongoDB Atlas` if the health records will stay highly flexible and
-  document-oriented.
-- Pick `Supabase` if the platform needs stronger relational integrity,
-  reporting, and SQL-driven workflows.
+</details>
 
 ## Recommended Direction
 
-For the current LXC-DBs-APIs ecosystem, the decision should be made around the
-core data shapes:
+For the current LXC-DBs-APIs ecosystem, tables are split by domain within the
+same MySQL database:
 
-- Use `api-apimgmt-db` for authentication, users, sessions, and admin control.
+- Use `api-apimgmt-db` (`api_*` / `apim_*` prefixes) for authentication, users,
+  sessions, API catalog, and admin control — shared by `lxc-api` and `lxc-apim`.
 - Use `health-db` for patient records, timelines, and medical documents.
-- If the data is highly relational and needs strong reporting, Supabase is a
-  strong fit.
-- If the health records stay flexible and document-oriented, MongoDB Atlas is a
-  strong fit.
 
 ## Suggested Folder Structure
 
@@ -118,20 +122,19 @@ lxc-databases/
 
 ## Environment Notes
 
-Keep secrets out of git.
-
-Suggested variables:
+Keep secrets out of git. Same MySQL connection contract already used by
+`lxc-api` (see [`../lxc-api/.env.example`](../lxc-api/.env.example)):
 
 ```bash
-DATABASE_URL=
-MONGODB_URI=
-SUPABASE_URL=
-SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-DB_PROVIDER=
+MYSQL_HOST=
+MYSQL_PORT=
+MYSQL_DATABASE=
+MYSQL_USER=
+MYSQL_PASSWORD=
 ```
 
-Only the variables needed for the chosen provider should be populated.
+`lxc-apim` will use the same values — it's the same database, just different
+table prefixes.
 
 ## Working Rules
 
@@ -142,5 +145,6 @@ Only the variables needed for the chosen provider should be populated.
 
 ## Next Step
 
-Add the initial schema or migration files here once the database choice is
-confirmed.
+Database provider is confirmed (MySQL/Hostinger). Next: define the `api_*` /
+`apim_*` schema in `api-apimgmt-db/` and the schema in `health-db/`, then add
+migrations.
