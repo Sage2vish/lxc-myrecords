@@ -6,5 +6,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src", "index.js"]
+  "include": ["src", "index.js", "index.tablet.js"]
 }

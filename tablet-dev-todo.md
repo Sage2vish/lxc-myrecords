@@ -45,16 +45,19 @@
 - Point the tablet app to the tablet entry path only.
 
 ## Next Implementation Steps
-- Audit current shared source to separate common vs mobile-only vs tablet-only code.
-- Identify screens that need tablet-specific layouts.
-- Create the `mobile` and `tablet` folder structure under shared.
-- Wire the iPadOS app and Android tablet app to the correct shared entry path.
+- [x] Audit current shared source to separate common vs mobile-only vs tablet-only code.
+- [x] Identify the home screen as the first tablet-specific layout.
+- [x] Create the `mobile` and `tablet` folder structure under shared.
+- [x] Wire the iPadOS app to the tablet entry path while preserving the mobile entry path.
+- [x] Define separate mobile (`index.js`) and tablet (`index.tablet.js`) entry files.
+- [x] Add an initial tablet-only home screen with a sidebar and wide dashboard layout.
+- [x] Reuse the existing four time-period hero themes for the tablet home banner.
+- [x] Confirm the iPhone entry path imports the mobile root only.
 - Validate builds after the split to make sure both platforms still run.
-- Recreate the tablet home screen first, then work through the rest of the tablet-specific screens.
 - Define the image generation list needed for the tablet home screen, including banners, icons, and supporting artwork.
-- Map the time-of-day design states before implementing the dynamic home screen variants.
-- Define the mobile and tablet entry files before moving any screens.
-- Verify the iPhone bundle does not import anything from the tablet tree.
+- Move existing shared services, API clients, hooks, and types under `src/common` in small verified steps.
+- Build tablet-specific layouts for appointments, health, vault, and reports.
+- Create the Android tablet native shell (`lxc-myhealthhub-xdatablet`) using the same tablet entry path.
 
 ## Open Decisions
 - Decide which screens are fully shared and which need tablet-specific presentation.
