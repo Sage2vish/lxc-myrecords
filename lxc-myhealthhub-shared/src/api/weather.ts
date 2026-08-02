@@ -5,7 +5,7 @@
 //               phone's coordinates when available and falls back to Dubai.
 // ============================================================================
 
-import {apiConfig} from './config';
+import {apiConfig} from '../common/api/config';
 
 const DEFAULT_WEATHER_CITY = 'Dubai';
 

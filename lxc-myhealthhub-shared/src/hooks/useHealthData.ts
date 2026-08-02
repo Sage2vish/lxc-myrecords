@@ -17,7 +17,7 @@ import {
   getPrescriptions,
   getRecords,
   getVitals,
-} from '../api/healthService';
+} from '../common/api/healthService';
 
 export function useAppointments() {
   return useQuery({queryKey: ['appointments'], queryFn: getAppointments});

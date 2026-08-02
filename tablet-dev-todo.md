@@ -1,5 +1,7 @@
 # Tablet Dev TODO
 
+_Last updated: 2026-08-02 on `lxc-tablet-app-dev`._
+
 ## Goals
 - Keep `lxc-myhealthhub-shared` as the single shared source of truth.
 - Split tablet-specific UI from mobile-specific UI without duplicating business logic.
@@ -45,6 +47,8 @@
 - Point the tablet app to the tablet entry path only.
 
 ## Next Implementation Steps
+
+### High Priority
 - [x] Audit current shared source to separate common vs mobile-only vs tablet-only code.
 - [x] Identify the home screen as the first tablet-specific layout.
 - [x] Create the `mobile` and `tablet` folder structure under shared.
@@ -53,11 +57,89 @@
 - [x] Add an initial tablet-only home screen with a sidebar and wide dashboard layout.
 - [x] Reuse the existing four time-period hero themes for the tablet home banner.
 - [x] Confirm the iPhone entry path imports the mobile root only.
-- Validate builds after the split to make sure both platforms still run.
-- Define the image generation list needed for the tablet home screen, including banners, icons, and supporting artwork.
-- Move existing shared services, API clients, hooks, and types under `src/common` in small verified steps.
-- Build tablet-specific layouts for appointments, health, vault, and reports.
-- Create the Android tablet native shell (`lxc-myhealthhub-xdatablet`) using the same tablet entry path.
+- [x] Add the first tracked tablet development branch and start the split work on GitHub.
+- [x] Fix the iPadOS Podfile post-install hook so shell phases do not crash when output arrays are nil.
+- [x] Validate the iPadOS simulator launch end-to-end.
+  - [x] Run `Executable/macos_ipadosapp_build.sh` with the default simulator path.
+  - [x] Confirm CocoaPods completes without the post-install hook crashing.
+  - [x] Confirm the app launches from `index.tablet.js`.
+  - [x] Verify the visible first screen is the tablet home shell, not the phone shell.
+- [x] Validate the iPhone build still points at the mobile entry path.
+  - [x] Confirm `index.js` continues to register `src/mobile/MobileApp`.
+  - [x] Confirm the phone bundle does not import tablet-only screens.
+  - [x] Confirm the iOS project still runs with the existing mobile navigation tree.
+- [x] Replace placeholder tablet navigation with real section routing.
+  - [x] Connect Home to the current dashboard.
+  - [x] Add Health as a dedicated tablet view.
+  - [x] Add Schedules as a dedicated tablet view.
+  - [x] Add Vault as a dedicated tablet view.
+  - [x] Add Reports as a dedicated tablet view.
+- [x] Turn the compact cards on the tablet home screen into real drill-down surfaces.
+  - [x] Make upcoming appointments open the appointment detail flow.
+  - [x] Make lab report cards open a report summary surface.
+  - [x] Make document vault cards open a storage/detail surface.
+  - [x] Make the family cards open a profile or member detail surface.
+
+### Medium Priority
+- [x] Move reusable API, client, hook, and type code into `src/common` with compatibility re-exports.
+  - [x] Move API client configuration first.
+  - [x] Move weather fetch logic next.
+  - [x] Move health service and hook logic.
+  - [x] Move shared health types.
+  - [x] Update imports in mobile and tablet code after each move.
+  - [x] Keep re-export shims in place until the migration is stable.
+- [x] Define the image generation list for tablet banners, supporting art, and empty states.
+  - [x] Tablet hero banners for morning, afternoon, evening, and night.
+  - [x] Tablet-wide support art for the empty appointment, report, and vault surfaces.
+  - [x] Section icon badges for the sidebar, cards, and top actions.
+  - [x] Illustration assets for empty data states and low-activity states.
+  - [x] Background treatment assets for the hero card and the detail surface.
+  - [x] Mark which assets can be reused from the phone app.
+  - [x] Mark which assets need tablet-only variants.
+  - [x] Decide whether generated assets should ship as temporary placeholders or final art.
+- [x] Add responsive behavior for the four hero dayparts.
+  - [x] Morning layout should feel light and fresh.
+  - [x] Afternoon layout should keep the hero readable under bright content.
+  - [x] Evening layout should darken the banner without losing contrast.
+  - [x] Night layout should lean into the most dramatic treatment.
+  - [x] Keep the sidebar and card grid stable while only the hero treatment changes.
+- [x] Shape the tablet-specific UI components into reusable building blocks.
+  - [x] Extract a shared section header for card groups.
+  - [x] Extract a reusable metric card component.
+  - [x] Extract a reusable appointment row component.
+  - [x] Extract a reusable profile chip/avatar component.
+
+### Low Priority
+- [x] Create the Android tablet native shell (`lxc-myhealthhub-xdatablet`).
+  - [x] Mirror the iPadOS entry strategy with a tablet-specific entry file.
+  - [x] Reuse the same shared source and tablet route split.
+  - [x] Confirm the Android tablet shell only loads tablet UI.
+- [ ] Add release-archive verification after simulator validation stabilizes.
+  - [ ] Generate an iPadOS archive from the same code path.
+  - [ ] Confirm the release bundle still resolves the tablet entry file.
+  - [ ] Confirm signing and archive settings are clean.
+- [ ] Tighten visual polish on the tablet home screen.
+  - [ ] Match spacing and outer edge alignment to the supplied mock.
+  - [ ] Keep the right alignment of summary values consistent.
+  - [ ] Keep the top of the API/detail areas pinned without drifting.
+  - [ ] Keep the color palette and card rhythm consistent with the brand.
+
+## Progress Snapshot
+- Completed: 19 of 21 top-level tasks, including tablet branch setup, mobile/tablet entry split, iPadOS tablet entry wiring, initial tablet home shell, time-of-day hero reuse, the Podfile hook fix needed for CocoaPods on Xcode 26, the iPhone build validation, the tablet routing model, the tablet drill-down surfaces, the shared-code migration, the image-generation inventory, the responsive daypart refinement, the reusable tablet component extraction, the Android tablet shell, and the iPadOS simulator launch.
+- In progress: release archive verification and tablet home visual polish.
+- Pending: 2 top-level tasks remain, led by release archive verification and visual polish.
+
+## Verification Log
+- `2026-08-02`: `Executable/macos_ipadosapp_build.sh` reached CocoaPods integration and failed only in the iPadOS Podfile post-install hook before the patch.
+- `2026-08-02`: Updated the Podfile guard so nil shell-script output arrays cannot crash the post-install hook.
+- `2026-08-02`: `Executable/macos_ipadosapp_build.sh` completed the build and launched `com.lxcmyhealthhub.ipados` on `iPad (A16)` successfully.
+- `2026-08-02`: `Executable/macos_iosapp_build.sh` completed the build and launched `com.lxcmyhealthhub` on `iPhone 14` successfully.
+- `2026-08-02`: Rehomed the shared API/client/hook/type surface into `src/common` and kept compatibility shims in the old paths.
+- `2026-08-02`: Added the time-of-day tablet hero text, tint, and copy treatment so the shell changes by morning/afternoon/evening/night.
+- `2026-08-02`: Extracted reusable tablet section header, stat card, and detail panel components and verified the shell still launches.
+- `2026-08-02`: Created the `lxc-myhealthhub-xdatablet` Android tablet shell and confirmed `./gradlew assembleDebug` succeeds in the new project.
+- `2026-08-02`: Patched Hermes release extraction to use `execFileSync('tar', ...)` so the archive step works with the workspace path that contains a space.
+- `2026-08-02`: Tightened the tablet home and section layouts so they size naturally instead of relying on a fixed desktop width.
 
 ## Open Decisions
 - Decide which screens are fully shared and which need tablet-specific presentation.

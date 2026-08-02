@@ -59,7 +59,9 @@ target 'LxcMyHealthHub' do
       end
 
       pod_target.build_phases.grep(Xcodeproj::Project::Object::PBXShellScriptBuildPhase).each do |phase|
-        phase.always_out_of_date = '1' if phase.output_paths.empty? && phase.output_file_list_paths.empty?
+        output_paths = Array(phase.output_paths)
+        output_file_list_paths = Array(phase.output_file_list_paths)
+        phase.always_out_of_date = '1' if output_paths.empty? && output_file_list_paths.empty?
       end
     end
 
@@ -78,6 +80,27 @@ target 'LxcMyHealthHub' do
       pod_target.build_configurations.each do |bc|
         bc.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
       end
+    end
+
+    hermes_target = installer.pods_project.targets.find { |t| t.name == 'hermes-engine' }
+    hermes_helper = File.expand_path('../Executable/hermes_replace_hermes_version.js', __dir__)
+    if hermes_target && File.exist?(hermes_helper)
+      hermes_target.build_phases
+        .grep(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
+        .each do |phase|
+          next unless phase.name == '[Hermes] Replace Hermes for the right configuration, if needed'
+
+          phase.shell_script = <<~SCRIPT
+            . "$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh"
+
+            CONFIG="Release"
+            if echo $GCC_PREPROCESSOR_DEFINITIONS | grep -q "DEBUG=1"; then
+              CONFIG="Debug"
+            fi
+
+            "$NODE_BINARY" "#{hermes_helper}" -c "$CONFIG" -r "0.78.3" -p "$PODS_ROOT"
+          SCRIPT
+        end
     end
   end
 end

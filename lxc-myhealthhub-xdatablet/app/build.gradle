@@ -1,0 +1,77 @@
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("com.facebook.react")
+}
+
+react {
+    // JS/native-agnostic source (package.json, node_modules, src/) lives in the
+    // sibling lxc-myhealthhub-shared folder, not inside this native project.
+    root = file("../../lxc-myhealthhub-shared")
+    autolinkLibrariesWithApp()
+}
+
+def enableProguardInReleaseBuilds = true
+
+android {
+    namespace "com.lxcmyhealthhub.xdatablet"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.lxcmyhealthhub.xdatablet"
+        minSdkVersion 29
+        targetSdkVersion 35
+        versionCode 1
+        versionName "0.1.0"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    // Keep ABI splits for smaller direct installs, and also publish a universal
+    // APK so test users do not accidentally receive an incompatible CPU split.
+    splits {
+        abi {
+            enable true
+            reset()
+            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            universalApk true
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def buildType = variant.buildType.name
+            def abi = output.getFilter(com.android.build.OutputFile.ABI) ?: "universal"
+            outputFileName = buildType == "debug" ? "MyHealthHubTablet-debug-${abi}.apk" : "MyHealthHubTablet-${abi}.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation("com.facebook.react:react-android")
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation("org.webkit:android-jsc:r245459")
+    }
+}

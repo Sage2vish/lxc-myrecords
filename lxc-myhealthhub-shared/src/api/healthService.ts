@@ -11,7 +11,7 @@
 //               integration, which is not yet wired up.
 // ============================================================================
 
-import {Appointment, MedicalRecord, Prescription, Vital} from '../types/health';
+import {Appointment, MedicalRecord, Prescription, Vital} from '../common/types/health';
 
 export async function getAppointments(): Promise<Appointment[]> {
   return [
