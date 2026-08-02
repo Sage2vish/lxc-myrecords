@@ -15,6 +15,7 @@ Current integrated work:
   - `lxc-apim` on `http://localhost:3100`
 - APIM catalog URLs stay localhost in `APIM_ENV=local` and only switch to production during the build/deploy flow
 - The catalog UI is a grouped API explorer with the group card containing its endpoint rows and a separate full-height API details rail
+- `lxc-api` now owns the Doctor REST surface, and `lxc-apim` reads the catalog from `lxc-api/openapi.json` when possible
 - MyHealthHub calls the backend weather endpoint first
 - Mobile location should pass latitude/longitude; Dubai is the fallback
 - Home screen displays city and Celsius temperature below the top glass header,

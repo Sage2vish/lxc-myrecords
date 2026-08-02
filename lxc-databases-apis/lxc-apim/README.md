@@ -102,7 +102,7 @@ This is the live status for building `lxc-apim`, updated as work lands.
 
 ### Phase 3 — Admin/catalog API
 - [ ] CRUD for `apim_products`, `apim_users`/roles, tokens
-- [ ] Surface Swagger endpoint list on catalog cards
+- [x] Surface Swagger endpoint list on catalog cards by reading `lxc-api` OpenAPI in local mode
 
 ### Phase 4 — Browser UI (login-gated) ✅
 - [x] Pages: `/login`, `POST /logout`, `/dashboard` (landing after login),
@@ -135,11 +135,14 @@ so restarting the dev server does not undo a password change):
 > anywhere real** — especially the DB-down code-level bypass for `admin`,
 > which doesn't depend on the database at all.
 
-**Catalog (`/catalog`) is env-aware:** `APIM_ENV=local` (the dev default)
-forces localhost URLs for the two local webapps
+**Catalog (`/catalog`) is env-aware and spec-driven:** `APIM_ENV=local` (the
+dev default) forces localhost URLs for the two local webapps
 (`src/config/localUrls.ts`: `lxc-api` → `http://localhost:3000`,
 `lxc-apim` → `http://localhost:3100`) instead of the DB-seeded production
-URL. The build/deploy flow is what switches to `APIM_ENV=production`.
+URL. The catalog groups and endpoint cards are built from
+`lxc-api/openapi.json` when that spec is reachable, so the UI reflects the
+actual REST surface rather than a hardcoded list. The build/deploy flow is
+what switches to `APIM_ENV=production`.
 
 **Current catalog UI contract**
 - Left side is the API catalog stack.
@@ -148,6 +151,7 @@ URL. The build/deploy flow is what switches to `APIM_ENV=production`.
 - API-level filters sit below the group-level filters.
 - Method chips use light tinted backgrounds, not solid blocks.
 - The current goal is visual parity with the reference grouped Swagger-style layout, while still keeping the Lexvora APIM palette and local/prod URL switching behavior.
+- New APIs should be added in `lxc-api` first, then surfaced in APIM through the OpenAPI-driven catalog.
 
 Run it locally against the **real remote Hostinger database** with:
 

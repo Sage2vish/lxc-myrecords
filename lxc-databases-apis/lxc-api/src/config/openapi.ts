@@ -18,6 +18,7 @@ export const openApiSpec = {
   tags: [
     {name: 'Health'},
     {name: 'Weather'},
+    {name: 'Doctors'},
   ],
   paths: {
     '/v1/health': {
@@ -100,6 +101,123 @@ export const openApiSpec = {
                     source: {type: 'string'},
                   },
                   required: ['requestedLocation', 'version', 'city', 'tempC', 'condition', 'source'],
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/v1/doctors/search': {
+      get: {
+        tags: ['Doctors'],
+        summary: 'Search doctors by name, specialization, or location',
+        parameters: [
+          {
+            name: 'name',
+            in: 'query',
+            required: false,
+            schema: {type: 'string', example: 'Amina'},
+            description: 'Matches doctor name by partial text.',
+          },
+          {
+            name: 'specialization',
+            in: 'query',
+            required: false,
+            schema: {type: 'string', example: 'Cardiology'},
+            description: 'Matches the doctor specialization by partial text.',
+          },
+          {
+            name: 'location',
+            in: 'query',
+            required: false,
+            schema: {type: 'string', example: 'Dubai'},
+            description: 'Matches the doctor location by partial text.',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Matching doctor list',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    filters: {type: 'object'},
+                    count: {type: 'number'},
+                    items: {type: 'array', items: {type: 'object'}},
+                  },
+                  required: ['filters', 'count', 'items'],
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/v1/doctors/{doctorId}/profile': {
+      get: {
+        tags: ['Doctors'],
+        summary: 'Retrieve a doctor profile',
+        parameters: [
+          {
+            name: 'doctorId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'DOC-1001'},
+            description: 'Doctor identifier.',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Doctor profile',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    doctorId: {type: 'string'},
+                    name: {type: 'string'},
+                    specialization: {type: 'string'},
+                    location: {type: 'string'},
+                    yearsOfExperience: {type: 'number'},
+                    profile: {type: 'string'},
+                  },
+                  required: ['doctorId', 'name', 'specialization', 'location', 'profile'],
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/v1/doctors/{doctorId}/availability': {
+      get: {
+        tags: ['Doctors'],
+        summary: 'Check doctor appointment availability',
+        parameters: [
+          {
+            name: 'doctorId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'DOC-1001'},
+            description: 'Doctor identifier.',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Availability data',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    doctorId: {type: 'string'},
+                    available: {type: 'boolean'},
+                    nextAvailableSlot: {type: 'string'},
+                    schedule: {type: 'array', items: {type: 'string'}},
+                  },
+                  required: ['doctorId', 'available', 'nextAvailableSlot', 'schedule'],
                 },
               },
             },

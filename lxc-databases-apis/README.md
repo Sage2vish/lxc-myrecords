@@ -113,6 +113,8 @@ lxc-databases/health-db/README.md
 - [x] Track the current APIM browser/app work in the workspace README
 - [x] Document the current APIM catalog structure, grouped endpoint layout, and two-column browser UI direction
 - [x] Track the local `lxc-api` / `lxc-apim` split explicitly in the workspace notes and task tracker
+- [x] Document that `lxc-apim` now reads catalog groups from `lxc-api` OpenAPI when available
+- [x] Add the Doctor API group to the backend service and surface it through the catalog
 
 ### In Progress
 
@@ -127,6 +129,7 @@ lxc-databases/health-db/README.md
 - [ ] Add schema/migration layout under `health-db`
 - [ ] Replace temporary placeholder docs with real schema docs
 - [ ] Build the API catalog/showcase surface in `lxc-apim` from database-driven product/group data
+- [ ] Replace the fallback catalog data with database-driven product/group data
 - [ ] Add product-aware `POST /v1/auth/login` and JWT middleware for API clients
 - [ ] Add Swagger/OpenAPI multi-spec docs in `lxc-apim`
 - [ ] Add Hostinger packaging for `lxc-apim` and set `APIM_ENV=production` in the build flow

@@ -239,7 +239,7 @@ README for the fuller task checklist.
       DB-row only, no DB-down fallback. Auto-disabled
       (`apim_users.is_active = 0`) the instant admin's password changes away
       from the default; re-enable by flipping that flag directly in MySQL.
-    - Both are **temporary, explicitly-requested dev backdoors** (2026-08-02,
+  - Both are **temporary, explicitly-requested dev backdoors** (2026-08-02,
       no public deployment yet) — must be revisited before `lxc-apim` is
       exposed anywhere real, especially the DB-down bypass, which doesn't
       depend on the database at all.
@@ -257,17 +257,21 @@ README for the fuller task checklist.
     right as a separate full-height panel. The current refinement work is about
     tightening spacing, filter placement, and matching the reference grouped
     Swagger-like structure more closely.
+  - `lxc-api` now owns the Doctor REST surface (`/v1/doctors/search`,
+    `/v1/doctors/{doctorId}/profile`, `/v1/doctors/{doctorId}/availability`),
+    and `lxc-apim` reads catalog groups from `lxc-api/openapi.json` when the
+    spec is reachable so the UI follows the REST source of truth.
   - Verified locally against a deliberately-bad DB host: unauthenticated `/`
     redirects to `/login`; wrong credentials with DB down → 401; the
     `admin`/`admin@1234` backdoor pair with DB down → succeeds, degraded,
     dashboard shows the banner; `/catalog`, `/change-password`, `/users/new`
     all correctly return 503 while degraded; logout clears the session and
     redirects to `/login`.
-  - **Deferred, still queued:** surfacing each API's Swagger endpoint list
-    directly on its catalog card; role/authorization middleware to actually
+  - **Deferred, still queued:** role/authorization middleware to actually
     gate who can reach `/users/new` (today any authenticated session can,
     since only `admin`/`superadmin` exist); the `/v1/auth/login` JSON API
-    itself for programmatic clients.
+    itself for programmatic clients; additional API groups after Doctors
+    (Medicines, Hospital/Clinics, etc.) in the `lxc-api` source surface.
   - Live task tracker: `lxc-databases-apis/lxc-apim/README.md`.
 - **Run it locally against the real remote database:**
   `Executable/macos_apim_run.sh` is a separate script (not merged into

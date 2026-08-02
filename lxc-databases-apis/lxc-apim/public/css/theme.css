@@ -470,8 +470,8 @@ a {
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: var(--paper);
-  border: 1px solid rgba(184, 132, 69, 0.18);
+  background: linear-gradient(180deg, #fbf7f1 0%, #f6efe6 100%);
+  border: 1px solid rgba(184, 132, 69, 0.22);
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 10px 26px rgba(6, 20, 33, 0.04);
@@ -498,7 +498,7 @@ a {
   padding: 10px 12px;
   border: 0;
   border-radius: 0;
-  background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
+  background: linear-gradient(180deg, #f0e9de 0%, #e7dccb 100%);
   cursor: pointer;
   user-select: none;
 }
@@ -568,30 +568,31 @@ a {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(184, 132, 69, 0.12);
-  border: 1px solid rgba(184, 132, 69, 0.16);
+  background: linear-gradient(180deg, #6a5b48 0%, #4f4335 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: #ffffff;
   font-size: 16px;
   flex: 0 0 auto;
 }
 
 .swagger-group__title {
-  color: var(--dark);
-  font-size: 18px;
+  color: #1f2937;
+  font-size: 15px;
   line-height: 1.05;
   font-weight: 800;
   white-space: nowrap;
+  margin: 0;
 }
 
 .swagger-group__status {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #6f915f;
-  background: #eef6e9;
+  color: #5c7a4c;
+  background: rgba(240, 247, 233, 0.95);
   border-radius: 999px;
   padding: 3px 10px;
   font-size: 11px;
@@ -603,7 +604,8 @@ a {
   flex-direction: column;
   gap: 6px;
   padding: 8px 10px 12px;
-  border-top: 1px solid rgba(184, 132, 69, 0.12);
+  background: linear-gradient(180deg, #f4f2ef 0%, #efebe6 100%);
+  border-top: 1px solid rgba(184, 132, 69, 0.14);
 }
 
 .swagger-group__count {

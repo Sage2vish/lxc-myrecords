@@ -92,9 +92,8 @@
                       <input type="checkbox" <%= selectedGroup && selectedGroup.id === group.id ? 'checked' : '' %> />
                       <span></span>
                     </label>
-                    <button type="button" class="group-arrow" aria-hidden="true"><%= selectedGroup && selectedGroup.id === group.id ? '⌄' : '›' %></button>
                     <span class="group-icon"><%= group.icon %></span>
-                    <h3 class="swagger-group__title"><%= group.name %></h3>
+                    <p class="swagger-group__title"><%= group.name %></p>
                     <span class="swagger-group__status">ACTIVE</span>
                   </div>
                   <div class="swagger-group__head-right">
