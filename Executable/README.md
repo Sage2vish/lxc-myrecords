@@ -40,7 +40,7 @@ build flow — see that app's README.
 ## Current Context
 
 - Weather/API work was merged into `main` on 2026-07-25
-- Backend weather code now lives in [`../lxc-health-api`](../lxc-health-api/)
+- Backend weather code now lives in [`../lxc-databases-apis/lxc-api`](../lxc-databases-apis/lxc-api/)
 - Android release builds include a universal APK plus ABI-specific APKs
 - Android emulator testing prefers the local `OnePlus_Nord_4_OxygenOS_16_API_36`
   AVD when no physical Android phone is connected. This is an Android 36 Google
@@ -66,9 +66,9 @@ developer fix. See [Error Message Format](#-error-message-format).
 
 **What it does, in order:**
 
-1. Confirms the `lxc-health-api` folder and required release files exist.
-2. Creates `lxc-health-api/publish/` if needed.
-3. Writes a timestamped `.tar` archive named `lxc-health-api-YYYY-MM-DD-HHMM.tar`.
+1. Confirms the `lxc-api` folder and required release files exist.
+2. Creates `lxc-databases-apis/lxc-api/publish/` if needed.
+3. Writes a timestamped `.tar` archive named `lxc-api-YYYY-MM-DD-HHMM.tar`.
 4. Includes `package.json`, `package-lock.json`, `tsconfig.json`, `src/`, and `publish/import.env`.
 5. Excludes Mac metadata such as `src/.DS_Store`.
 
@@ -89,11 +89,11 @@ Domain: apis.lexvoraconsulting.com
 Environment variables are prepared in:
 
 ```text
-../lxc-health-api/publish/import.env
+../lxc-databases-apis/lxc-api/publish/import.env
 ```
 
 Replace placeholder secret values inside Hostinger, not in git. The deploy
-archive belongs under `../lxc-health-api/publish/`; do not create or use a
+archive belongs under `../lxc-databases-apis/lxc-api/publish/`; do not create or use a
 repo-root `publish/` folder.
 
 ---

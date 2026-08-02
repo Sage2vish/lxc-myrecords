@@ -1,11 +1,11 @@
-# lxc-health-api
+# lxc-api
 
-Hostinger-ready Node API for MyHealthHub.
+Hostinger-ready Node API for Lexvora Consulting APIs & Databases.
 
-This service acts as the private backend layer for weather integration:
+This service acts as the private backend layer for weather and future API management:
 
 - App calls this API
-- This API calls WeatherAPI.com
+- This API can call WeatherAPI.com or future backend services
 - WeatherAPI key stays on the server
 
 ## Branch Context
@@ -38,6 +38,11 @@ Copy `.env.example` to `.env` and set:
 
 - `PORT`
 - `DEFAULT_WEATHER_CITY`
+- `MYSQL_HOST`
+- `MYSQL_PORT`
+- `MYSQL_DATABASE`
+- `MYSQL_USER`
+- `MYSQL_PASSWORD`
 - `HOSTINGER_API_TOKEN` only if you later automate Hostinger API actions
 - `HOSTINGER_APP_ID` only if you later automate Hostinger API actions
 - `WEATHER_WEATHERAPI_FORECASTV1_BASE_URL`
@@ -93,6 +98,27 @@ apis.weather.weatherapi.forecastv1
 
 That keeps provider URLs and keys in one place, while the weather service reads
 from the registry instead of scattering env lookups across files.
+
+## Database connection notes
+
+Use the Hostinger MySQL host when connecting from SQL Tools or any local MySQL
+client:
+
+```text
+Host: srv1878.hstgr.io
+Port: 3306
+Database: u450600831_lxc_hlthapi_db
+Username: u450600831_lxc_hapi_admin
+```
+
+Recommended workflow:
+
+1. Store the password only in your local `.env` or SQL client.
+2. Use [`scripts/mysql-connect.sh`](./scripts/mysql-connect.sh) for terminal
+   access when you want a repeatable shell workflow.
+3. Use Hostinger phpMyAdmin for quick admin work from the panel.
+4. Later, add migrations and schema files here when the API starts owning more
+   than one table.
 
 ## Weather flow
 
@@ -223,6 +249,48 @@ In production, replace `localhost` with:
 https://apis.lexvoraconsulting.com
 ```
 
+## Database access
+
+The MySQL database behind this Hostinger site is reachable with the Hostinger
+MySQL host, not the website domain.
+
+Working connection values:
+
+```text
+Host: srv1878.hstgr.io
+Port: 3306
+Database: u450600831_lxc_hlthapi_db
+Username: u450600831_lxc_hapi_admin
+```
+
+Notes:
+
+- Use the MySQL host above when connecting from SQL Tools or another client.
+- `apis.lexvoraconsulting.com` is the app/domain URL, not the database host.
+- Keep the password out of git and store it only in your local SQL client or
+  secure environment variables.
+- For admin work inside Hostinger, phpMyAdmin is always available from the
+  panel even when remote SQL access is not needed.
+- If the host changes in Hostinger later, update this section so future DB work
+  can reconnect quickly.
+
+### Optional shell helper
+
+If you want a repeatable local connection flow from the terminal, use the
+helper script in `scripts/mysql-connect.sh`. It reads the connection values from
+environment variables and opens a MySQL client session when `mysql` is
+installed locally.
+
+Example:
+
+```bash
+export MYSQL_HOST=srv1878.hstgr.io
+export MYSQL_PORT=3306
+export MYSQL_DATABASE=u450600831_lxc_hlthapi_db
+export MYSQL_USER=u450600831_lxc_hapi_admin
+./scripts/mysql-connect.sh
+```
+
 ## Hostinger deployment
 
 Use manual upload when you want to control exactly when stable code goes live.
@@ -238,7 +306,7 @@ repository updates.
 2. Upload the generated `.tar` from:
 
    ```text
-   lxc-health-api/publish/
+   lxc-databases-apis/lxc-api/publish/
    ```
 
 3. In Hostinger Review Build Settings:
@@ -251,7 +319,7 @@ repository updates.
 4. Import or enter environment variables from:
 
    ```text
-   lxc-health-api/publish/import.env
+   lxc-databases-apis/lxc-api/publish/import.env
    ```
 
 5. Replace `WEATHER_WEATHERAPI_FORECASTV1_API_KEY` with the real WeatherAPI.com
@@ -266,7 +334,7 @@ repository updates.
    ```
 
 The root-level repo folder `publish/` is not used. Deployment archives must stay
-under `lxc-health-api/publish/`.
+under `lxc-databases-apis/lxc-api/publish/`.
 
 ## App Contract
 

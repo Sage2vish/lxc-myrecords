@@ -1,5 +1,5 @@
 {
-  "name": "lxc-health-api",
+  "name": "lxc-api",
   "version": "1.0.0",
   "private": true,
   "description": "Hostinger-ready Node API for MyHealthHub weather and shared backend services.",

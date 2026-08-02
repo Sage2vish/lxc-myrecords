@@ -1,0 +1,23 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "srv1878.hstgr.io",
+            "port": 3306,
+            "sshOptions": {
+                "port": 22
+            },
+            "driver": "MySQL",
+            "name": "LXC-Health-APIDB",
+            "group": "LXC-Health",
+            "database": "u450600831_lxc_hlthapi_db",
+            "username": "u450600831_lxc_hapi_admin",
+            "password": "N@vn@@t!0805"
+        }
+    ]
+}

@@ -6,7 +6,7 @@ Android Tablet APK | React Native | SQLite Local Storage
 ## Repository Context
 
 - This app is independent from MyHealthHub
-- Weather/API work for MyHealthHub lives in the separate `lxc-health-api` folder
+- Weather/API work for MyHealthHub lives in the separate `lxc-databases-apis/lxc-api` folder
   and was merged into `main` on 2026-07-25
 - Keep DSA changes isolated unless the user explicitly asks to touch this app
 
