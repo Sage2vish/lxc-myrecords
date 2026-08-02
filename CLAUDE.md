@@ -216,10 +216,27 @@ README for the fuller task checklist.
   checking first.
 - `lxc-apim`'s own Phase 0 (scaffold) and Phase 1 (database) are done and
   verified (`npm run build` clean, `/v1/health` responds, all
-  migrate/seed/seed-admin scripts pass `node --check`). Live task tracker:
-  `lxc-databases-apis/lxc-apim/README.md`. Still to build: the auth API
-  itself, admin/catalog CRUD, the showcase UI, the multi-spec Swagger wiring,
-  and Hostinger deployment for `apim.lexvoraconsulting.com`.
+  migrate/seed/seed-admin scripts pass `node --check`). A first-cut Phase 4
+  showcase page also exists: `GET /` renders `views/catalog.ejs` (themed per
+  `lexvoraconsulting_web`), reading live from `apim_products` via
+  `src/routes/showcase.ts`, and degrades gracefully (renders an
+  empty/error state instead of crashing) if the DB isn't reachable or
+  seeded yet — verified locally against a deliberately-bad host. Live task
+  tracker: `lxc-databases-apis/lxc-apim/README.md`. Still to build: the auth
+  API itself, admin/catalog CRUD, admin-panel showcase views, the multi-spec
+  Swagger wiring, and Hostinger deployment for `apim.lexvoraconsulting.com`.
+- **Run it locally against the real remote database:**
+  `Executable/macos_apimapp_run.sh` is a new, separate script (not merged
+  into `macos_healthapi_package.sh`, which stays `lxc-api`-only) with an
+  interactive menu: option 1 ("Run/Test Local — Dev APIM, Remote DB") loads
+  the toolchain, `npm install`s if needed, prompts once for the real MySQL
+  password (hidden input, written only to the gitignored `lxc-apim/.env`,
+  never hardcoded in the script), optionally runs `db:migrate`/`db:seed` on
+  the spot, then starts `npm run dev` and opens `http://localhost:3100` in
+  the browser. Option 2 ("Make Build to Publish — PROD APIM, local DB") is a
+  placeholder that just re-shows the menu — not built yet. This script is
+  meant to be run directly by the user in their own terminal, not executed
+  on their behalf by an AI assistant, since it prompts for a real secret.
 - **Caution:** during this build, files started appearing in
   `api-apimgmt-db/migrations/` that weren't written by the assisting session
   — two conflicting schema designs landed concurrently (different column

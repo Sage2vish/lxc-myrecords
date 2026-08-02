@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXC APIM — API Catalog</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">LXC <span class="brand-accent">APIM</span></div>
+    <nav class="site-nav">
+      <a href="/docs">API Docs</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Lexvora Consulting</p>
+    <h1>API Management &amp; Showcase</h1>
+    <p class="lead">Every API Lexvora Consulting builds, in one catalog.</p>
+    <div class="gold-line"></div>
+  </section>
+
+  <main class="catalog">
+    <% if (dbError) { %>
+      <div class="catalog-empty">
+        <p>Catalog data isn't available yet.</p>
+        <p class="catalog-empty-detail"><%= dbError %></p>
+        <p class="catalog-empty-hint">Run <code>npm run db:migrate</code> then <code>npm run db:seed</code> from <code>lxc-apim</code>, then refresh.</p>
+      </div>
+    <% } else if (products.length === 0) { %>
+      <div class="catalog-empty">
+        <p>No APIs registered yet.</p>
+        <p class="catalog-empty-hint">Run <code>npm run db:seed</code> from <code>lxc-apim</code>, then refresh.</p>
+      </div>
+    <% } else { %>
+      <div class="catalog-grid">
+        <% products.forEach(function (product) { %>
+          <div class="service-card">
+            <h3><%= product.name %></h3>
+            <p><%= product.description || '' %></p>
+            <div class="service-card-links">
+              <% if (product.base_url) { %><a href="<%= product.base_url %>" target="_blank" rel="noopener">Visit</a><% } %>
+              <% if (product.openapi_url) { %><a href="<%= product.openapi_url %>" target="_blank" rel="noopener">OpenAPI</a><% } %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Lexvora Consulting</p>
+  </footer>
+</body>
+</html>

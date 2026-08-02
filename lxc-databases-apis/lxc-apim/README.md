@@ -104,8 +104,23 @@ This is the live status for building `lxc-apim`, updated as work lands.
 ### Phase 3 — Admin/catalog API
 - [ ] CRUD for `apim_products`, `apim_users`/roles, tokens
 
-### Phase 4 — Showcase UI
-- [ ] EJS views: catalog landing page, admin login + panel, themed per above
+### Phase 4 — Showcase UI 🟡
+- [x] EJS catalog landing page (`views/catalog.ejs` + `public/css/theme.css`),
+      reads live from `apim_products`, gracefully shows a "not connected /
+      empty" state instead of crashing when the DB isn't reachable or seeded
+- [ ] Admin login + panel views (depends on Phase 2 auth API)
+
+Run it locally against the **real remote Hostinger database** with:
+
+```bash
+../../Executable/macos_apimapp_run.sh
+```
+
+Choose option 1 (Run/Test Local — Dev APIM, Remote DB). First run prompts for
+the real MySQL password (hidden input, saved only to the gitignored local
+`.env`) and offers to run `db:migrate`/`db:seed` on the spot, then opens
+`http://localhost:3100` in your browser automatically. Run this yourself in a
+terminal — don't route the password prompt through an AI assistant.
 
 ### Phase 5 — Swagger / docs
 - [ ] `lxc-apim`'s own `src/config/openapi.ts`

@@ -25,6 +25,7 @@
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
 - [🏁 macos_xdaapp_release_build.sh](#-macos_xdaapp_release_buildsh)
 - [📦 macos_healthapi_package.sh](#-macos_healthapi_packagesh)
+- [🗂️ macos_apimapp_run.sh](#️-macos_apimapp_runsh)
 - [🩹 Error Message Format](#-error-message-format)
 - [⚠️ Compatibility Notes](#️-compatibility-notes)
 
@@ -95,6 +96,57 @@ Environment variables are prepared in:
 Replace placeholder secret values inside Hostinger, not in git. The deploy
 archive belongs under `../lxc-databases-apis/lxc-api/publish/`; do not create or use a
 repo-root `publish/` folder.
+
+This script is `lxc-api`-only. `lxc-apim` shares the same MySQL database as
+`lxc-api` but is a **separate codebase with its own run/deploy tooling** —
+see `macos_apimapp_run.sh` below. The two are deliberately not merged.
+
+---
+
+## 🗂️ `macos_apimapp_run.sh`
+
+```bash
+./macos_apimapp_run.sh
+```
+
+Interactive menu for running **`lxc-apim`** (the API management/showcase
+service — a different codebase from `lxc-api`, sharing only its database).
+
+```text
+========================================
+ LXC-APIM
+========================================
+ 1) Run/Test Local  (Dev APIM  — Remote DB)
+ 2) Make Build to Publish (PROD APIM — local DB)
+ q) Quit
+========================================
+```
+
+**Option 1 — Run/Test Local (Dev APIM — Remote DB):**
+
+1. **Preflight** — confirms the `lxc-apim` folder and the Node toolchain
+   loader script exist.
+2. **Load toolchain** — `frameworks/android/env.sh` (Node).
+3. **JS deps** — `npm install`, skipped if `node_modules` already exists.
+4. **First-run credentials** — if `lxc-apim/.env` doesn't exist yet, prompts
+   for the MySQL user (defaulting to the known Hostinger admin user) and the
+   real MySQL password (hidden input, never echoed or hardcoded anywhere in
+   this script), generates a random dev `JWT_SECRET`, and writes
+   `lxc-apim/.env` — which is already gitignored and never committed. Also
+   offers to run `npm run db:migrate` + `npm run db:seed` right then.
+5. **Run + open browser** — starts `npm run dev` (connected to the **real**
+   remote Hostinger database, not a local one) and opens
+   `http://localhost:3100` once the health check responds. Ctrl+C stops the
+   server and returns to this menu.
+
+**Option 2 — Make Build to Publish (PROD APIM — local DB):** not built yet.
+Selecting it just re-shows the menu; this will later become `lxc-apim`'s own
+packaging flow (analogous to `macos_healthapi_package.sh`, but its own
+separate script/file, not a shared one).
+
+Run this script yourself in a terminal rather than asking an AI assistant to
+run it on your behalf — the MySQL password prompt is interactive and should
+never pass through anything else.
 
 ---
 
