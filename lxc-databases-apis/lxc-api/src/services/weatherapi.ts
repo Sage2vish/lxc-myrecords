@@ -43,6 +43,9 @@ type LocationQuery = {
 
 export async function fetchCurrentWeather(location: LocationQuery): Promise<WeatherSummary> {
   const {baseUrl, apiKey} = apis.weather.weatherapi.forecastv1;
+  if (!apiKey) {
+    throw new Error('WEATHER_WEATHERAPI_FORECASTV1_API_KEY is not configured');
+  }
   const url = new URL('/current.json', baseUrl);
   url.searchParams.set('key', apiKey);
   url.searchParams.set('aqi', 'no');

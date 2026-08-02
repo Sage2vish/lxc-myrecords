@@ -252,6 +252,11 @@ README for the fuller task checklist.
     `lxc-api` → `:3000`, `lxc-apim` → `:3100`) instead of the DB-seeded
     production URL. The eventual Build to Publish flow will set this to
     `production`.
+  - The catalog UI is a grouped API explorer: group headers and endpoint rows
+    belong inside the same bordered card, with the API details rail kept on the
+    right as a separate full-height panel. The current refinement work is about
+    tightening spacing, filter placement, and matching the reference grouped
+    Swagger-like structure more closely.
   - Verified locally against a deliberately-bad DB host: unauthenticated `/`
     redirects to `/login`; wrong credentials with DB down → 401; the
     `admin`/`admin@1234` backdoor pair with DB down → succeeds, degraded,

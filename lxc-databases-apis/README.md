@@ -21,6 +21,12 @@
 
 <p align="center">Lexvora Consulting APIs & Databases</p>
 
+<p align="center">
+  <strong>Local dev uses two separate web apps:</strong>
+  <code>lxc-api</code> on <code>http://localhost:3000</code> and
+  <code>lxc-apim</code> on <code>http://localhost:3100</code>.
+</p>
+
 <table>
   <tr>
     <td align="center"><strong>LXC-API</strong><br/>The APIs themselves (weather today, future endpoints)</td>
@@ -57,6 +63,9 @@ lxc-databases-apis/
 - `lxc-api` and `lxc-apim` **share one MySQL database** rather than each getting its own —
   tables are separated by prefix instead: `api_*` for `lxc-api`, `apim_*` for `lxc-apim`.
   See [`lxc-databases/api-apimgmt-db`](./lxc-databases/api-apimgmt-db/) for that shared schema.
+- In local mode, `lxc-apim` should point to localhost URLs for both webapps.
+- In production mode, those URLs switch only when the build/deploy flow sets
+  `APIM_ENV=production`.
 - `lxc-databases` is the database workspace.
 - `api-apimgmt-db` is for auth, JWT, users, roles, and API-control data (the shared
   `api_*`/`apim_*` tables above).
@@ -99,11 +108,17 @@ lxc-databases/health-db/README.md
 - [x] Remove compatibility symlinks from the old paths
 - [x] Confirm database provider: MySQL (Hostinger) — see `lxc-databases/README.md`
 - [x] Create `lxc-apim/` as its own service folder, separate codebase from `lxc-api`
+- [x] Document the two-port local setup for `lxc-api` and `lxc-apim`
+- [x] Update workspace notes for local/prod APIM URL handling
+- [x] Track the current APIM browser/app work in the workspace README
+- [x] Document the current APIM catalog structure, grouped endpoint layout, and two-column browser UI direction
+- [x] Track the local `lxc-api` / `lxc-apim` split explicitly in the workspace notes and task tracker
 
 ### In Progress
 
-- [ ] Add JWT/admin API management layer (`lxc-apim`)
-- [ ] Scaffold `lxc-apim` service code (currently docs-only)
+- [ ] Polish `lxc-apim` browser/admin layout and responsive behavior
+- [ ] Finalize documentation wording for the current APIM build
+- [ ] Finish the APIM catalog visual parity pass against the current reference screenshots
 
 ### Next
 
@@ -111,7 +126,10 @@ lxc-databases/health-db/README.md
 - [ ] Add schema/migration layout under `api-apimgmt-db` (`api_*` / `apim_*` prefixed tables)
 - [ ] Add schema/migration layout under `health-db`
 - [ ] Replace temporary placeholder docs with real schema docs
-- [ ] Build the API catalog/showcase surface in `lxc-apim`
+- [ ] Build the API catalog/showcase surface in `lxc-apim` from database-driven product/group data
+- [ ] Add product-aware `POST /v1/auth/login` and JWT middleware for API clients
+- [ ] Add Swagger/OpenAPI multi-spec docs in `lxc-apim`
+- [ ] Add Hostinger packaging for `lxc-apim` and set `APIM_ENV=production` in the build flow
 
 ### Decision
 
@@ -124,6 +142,9 @@ lxc-databases/health-db/README.md
 - `api-apimgmt-db` holds the API-management/auth data (`api_*`/`apim_*` tables).
 - `health-db` holds health-domain storage and future schema work, kept separate
   from the api/apim domain.
+- `lxc-apim` is now an active app, not a docs-only scaffold.
+- The APIM catalog links should remain localhost-specific during local dev and
+  only switch to production URLs during the production build/deploy flow.
 
 ---
 

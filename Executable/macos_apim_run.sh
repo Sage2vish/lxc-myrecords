@@ -116,23 +116,28 @@ ensure_db_ready() {
   echo "    ✓ Admin account present"
 }
 
-# Best-effort: starts lxc-api in the background too, so the catalog's
-# localhost:3000 link for lxc-api is actually live, not just a label. Skips
-# cleanly (no failure) if lxc-api/.env isn't set up yet — that needs a real
-# WeatherAPI.com key, unrelated to anything this script manages.
+# Starts lxc-api in the background too, so the catalog's localhost:3000 link
+# for lxc-api is actually live, not just a label. This no longer depends on
+# lxc-api/.env existing; when that file is missing we still boot the app with
+# safe defaults so /docs and /v1/health stay reachable. If weather provider
+# env vars are missing, only /v1/weather/today is affected.
 start_lxc_api_if_possible() {
-  if [ ! -f "$API_ENV_FILE" ]; then
-    echo "    lxc-api/.env not found — skipping (catalog's lxc-api link won't respond)."
-    echo "    To enable: cp $API_DIR/.env.example $API_ENV_FILE and set a real WeatherAPI.com key."
-    return
-  fi
-
   if [ ! -d "$API_DIR/node_modules" ]; then
     echo "    Installing lxc-api dependencies (first run)"
     (cd "$API_DIR" && npm install)
   fi
 
-  ( cd "$API_DIR" && set -a && source "$API_ENV_FILE" && set +a && npm run dev ) > "$API_LOG_FILE" 2>&1 &
+  if [ -f "$API_ENV_FILE" ]; then
+    ( cd "$API_DIR" && set -a && source "$API_ENV_FILE" && set +a && npm run dev ) > "$API_LOG_FILE" 2>&1 &
+  else
+    echo "    lxc-api/.env not found — starting with defaults so docs/health still work."
+    (
+      cd "$API_DIR" &&
+      PORT="$API_PORT" \
+      DEFAULT_WEATHER_CITY="Dubai" \
+      npm run dev
+    ) > "$API_LOG_FILE" 2>&1 &
+  fi
   API_SERVER_PID=$!
 
   local tries=0

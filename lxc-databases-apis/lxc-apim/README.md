@@ -5,10 +5,10 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/badge/status-in%20development-yellow" alt="Status">
+    <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status">
     <img src="https://img.shields.io/badge/scope-API%20Management-4B5563" alt="Scope">
     <img src="https://img.shields.io/badge/Database-MySQL%20(shared)-4479A1" alt="MySQL">
-    <img src="https://img.shields.io/badge/Code-scaffolded-brightgreen" alt="Code status">
+    <img src="https://img.shields.io/badge/Code-active-brightgreen" alt="Code status">
 </p>
 
 ---
@@ -55,12 +55,10 @@ npm run db:seed:admin   # bcrypt-hashes a password and creates the default admin
 
 ## 🖥️ UI theme
 
-`lxc-apim`'s UI is **deliberately its own palette, distinct from
-`lexvoraconsulting_web`'s brand theme** (dark navy + gold) — this is a
-dev/admin tool, styled like one: indigo accent (`#6366f1`/`#818cf8`), slate
-neutrals (`#0f172a` dark, `#f8fafc` light background), clean system
-sans-serif. Tokens live in `public/css/theme.css`. (An earlier pass matched
-the main site's theme instead — that direction was explicitly reversed.)
+`lxc-apim` now follows the Lexvora Consulting brand language more closely:
+dark navy, gold accents, cream surfaces, and a left-side menu on desktop.
+The shared layout tokens live in `public/css/theme.css`, and the existing
+header/nav markup is reused rather than inventing a second component system.
 
 ## 🛠️ Stack
 
@@ -104,6 +102,7 @@ This is the live status for building `lxc-apim`, updated as work lands.
 
 ### Phase 3 — Admin/catalog API
 - [ ] CRUD for `apim_products`, `apim_users`/roles, tokens
+- [ ] Surface Swagger endpoint list on catalog cards
 
 ### Phase 4 — Browser UI (login-gated) ✅
 - [x] Pages: `/login`, `POST /logout`, `/dashboard` (landing after login),
@@ -116,10 +115,15 @@ This is the live status for building `lxc-apim`, updated as work lands.
 - [x] Degraded-mode banner shown site-wide when logged in via the DB-down
       fallback (see below) — `/catalog`, `/change-password`, and
       `/users/new` all refuse to operate (503, clear message) while degraded
+- [x] Desktop left-side menu and brand-matched Lexvora palette
+- [x] Local catalog URLs mapped to `localhost:3000` and `localhost:3100`
+- [x] Catalog page structured as a grouped API explorer with a full-height details rail
+- [x] Group containers now wrap their endpoint rows as a single bordered stack
+- [x] `catalog-toolbar`/filter sections are being normalized to the catalog layout and HTML5 structure
 
-**Two bootstrap accounts** (`scripts/seed-admin.mjs`, create-once — never
-overwrites `password_hash`/`is_active` on repeat idempotent runs, so restarting
-the dev server doesn't undo a password change):
+**Two bootstrap accounts** (`scripts/seed-admin.mjs`, create-once via
+`INSERT IGNORE` — repeat runs do not overwrite `password_hash`/`is_active`,
+so restarting the dev server does not undo a password change):
 
 | Account | Password | DB-down fallback? | Notes |
 |---|---|---|---|
@@ -132,10 +136,18 @@ the dev server doesn't undo a password change):
 > which doesn't depend on the database at all.
 
 **Catalog (`/catalog`) is env-aware:** `APIM_ENV=local` (the dev default)
-overrides each product's displayed URL to its localhost equivalent
-(`src/config/localUrls.ts`: `lxc-api` → `:3000`, `lxc-apim` → `:3100`)
-instead of the DB-seeded production URL. The eventual Build to Publish flow
-will set `APIM_ENV=production` to switch back.
+forces localhost URLs for the two local webapps
+(`src/config/localUrls.ts`: `lxc-api` → `http://localhost:3000`,
+`lxc-apim` → `http://localhost:3100`) instead of the DB-seeded production
+URL. The build/deploy flow is what switches to `APIM_ENV=production`.
+
+**Current catalog UI contract**
+- Left side is the API catalog stack.
+- Right side is the API details rail.
+- Group borders must contain their endpoint rows.
+- API-level filters sit below the group-level filters.
+- Method chips use light tinted backgrounds, not solid blocks.
+- The current goal is visual parity with the reference grouped Swagger-style layout, while still keeping the Lexvora APIM palette and local/prod URL switching behavior.
 
 Run it locally against the **real remote Hostinger database** with:
 
@@ -152,14 +164,11 @@ key), then run an explicit health check before opening `http://localhost:3100`
 automatically. If `lxc-apim/.env` doesn't exist yet, use option 3 (Custom)
 once to set the real MySQL password interactively (hidden input, saved only
 to the gitignored local `.env`) — after that, options 1/2 need no further
-input. Run this yourself in a terminal — don't route the password prompt
-through an AI assistant.
+input.
 
-**Deferred from this pass** (still queued): surfacing each API's Swagger
-endpoint list directly on its catalog card, and the role/authorization
-middleware needed to make `/users/new` actually enforce who can create
-accounts (today any authenticated session can, since only `admin`/
-`superadmin` exist).
+**Deferred from this pass** (still queued): product-aware JWT API auth,
+role/authorization middleware for programmatic clients, the Swagger endpoint
+list on catalog cards, and the multi-spec `/docs` implementation.
 
 ### Phase 5 — Swagger / docs
 - [ ] `lxc-apim`'s own `src/config/openapi.ts`

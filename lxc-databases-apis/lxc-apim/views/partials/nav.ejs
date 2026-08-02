@@ -1,5 +1,7 @@
 <header class="site-header">
-  <div class="brand">LXC <span class="brand-accent">APIM</span></div>
+  <a class="brand" href="/dashboard" aria-label="Lexvora Consulting APIM home">
+    <img src="/images/logo-small.png" alt="Lexvora Consulting official logo" />
+  </a>
   <nav class="site-nav">
     <% if (typeof session !== 'undefined' && session) { %>
       <a href="/dashboard">Dashboard</a>
@@ -16,6 +18,16 @@
     <% } %>
   </nav>
 </header>
+<section class="app-header">
+  <div class="app-header__copy">
+    <h1>API Management (LXC-API)</h1>
+    <p class="app-header-copy">Shared API catalog, auth management, and local development workspace.</p>
+  </div>
+  <div class="brand-badge">
+    <span class="brand-badge__title">LXC-APIM</span>
+    <span class="brand-badge__copy">LXC API Management</span>
+  </div>
+</section>
 <% if (typeof session !== 'undefined' && session && session.degraded) { %>
   <div class="degraded-banner">
     ⚠ Database connection unavailable — running in degraded mode. Catalog, user management, and password changes won't work until the connection is restored.

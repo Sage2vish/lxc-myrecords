@@ -1,8 +1,5 @@
 import {createApp} from './app.js';
-import {assertApiConfig} from './config/apis.js';
 import {env} from './config/env.js';
-
-assertApiConfig();
 
 const app = createApp();
 
