@@ -4,7 +4,7 @@ module.exports = {
       sourceDir: '../lxc-myhealthhub-xda',
     },
     ios: {
-      sourceDir: '../lxc-myhealthhub-ios',
+      sourceDir: process.env.LXC_IOS_SOURCE_DIR || '../lxc-myhealthhub-ios',
     },
   },
 };

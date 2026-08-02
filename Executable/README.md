@@ -22,6 +22,8 @@
 - [📖 Overview](#-overview)
 - [🗺️ Build Pipeline](#️-build-pipeline)
 - [🍎 macos_iosapp_build.sh](#-macos_iosapp_buildsh)
+- [📱 macos_ipadosapp_build.sh](#-macos_ipadosapp_buildsh)
+- [📦 macos_ipadosapp_release_build.sh](#-macos_ipadosapp_release_buildsh)
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
 - [🏁 macos_xdaapp_release_build.sh](#-macos_xdaapp_release_buildsh)
 - [📦 macos_healthapi_package.sh](#-macos_healthapi_packagesh)
@@ -51,6 +53,8 @@ build flow — see that app's README.
 | Script | Platform | Default target | Also supports |
 |---|---|---|---|
 | [`macos_iosapp_build.sh`](#-macos_iosapp_buildsh) | iOS | Simulator — **iPhone 14** | Any installed simulator, or a physical device |
+| [`macos_ipadosapp_build.sh`](#-macos_ipadosapp_buildsh) | iPadOS | Simulator — **iPad (A16)** | Any installed iPad simulator, or the connected **Kiara iPad Air 4** |
+| [`macos_ipadosapp_release_build.sh`](#-macos_ipadosapp_release_buildsh) | iPadOS release | No device required | Creates an Xcode archive |
 | [`macos_xdaapp_build.sh`](#-macos_xdaapp_buildsh) | Android | Whatever's connected, else auto-boots **OnePlus Nord 4 API 36** when available | Multiple connected devices — you pick |
 | [`macos_xdaapp_release_build.sh`](#-macos_xdaapp_release_buildsh) | Android release | No device required | Optional clean release build |
 
@@ -202,6 +206,27 @@ thin wrapper — see their sections below for exactly what "sandbox flag" and
 "device or AVD ready" mean in practice.
 
 ---
+
+## 📱 `macos_ipadosapp_build.sh`
+
+```bash
+./macos_ipadosapp_build.sh
+```
+
+Builds the iPad-only native wrapper in `lxc-myhealthhub-iPadOS` while reusing
+the shared React Native source in `lxc-myhealthhub-shared`. The default
+selection is the `iPad (A16)` simulator; menu option `1` installs on a
+connected iPad, including `Kiara iPad Air 4` running iPadOS 26.5.
+
+## 📦 `macos_ipadosapp_release_build.sh`
+
+```bash
+./macos_ipadosapp_release_build.sh
+```
+
+Creates a Release archive at
+`lxc-myhealthhub-iPadOS/build/archive/LxcMyHealthHubiPadOS.xcarchive`.
+Configure Apple signing in Xcode before distributing the archive.
 
 ## 🍎 `macos_iosapp_build.sh`
 

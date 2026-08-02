@@ -23,6 +23,7 @@ both build from:
 - `lxc-myhealthhub-shared` (this folder) — all JS/TS source, assets, `package.json`
 - [`lxc-myhealthhub-xda`](../lxc-myhealthhub-xda/) — Android native project (Gradle)
 - [`lxc-myhealthhub-ios`](../lxc-myhealthhub-ios/) — iOS native project (Xcode/CocoaPods)
+- [`lxc-myhealthhub-iPadOS`](../lxc-myhealthhub-iPadOS/) — iPad-only native project (Xcode/CocoaPods)
 
 `react-native.config.js` in this folder is what tells the React Native CLI (and the
 Gradle/CocoaPods tooling in the other two folders) where to find each native project.
@@ -76,6 +77,7 @@ platform, and this shared JS/TS project that both of them build from.
 ```text
 lxc-myhealthhub-xda/         # Android native app and Gradle config (builder only)
 lxc-myhealthhub-ios/         # iOS native app and Xcode/Podfile config (builder only)
+lxc-myhealthhub-iPadOS/      # iPad-only native app and Xcode/Podfile config (builder only)
 lxc-myhealthhub-shared/      # this folder — all JS/TS source and assets
 ├── src/
 │   ├── api/                # API client, health service, weather API integration

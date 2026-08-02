@@ -1,0 +1,83 @@
+# JS/native-agnostic source (package.json, node_modules, src/) lives in the
+# sibling lxc-myhealthhub-shared folder, not inside this native project.
+shared_root = File.join(__dir__, '..', 'lxc-myhealthhub-shared')
+node_binary = ENV['NODE_BINARY'] || '/Users/SageVish/Documents/Development Work/frameworks/node/bin/node'
+ENV['NODE_BINARY'] = node_binary
+ENV['PATH'] = "#{File.dirname(node_binary)}:#{ENV['PATH']}"
+ENV['NODE_PATH'] = File.join(shared_root, 'node_modules')
+
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command(node_binary, ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', shared_root]).strip
+
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+target 'LxcMyHealthHub' do
+  # Run the RN CLI's config resolution from lxc-myhealthhub-shared (where
+  # package.json / react-native.config.js live) instead of this ios/ folder.
+  # `require('@react-native-community/cli')` here (a bare specifier) would
+  # resolve against process.cwd() at the time this -e script's module wrapper
+  # is created, which is snapshotted before process.chdir() below ever runs -
+  # so it must be required by its absolute path inside lxc-myhealthhub-shared
+  # instead of relying on chdir to relocate module resolution.
+  config = use_native_modules!([
+    node_binary, '-e',
+    "process.chdir(#{shared_root.to_s.inspect});process.argv=['', '', 'config'];require(require('path').join(#{shared_root.to_s.inspect}, 'node_modules', '@react-native-community/cli')).run()"
+  ])
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # An absolute path to your application root.
+    :app_path => shared_root
+  )
+
+  post_install do |installer|
+    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false,
+      # :ccache_enabled => true
+    )
+
+    # React Native's generated module maps include headers across pod
+    # boundaries. Xcode 26 treats those includes as errors unless this
+    # compatibility setting is enabled for the pod targets.
+    installer.pods_project.targets.each do |pod_target|
+      pod_target.build_configurations.each do |bc|
+        bc.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+
+      pod_target.build_phases.grep(Xcodeproj::Project::Object::PBXShellScriptBuildPhase).each do |phase|
+        phase.always_out_of_date = '1' if phase.output_paths.empty? && phase.output_file_list_paths.empty?
+      end
+    end
+
+    # fmt's consteval-based format_string constructor only exists under C++20
+    # (guarded by __cpp_consteval), and this Xcode's Clang enforces it more
+    # strictly than the fmt version bundled by these pods satisfies, causing
+    # "call to consteval function ... is not a constant expression" errors.
+    # Predefining FMT_CONSTEVAL doesn't survive because fmt's header
+    # unconditionally redefines it once it detects C++20. Since these pods
+    # (unlike RN's Fabric/new-arch core) don't need C++20 features, pin them
+    # to C++17 so fmt takes its non-consteval fallback path instead.
+    %w[fmt glog].each do |pod_name|
+      pod_target = installer.pods_project.targets.find { |t| t.name == pod_name }
+      next unless pod_target
+
+      pod_target.build_configurations.each do |bc|
+        bc.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      end
+    end
+  end
+end
