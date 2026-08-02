@@ -12,16 +12,20 @@
 #               in separate scripts, not merged.
 #
 #               Menu:
-#                 1) Run/Test Local (Dev APIM — Remote DB) — starts lxc-apim
-#                    in dev mode on this Mac, connected to the real Hostinger
-#                    MySQL database, and opens it in the browser.
-#                 2) Make Build to Publish (PROD APIM — local DB) — not built
+#                 1) Default Run/Test Local (Dev APIM — Remote DB) — uses
+#                    whatever is already in lxc-apim/.env (already gitignored,
+#                    never committed) with zero prompts. If .env doesn't
+#                    exist yet, this option fails with a message pointing at
+#                    option 2 instead of silently asking questions.
+#                 2) Custom Run/Test Local (Dev APIM — Remote DB) — the
+#                    interactive path: prompts for MySQL user/password
+#                    (hidden input), writes/overwrites lxc-apim/.env, then
+#                    runs the same startup sequence as option 1.
+#                 3) Make Build to Publish (PROD APIM — local DB) — not built
 #                    yet; selecting it just re-shows this menu.
 #
-#               The real MySQL password is never hardcoded here — on first
-#               run it's prompted for interactively (hidden input) and saved
-#               to lxc-apim/.env, which is already gitignored and never
-#               committed.
+#               The real MySQL password is never hardcoded in this script —
+#               it only ever lives in lxc-apim/.env.
 # ============================================================================
 
 set -euo pipefail
@@ -72,20 +76,82 @@ ensure_deps() {
   fi
 }
 
-ensure_env_file() {
-  if [ -f "$ENV_FILE" ]; then
-    return
+# Runs migrate + seed against whatever's in $ENV_FILE right now. Both are
+# idempotent (migrate tracks applied files in apim_schema_migrations, seed
+# is ON DUPLICATE KEY UPDATE), so calling this on every run is cheap and
+# doubles as the "is everything actually in place" check — it fixes gaps
+# instead of just detecting them.
+ensure_db_ready() {
+  echo "==> Checking schema/data (safe to re-run — no-ops if already applied)"
+  (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:migrate)
+  (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:seed)
+}
+
+start_server_and_open_browser() {
+  (
+    for _ in $(seq 1 30); do
+      if curl -s "http://localhost:${PORT}/v1/health" >/dev/null 2>&1; then
+        echo "==> Opening http://localhost:${PORT} in your browser"
+        open "http://localhost:${PORT}"
+        break
+      fi
+      sleep 1
+    done
+  ) &
+
+  echo "==> Running — Ctrl+C stops the server and returns to this menu"
+  ( cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && exec npm run dev ) 2>&1 | tee "$LOG_FILE" || true
+}
+
+run_default() {
+  echo "==> [1/4] Preflight checks"
+  preflight
+
+  if [ ! -f "$ENV_FILE" ]; then
+    fail "lxc-apim/.env" \
+      "Default mode never asks questions, so it needs credentials to already be saved." \
+      "Run option 2 (Custom Run/Test Local) once to set the MySQL password — it writes $ENV_FILE, and Default will use it silently from then on."
   fi
 
+  echo "==> [2/4] Loading toolchain"
+  # shellcheck disable=SC1091
+  source "$FRAMEWORKS_ROOT/android/env.sh"
+
+  ensure_deps
+
+  echo "==> [3/4] Database"
+  ensure_db_ready
+
+  echo "==> [4/4] Starting lxc-apim (dev mode, remote DB) — logs: $LOG_FILE"
+  start_server_and_open_browser
+}
+
+run_custom() {
+  echo "==> [1/5] Preflight checks"
+  preflight
+
+  echo "==> [2/5] Loading toolchain"
+  # shellcheck disable=SC1091
+  source "$FRAMEWORKS_ROOT/android/env.sh"
+
+  ensure_deps
+
   echo ""
-  echo "No local .env found for lxc-apim yet."
-  echo "This run connects to the REMOTE Hostinger MySQL database, so it needs"
-  echo "the real password once. It's saved only to lxc-apim/.env, which is"
-  echo "already gitignored and never committed."
+  echo "==> [3/5] Custom credentials for lxc-apim"
+  echo "This writes/overwrites $ENV_FILE (already gitignored, never committed)."
   echo ""
 
-  read -r -p "MySQL user [u450600831_lxc_hapi_admin]: " mysql_user
-  mysql_user="${mysql_user:-u450600831_lxc_hapi_admin}"
+  local default_user="u450600831_lxc_hapi_admin"
+  if [ -f "$ENV_FILE" ]; then
+    local existing_user
+    existing_user="$(grep -E '^MYSQL_USER=' "$ENV_FILE" 2>/dev/null | cut -d '=' -f2-)"
+    if [ -n "$existing_user" ]; then
+      default_user="$existing_user"
+    fi
+  fi
+
+  read -r -p "MySQL user [${default_user}]: " mysql_user
+  mysql_user="${mysql_user:-$default_user}"
 
   read -r -s -p "MySQL password for ${mysql_user}@srv1878.hstgr.io: " mysql_password
   echo ""
@@ -114,44 +180,13 @@ JWT_SECRET=${jwt_secret}
 JWT_EXPIRES_IN=1h
 EOF
 
-  echo "==> Wrote $ENV_FILE (gitignored, not committed)"
+  echo "==> Wrote $ENV_FILE"
 
-  read -r -p "Run database migrations + seed data now? [y/N] " run_db_setup
-  if [ "$run_db_setup" = "y" ] || [ "$run_db_setup" = "Y" ]; then
-    echo "==> Running migrations"
-    (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:migrate)
-    echo "==> Seeding baseline data (roles, products)"
-    (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:seed)
-  else
-    echo "Skipping — you can run 'npm run db:migrate' / 'npm run db:seed' from lxc-apim later."
-  fi
-}
+  echo "==> [4/5] Database"
+  ensure_db_ready
 
-run_local_dev_remote_db() {
-  echo "==> [1/4] Preflight checks"
-  preflight
-
-  echo "==> [2/4] Loading toolchain"
-  # shellcheck disable=SC1091
-  source "$FRAMEWORKS_ROOT/android/env.sh"
-
-  ensure_deps
-  ensure_env_file
-
-  echo "==> [3/4] Starting lxc-apim (dev mode, remote DB) — logs: $LOG_FILE"
-  (
-    for _ in $(seq 1 30); do
-      if curl -s "http://localhost:${PORT}/v1/health" >/dev/null 2>&1; then
-        echo "==> Opening http://localhost:${PORT} in your browser"
-        open "http://localhost:${PORT}"
-        break
-      fi
-      sleep 1
-    done
-  ) &
-
-  echo "==> [4/4] Running — Ctrl+C stops the server and returns to this menu"
-  ( cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && exec npm run dev ) 2>&1 | tee "$LOG_FILE" || true
+  echo "==> [5/5] Starting lxc-apim (dev mode, remote DB) — logs: $LOG_FILE"
+  start_server_and_open_browser
 }
 
 show_menu() {
@@ -159,8 +194,9 @@ show_menu() {
   echo "========================================"
   echo " LXC-APIM"
   echo "========================================"
-  echo " 1) Run/Test Local  (Dev APIM  — Remote DB)"
-  echo " 2) Make Build to Publish (PROD APIM — local DB)"
+  echo " 1) Default Run/Test Local  (Dev APIM  — Remote DB)"
+  echo " 2) Custom Run/Test Local   (Dev APIM  — Remote DB)"
+  echo " 3) Make Build to Publish (PROD APIM — local DB)"
   echo " q) Quit"
   echo "========================================"
 }
@@ -171,9 +207,12 @@ main() {
     read -r -p "Choose an option: " choice
     case "$choice" in
       1)
-        run_local_dev_remote_db
+        run_default
         ;;
       2)
+        run_custom
+        ;;
+      3)
         echo ""
         echo "Not built yet — this option is a placeholder for the PROD"
         echo "APIM / local DB build-to-publish flow, coming later."

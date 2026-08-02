@@ -227,16 +227,29 @@ README for the fuller task checklist.
   Swagger wiring, and Hostinger deployment for `apim.lexvoraconsulting.com`.
 - **Run it locally against the real remote database:**
   `Executable/macos_apimapp_run.sh` is a new, separate script (not merged
-  into `macos_healthapi_package.sh`, which stays `lxc-api`-only) with an
-  interactive menu: option 1 ("Run/Test Local — Dev APIM, Remote DB") loads
-  the toolchain, `npm install`s if needed, prompts once for the real MySQL
-  password (hidden input, written only to the gitignored `lxc-apim/.env`,
-  never hardcoded in the script), optionally runs `db:migrate`/`db:seed` on
-  the spot, then starts `npm run dev` and opens `http://localhost:3100` in
-  the browser. Option 2 ("Make Build to Publish — PROD APIM, local DB") is a
-  placeholder that just re-shows the menu — not built yet. This script is
-  meant to be run directly by the user in their own terminal, not executed
-  on their behalf by an AI assistant, since it prompts for a real secret.
+  into `macos_healthapi_package.sh`, which stays `lxc-api`-only) with a
+  4-option interactive menu:
+  - **1) Default Run/Test Local (Dev APIM — Remote DB)** — zero prompts.
+    Requires `lxc-apim/.env` to already exist (fails with a pointer to
+    option 2 if not); otherwise loads the toolchain, `npm install`s if
+    needed, runs `db:migrate` + `db:seed` on every invocation (both are
+    idempotent, so this is cheap and doubles as an "is everything actually
+    in place" check that fixes gaps rather than just detecting them), then
+    starts `npm run dev` and opens `http://localhost:3100` in the browser.
+  - **2) Custom Run/Test Local (Dev APIM — Remote DB)** — the interactive
+    path: prompts for MySQL user/password (hidden input, defaults to
+    whatever's already in `.env`), writes/overwrites `lxc-apim/.env`
+    (gitignored, never committed, never hardcoded in the script itself),
+    then runs the same database-check + start + open-browser sequence.
+  - **3) Make Build to Publish (PROD APIM — local DB)** — placeholder, just
+    re-shows the menu. Not built yet.
+  - **q) Quit**
+
+  This script is meant to be run directly by the user in their own
+  terminal, not executed on their behalf by an AI assistant, since option 2
+  prompts for a real secret. The real Hostinger MySQL password (once
+  supplied by the user) lives only in `lxc-apim/.env` — never in this
+  script, never committed.
 - **Caution:** during this build, files started appearing in
   `api-apimgmt-db/migrations/` that weren't written by the assisting session
   — two conflicting schema designs landed concurrently (different column

@@ -116,37 +116,49 @@ service — a different codebase from `lxc-api`, sharing only its database).
 ========================================
  LXC-APIM
 ========================================
- 1) Run/Test Local  (Dev APIM  — Remote DB)
- 2) Make Build to Publish (PROD APIM — local DB)
+ 1) Default Run/Test Local  (Dev APIM  — Remote DB)
+ 2) Custom Run/Test Local   (Dev APIM  — Remote DB)
+ 3) Make Build to Publish (PROD APIM — local DB)
  q) Quit
 ========================================
 ```
 
-**Option 1 — Run/Test Local (Dev APIM — Remote DB):**
+**Option 1 — Default Run/Test Local (Dev APIM — Remote DB):** zero prompts.
+Uses whatever's already saved in `lxc-apim/.env` (already gitignored, never
+committed). Sequence:
 
 1. **Preflight** — confirms the `lxc-apim` folder and the Node toolchain
    loader script exist.
-2. **Load toolchain** — `frameworks/android/env.sh` (Node).
-3. **JS deps** — `npm install`, skipped if `node_modules` already exists.
-4. **First-run credentials** — if `lxc-apim/.env` doesn't exist yet, prompts
-   for the MySQL user (defaulting to the known Hostinger admin user) and the
-   real MySQL password (hidden input, never echoed or hardcoded anywhere in
-   this script), generates a random dev `JWT_SECRET`, and writes
-   `lxc-apim/.env` — which is already gitignored and never committed. Also
-   offers to run `npm run db:migrate` + `npm run db:seed` right then.
-5. **Run + open browser** — starts `npm run dev` (connected to the **real**
+2. **Requires `.env` to already exist** — if it doesn't, this option fails
+   immediately with a message pointing at option 2, rather than silently
+   asking questions (Default is not supposed to ask anything).
+3. **Load toolchain** — `frameworks/android/env.sh` (Node).
+4. **JS deps** — `npm install`, skipped if `node_modules` already exists.
+5. **Database check** — runs `npm run db:migrate` then `npm run db:seed`
+   every time. Both are idempotent (migrations track what's applied in
+   `apim_schema_migrations`; seeds are `ON DUPLICATE KEY UPDATE`), so this
+   doubles as "is everything actually in place" — it fixes gaps instead of
+   just detecting them, at negligible cost on repeat runs.
+6. **Run + open browser** — starts `npm run dev` (connected to the **real**
    remote Hostinger database, not a local one) and opens
    `http://localhost:3100` once the health check responds. Ctrl+C stops the
    server and returns to this menu.
 
-**Option 2 — Make Build to Publish (PROD APIM — local DB):** not built yet.
+**Option 2 — Custom Run/Test Local (Dev APIM — Remote DB):** the interactive
+path. Prompts for the MySQL user (defaulting to whatever's already saved, or
+the known Hostinger admin user) and the real MySQL password (hidden input,
+never echoed or hardcoded anywhere in this script), generates a random dev
+`JWT_SECRET`, and writes/overwrites `lxc-apim/.env`. Then runs the same
+database-check + run + open-browser sequence as option 1.
+
+**Option 3 — Make Build to Publish (PROD APIM — local DB):** not built yet.
 Selecting it just re-shows the menu; this will later become `lxc-apim`'s own
 packaging flow (analogous to `macos_healthapi_package.sh`, but its own
 separate script/file, not a shared one).
 
 Run this script yourself in a terminal rather than asking an AI assistant to
-run it on your behalf — the MySQL password prompt is interactive and should
-never pass through anything else.
+run it on your behalf — the MySQL password prompt (option 2) is interactive
+and should never pass through anything else.
 
 ---
 

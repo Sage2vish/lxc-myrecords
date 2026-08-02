@@ -116,11 +116,14 @@ Run it locally against the **real remote Hostinger database** with:
 ../../Executable/macos_apimapp_run.sh
 ```
 
-Choose option 1 (Run/Test Local — Dev APIM, Remote DB). First run prompts for
-the real MySQL password (hidden input, saved only to the gitignored local
-`.env`) and offers to run `db:migrate`/`db:seed` on the spot, then opens
-`http://localhost:3100` in your browser automatically. Run this yourself in a
-terminal — don't route the password prompt through an AI assistant.
+Choose option 1 (Default) once `lxc-apim/.env` exists — it runs with zero
+prompts, checking/applying `db:migrate` + `db:seed` on every run (both are
+idempotent, so this is cheap) before opening `http://localhost:3100`
+automatically. If `.env` doesn't exist yet, use option 2 (Custom) once to set
+the real MySQL password interactively (hidden input, saved only to the
+gitignored local `.env`) — after that, option 1 needs no further input. Run
+this yourself in a terminal — don't route the password prompt through an AI
+assistant.
 
 ### Phase 5 — Swagger / docs
 - [ ] `lxc-apim`'s own `src/config/openapi.ts`
