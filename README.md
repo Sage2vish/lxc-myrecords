@@ -146,7 +146,9 @@ MyRecords/
 ├── Executable
 ├── lxc-databases-apis
 │   ├── lxc-api
+│   ├── lxc-apim
 │   └── lxc-databases
+│       └── api-apimgmt-db
 ├── lxc-myhealthhub-ios
 ├── lxc-myhealthhub-shared
 │   ├── assets
@@ -269,6 +271,23 @@ It contains two independently built React Native applications:
 - Temporary dev fallback support exists in the mobile app so the home temperature can still render during backend setup
 - Weather uses phone latitude/longitude when available and falls back to Dubai
 - Current production API deployment target shown in Hostinger: `https://apis.lexvoraconsulting.com`
+
+**`lxc-apim` — in progress (branch: `lxc-apim`)**
+
+- New, separate service: [`lxc-apim`](./lxc-databases-apis/lxc-apim/) — the API
+  management and showcase layer. Different codebase from `lxc-api`, sharing
+  the same MySQL database via `api_*`/`apim_*` table prefixes.
+- Product-aware auth API planned: login/authorization scoped by "which
+  product/service," so MyHealthHub, the DSA app, and `lxc-apim` itself can
+  eventually share one auth mechanism.
+- Ships as a single Node.js app on Hostinger at `apim.lexvoraconsulting.com`,
+  serving both the admin/catalog API and an EJS showcase UI themed to match
+  [`lexvoraconsulting_web`](https://github.com/Sage2vish/lexvoraconsulting_web)
+  (dark navy + gold, Georgia headings — a sibling repo, not part of this one).
+- Status: scaffold and database schema/migrations done (not yet run against
+  the live database); auth API, admin UI, and Hostinger deployment still to
+  build. See [`lxc-apim/README.md`](./lxc-databases-apis/lxc-apim/README.md)
+  for the live task tracker.
 
 ### Application & Engines
 
@@ -711,6 +730,15 @@ verified tool versions.
   Swagger/OpenAPI docs, `/v1/health`, `/v1/weather/today`, centralized provider
   config, Hostinger packaging, and MyHealthHub home weather UI using device
   lat/lon with Dubai fallback.
+- **2026-08-02 — `lxc-databases-apis` restructured; `lxc-apim` started.**
+  Split the backend workspace into `lxc-api` (unchanged API service) and a
+  new, separate `lxc-apim` codebase (API management/showcase layer), sharing
+  one MySQL database via `api_*`/`apim_*` table prefixes. Confirmed MySQL as
+  the database provider (superseding an earlier open MongoDB/Supabase
+  question). Scaffolded `lxc-apim` (Express/TypeScript, mirrors `lxc-api`)
+  and defined its `apim_*` schema/migrations/seed scripts under
+  `lxc-databases-apis/lxc-databases/api-apimgmt-db/`. In progress on the
+  `lxc-apim` branch.
 
 ### AI Assistant Guide
 

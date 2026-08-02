@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXC APIM — Dashboard</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body>
+  <%- include('partials/nav', {session}) %>
+
+  <main class="dashboard">
+    <h1>Welcome, <%= session.displayName || session.email %></h1>
+    <p class="form-sub">
+      <% if (session.degraded) { %>
+        Signed in via the degraded/DB-down path — limited functionality until the database connection is restored.
+      <% } else { %>
+        API Management &amp; Showcase — everything Lexvora Consulting builds, in one place.
+      <% } %>
+    </p>
+
+    <div class="dashboard-links">
+      <a href="/catalog">
+        <strong>API Catalog</strong>
+        <p>Every registered LXC API, where it's hosted, and its docs.</p>
+      </a>
+      <a href="/users/new">
+        <strong>Create User</strong>
+        <p>Add a new apim account.</p>
+      </a>
+      <% if (session.email === 'admin' && !session.degraded) { %>
+        <a href="/change-password">
+          <strong>Change Password</strong>
+          <p>Update the admin login.</p>
+        </a>
+      <% } %>
+      <a href="/docs">
+        <strong>API Docs</strong>
+        <p>Swagger / OpenAPI reference.</p>
+      </a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Lexvora Consulting</p>
+  </footer>
+</body>
+</html>

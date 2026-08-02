@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXC APIM — Login</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">LXC <span class="brand-accent">APIM</span></div>
+  </header>
+
+  <main class="page-narrow">
+    <div class="form-card">
+      <h1>Sign in</h1>
+      <p class="form-sub">API Management &amp; Showcase</p>
+
+      <% if (error) { %>
+        <div class="form-error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/login">
+        <div class="form-field">
+          <label for="email">Username</label>
+          <input type="text" id="email" name="email" autocomplete="username" required autofocus />
+        </div>
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn">Sign In</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Lexvora Consulting</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LXC APIM — API Catalog</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+</head>
+<body>
+  <%- include('partials/nav', {session}) %>
+
+  <main class="catalog">
+    <section class="catalog-layout" aria-label="API catalog workspace">
+      <section class="catalog-main" aria-label="API catalog">
+        <header class="catalog-toolbar">
+          <div class="catalog-toolbar__title">
+            <p class="eyebrow">API Catalog</p>
+            <div class="catalog-toolbar__row">
+              <h2>API Catalog</h2>
+              <a class="catalog-refresh" href="/catalog">Refresh</a>
+            </div>
+          </div>
+        </header>
+
+        <section class="catalog-filters" aria-label="Catalog filters">
+          <div class="catalog-filter-title">
+            <span class="catalog-filter-title__icon" aria-hidden="true">⌘</span>
+            <span>GROUP-LEVEL FILTERS</span>
+          </div>
+          <div class="catalog-filterbar">
+            <label class="catalog-search">
+              <span>Search</span>
+              <input type="search" placeholder="Search groups..." value="" />
+            </label>
+
+            <label class="catalog-select">
+              <span>Status</span>
+              <select>
+                <option>All Statuses</option>
+                <option>Active</option>
+              </select>
+            </label>
+
+            <label class="catalog-select">
+              <span>Environment</span>
+              <select>
+                <option>All Environments</option>
+                <option><%= apimEnv === 'local' ? 'Local' : 'Production' %></option>
+              </select>
+            </label>
+          </div>
+
+          <div class="catalog-filter-title">
+            <span class="catalog-filter-title__icon" aria-hidden="true">⌘</span>
+            <span>API-LEVEL FILTERS</span>
+          </div>
+          <div class="catalog-filterbar catalog-filterbar--api">
+            <div class="catalog-methods" aria-label="Method filters">
+              <button class="method-chip method-chip--get" type="button">GET</button>
+              <button class="method-chip method-chip--post" type="button">POST</button>
+              <button class="method-chip method-chip--put" type="button">PUT</button>
+              <button class="method-chip method-chip--delete" type="button">DELETE</button>
+              <button class="method-chip method-chip--all" type="button">ALL</button>
+            </div>
+
+            <label class="catalog-search catalog-search--wide">
+              <span>Search APIs</span>
+              <input type="search" placeholder="Search APIs..." value="" />
+            </label>
+
+            <label class="catalog-select catalog-select--wide">
+              <span>Sort by</span>
+              <select>
+                <option>Name (A-Z)</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <% if (dbError) { %>
+          <section class="catalog-empty" aria-live="polite">
+            <p>Catalog data isn't available yet.</p>
+            <p class="catalog-empty-detail"><%= dbError %></p>
+          </section>
+        <% } else { %>
+          <section class="swagger-body" aria-label="API groups">
+            <% groups.forEach(function (group) { %>
+              <details class="swagger-group" <%= selectedGroup && selectedGroup.id === group.id ? 'open' : '' %>>
+                <summary class="swagger-group__head">
+                  <div class="swagger-group__head-left">
+                    <label class="group-check">
+                      <input type="checkbox" <%= selectedGroup && selectedGroup.id === group.id ? 'checked' : '' %> />
+                      <span></span>
+                    </label>
+                    <span class="group-icon"><%= group.icon %></span>
+                    <p class="swagger-group__title"><%= group.name %></p>
+                    <span class="swagger-group__status">ACTIVE</span>
+                  </div>
+                  <div class="swagger-group__head-right">
+                    <span class="swagger-group__count"><%= group.countLabel %></span>
+                    <span class="group-arrow group-arrow--right"><%= selectedGroup && selectedGroup.id === group.id ? '⌄' : '›' %></span>
+                  </div>
+                </summary>
+
+                <div class="swagger-group__body">
+                  <% group.endpoints.forEach(function (endpoint) { %>
+                    <a class="endpoint-row <%= selectedEndpoint && selectedEndpoint.id === endpoint.id ? 'is-selected' : '' %>" href="/catalog?group=<%= group.id %>&endpoint=<%= endpoint.id %>">
+                      <span class="method-pill method-pill--<%= endpoint.method.toLowerCase() %>"><%= endpoint.method %></span>
+                      <span class="endpoint-row__name"><%= endpoint.displayName %></span>
+                      <span class="endpoint-row__summary"><%= endpoint.summary %></span>
+                      <span class="endpoint-row__version"><%= endpoint.version %></span>
+                      <span class="endpoint-row__status"><span class="endpoint-row__dot" aria-hidden="true"></span>Active</span>
+                      <span class="endpoint-row__pick"></span>
+                      <span class="endpoint-row__menu" aria-hidden="true">⋮</span>
+                    </a>
+                  <% }); %>
+                </div>
+              </details>
+            <% }); %>
+          </section>
+        <% } %>
+      </section>
+
+      <aside class="catalog-aside" aria-label="API details">
+        <section class="catalog-aside__panel">
+          <div class="details-head">
+            <p class="eyebrow">API Details</p>
+            <a class="details-close" href="/catalog" aria-label="Close details">×</a>
+          </div>
+
+          <% if (selectedEndpoint) { %>
+            <div class="details-status">Active</div>
+            <div class="details-method">
+              <span class="method-pill method-pill--<%= selectedEndpoint.method.toLowerCase() %>"><%= selectedEndpoint.method %></span>
+              <h3><%= selectedEndpoint.summary %></h3>
+            </div>
+            <p class="details-description"><%= selectedEndpoint.description %></p>
+            <a class="details-docs" href="<%= baseUrl + '/docs' %>" target="_blank" rel="noopener">View in API Docs</a>
+
+            <article class="details-card">
+              <h4>Endpoint</h4>
+              <div class="details-field">
+                <span>Base URL</span>
+                <strong><%= baseUrl %></strong>
+              </div>
+              <div class="details-field">
+                <span>Endpoint</span>
+                <strong><%= selectedEndpoint.path %></strong>
+              </div>
+              <div class="details-field">
+                <span>Full URL</span>
+                <strong><%= baseUrl + selectedEndpoint.path %></strong>
+              </div>
+            </article>
+
+            <article class="details-card">
+              <h4>Summary</h4>
+              <div class="details-grid">
+                <span>Group</span><strong><%= selectedGroup ? selectedGroup.name : 'API' %></strong>
+                <span>Method</span><strong><%= selectedEndpoint.method %></strong>
+                <span>Authentication</span><strong><%= selectedEndpoint.auth %></strong>
+                <span>Version</span><strong><%= selectedEndpoint.version %></strong>
+                <span>Environment</span><strong><%= selectedEndpoint.environment %></strong>
+                <span>Status</span><strong>Active</strong>
+              </div>
+            </article>
+
+            <article class="details-card details-card--code">
+              <div class="details-card__tabs">
+                <span class="is-active">Request</span>
+                <span>Response</span>
+                <span>JSON</span>
+              </div>
+              <pre>{
+  "endpoint": "<%= selectedEndpoint.path %>",
+  "method": "<%= selectedEndpoint.method %>",
+  "group": "<%= selectedGroup ? selectedGroup.name : 'API' %>"
+}</pre>
+            </article>
+          <% } %>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>&copy; 2026 Lexvora Consulting</p>
+  </footer>
+</body>
+</html>

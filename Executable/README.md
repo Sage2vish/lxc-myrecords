@@ -25,6 +25,7 @@
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
 - [🏁 macos_xdaapp_release_build.sh](#-macos_xdaapp_release_buildsh)
 - [📦 macos_healthapi_package.sh](#-macos_healthapi_packagesh)
+- [🗂️ macos_apim_run.sh](#️-macos_apim_runsh)
 - [🩹 Error Message Format](#-error-message-format)
 - [⚠️ Compatibility Notes](#️-compatibility-notes)
 
@@ -95,6 +96,81 @@ Environment variables are prepared in:
 Replace placeholder secret values inside Hostinger, not in git. The deploy
 archive belongs under `../lxc-databases-apis/lxc-api/publish/`; do not create or use a
 repo-root `publish/` folder.
+
+This script is `lxc-api`-only. `lxc-apim` shares the same MySQL database as
+`lxc-api` but is a **separate codebase with its own run/deploy tooling** —
+see `macos_apim_run.sh` below. The two are deliberately not merged.
+
+---
+
+## 🗂️ `macos_apim_run.sh`
+
+```bash
+./macos_apim_run.sh
+```
+
+Interactive menu for running **`lxc-apim`** (the API management/showcase
+service — a different codebase from `lxc-api`, sharing only its database).
+
+```text
+========================================
+ LXC-APIM
+========================================
+ 1) First Time - Default Run/Test Local  (Dev APIM  — Remote DB)
+ 2) Regular    - Default Run/Test Local  (Dev APIM  — Remote DB)
+ 3) Custom Run/Test Local  (Dev APIM  — Remote DB)
+ 4) Make Build to Publish (PROD APIM — local DB)
+ q) Quit
+========================================
+```
+
+**Options 1 and 2 run the identical underlying sequence** — they only differ
+in labeling/messaging (option 1 prints a short explainer for newcomers,
+option 2 is terser for everyday use). Neither ever asks a question:
+
+1. **Preflight** — confirms the `lxc-apim` folder and the Node toolchain
+   loader script exist.
+2. **Requires `lxc-apim/.env` to already exist** — if it doesn't, both options
+   fail immediately with a message pointing at option 3, rather than
+   silently asking questions.
+3. **Load toolchain** — `frameworks/android/env.sh` (Node).
+4. **Dependencies** — `npm install`, skipped if `node_modules` already exists.
+5. **Database** — runs `npm run db:migrate`, `npm run db:seed`, then
+   `npm run db:seed:admin` every time. All three are idempotent (migrations
+   track what's applied in `apim_schema_migrations`; seed/seed-admin are
+   create-once/`ON DUPLICATE KEY UPDATE`), so this doubles as "is everything
+   actually in place" — it fixes gaps instead of just detecting them, at
+   negligible cost on repeat runs. Prints a `✓` line per sub-step (schema,
+   baseline data, admin account).
+6. **`lxc-api`, best-effort** — also starts `lxc-api` in the background so
+   the catalog's `localhost:3000` link is actually live, not just a label.
+   Skipped cleanly with a message (not a failure) if `lxc-api/.env` isn't set
+   up yet — that needs a real WeatherAPI.com key, a separate secret this
+   script doesn't manage.
+7. **Server + explicit health check** — starts `npm run dev` for `lxc-apim`
+   in the background (connected to the **real** remote Hostinger database,
+   not a local one), polls `http://localhost:3100/v1/health` and prints a
+   clear `✓ Health check passed` / `✗ Health check failed` line, then prints
+   `✓ All set` and opens the browser only once that check passes. Ctrl+C
+   stops **both** servers (`lxc-apim` and, if started, `lxc-api`) and
+   returns to this menu.
+
+**Option 3 — Custom Run/Test Local (Dev APIM — Remote DB):** the interactive
+path. Prompts for the MySQL user (defaulting to whatever's already saved, or
+the known Hostinger admin user) and the real MySQL password (hidden input,
+never echoed or hardcoded anywhere in this script), generates a random dev
+`JWT_SECRET`, and writes/overwrites `lxc-apim/.env` (including
+`APIM_ENV=local`). Then runs the same database + `lxc-api` + server +
+health-check sequence as options 1/2.
+
+**Option 4 — Make Build to Publish (PROD APIM — local DB):** not built yet.
+Selecting it just re-shows the menu; this will later become `lxc-apim`'s own
+packaging flow (analogous to `macos_healthapi_package.sh`, but its own
+separate script/file, not a shared one).
+
+Run this script yourself in a terminal rather than asking an AI assistant to
+run it on your behalf — the MySQL password prompt (option 3) is interactive
+and should never pass through anything else.
 
 ---
 

@@ -46,6 +46,11 @@ without re-discovering what's already been verified.
 **Branch context:**
 - Weather work was merged into `main` on 2026-07-25
 - New backend project: `lxc-databases-apis/lxc-api/`
+- `lxc-databases-apis/` was restructured on 2026-08-02: `lxc-api` (the API
+  itself) and `lxc-apim` (a separate, new API-management/showcase codebase)
+  are sibling services under `lxc-databases-apis/`, sharing one MySQL
+  database via `api_*`/`apim_*` table prefixes — see the "lxc-apim" section
+  below. In-progress work on `lxc-apim` lives on the `lxc-apim` branch.
 - Backend deployment target: Hostinger Node app
 - Mobile app should call the backend first, and the backend should proxy WeatherAPI.com
 - Production WeatherAPI keys must stay in Hostinger env vars. A temporary mobile
@@ -149,10 +154,174 @@ README for the fuller task checklist.
   into `lxc-databases-apis/lxc-api/publish/lxc-api-YYYY-MM-DD-HHMM.tar`. Do not use
   or recreate a root-level `publish/` folder.
 
-**Where to start next:** likely Hostinger deployment verification, then real API
-request auth for the mobile app, then wiring `LoginScreen`'s mock OTP submit to
-an actual `POST /auth/login` and persisting the session via
-`react-native-keychain`.
+**`lxc-apim` status (started 2026-08-02, on the `lxc-apim` branch):**
+- `lxc-databases-apis/lxc-apim/` is a **separate codebase** from `lxc-api` —
+  not shared code, not a shared package. It's the API management/showcase
+  layer: catalogs the APIs LXC builds, owns admin users/roles/tokens, and
+  will serve a themed showcase UI. `lxc-api` stays the actual API that serves
+  requests; `lxc-apim` doesn't sit in the traffic path (no gateway/proxy
+  behavior — out of scope by design).
+- Stack mirrors `lxc-api`: Node.js + Express (`^4`, pinned to match `lxc-api`)
+  + TypeScript + `tsx`, plus `mysql2`, `jsonwebtoken`, `bcrypt`, `zod`, `cors`,
+  `ejs` (server-rendered showcase views — no separate SPA build pipeline),
+  `swagger-ui-express`.
+- Auth model: a **product-aware** auth API — login/authorization takes "which
+  product/service" as an input rather than being hardcoded to one app, so
+  MyHealthHub, the DSA app, and `lxc-apim` itself could all eventually
+  authenticate through the same mechanism, each scoped to their own product.
+  Product scoping lives on `apim_tokens.product_id`, not on `apim_user_roles`
+  (roles are global to the apim admin surface).
+- Deploys as a **single Node.js app** on Hostinger at
+  `apim.lexvoraconsulting.com` (same Express/Node-app preset as `lxc-api`),
+  serving both the admin/catalog API and the showcase UI's static build from
+  one Express process — not split across Hostinger's separate static-website
+  hosting product.
+- Swagger `/docs` is planned as **multi-spec**: `swagger-ui-express`'s `urls`
+  array, generated from the `apim_products` table rather than hardcoded, so
+  it shows a dropdown across every registered LXC API (starting with
+  `lxc-api`), not just `lxc-apim`'s own endpoints.
+- **UI theme reversed course (2026-08-02):** an earlier pass matched
+  `lexvoraconsulting_web`'s dark-navy/gold brand theme; that was explicitly
+  overturned — `lxc-apim` now uses its **own** distinct palette (indigo
+  `#6366f1`/`#818cf8` accent, slate `#0f172a`/`#f8fafc` neutrals, clean
+  system sans-serif), styled like a dev/admin tool rather than matching the
+  marketing site. Tokens in `public/css/theme.css`. Don't reintroduce the
+  gold/navy/Georgia/Montserrat lexvora theme here without being asked.
+- Database: `lxc-databases-apis/lxc-databases/api-apimgmt-db/` holds **only
+  `.sql` files** (`migrations/0001`–`0005`, `seeds/0001`–`0002`) — no code,
+  no `package.json`, no `node_modules`. By explicit instruction, that folder
+  is pure data; the scripts that actually run those `.sql` files
+  (`migrate.mjs`, `seed.mjs`, `seed-admin.mjs`) are real app code and live in
+  **`lxc-apim/scripts/`** instead, run via `npm run db:migrate` /
+  `npm run db:seed` / `npm run db:seed:admin` from inside `lxc-apim`. (An
+  earlier pass put the runner scripts, `package.json`, and `node_modules`
+  inside `api-apimgmt-db` itself — that was wrong and has been corrected;
+  don't reintroduce code there.) Schema (`apim_products`, `apim_users`,
+  `apim_roles`, `apim_user_roles`, `apim_tokens`, `apim_audit_log`) is
+  defined, but **has not been run against the live Hostinger database
+  yet** — that needs the real `MYSQL_PASSWORD` and an explicit go-ahead,
+  deliberately not done automatically.
+- **Node version: pinned to 24.18.0, not the repo-wide 20.x convention.**
+  The locally pinned toolchain at `frameworks/node/` only has Node
+  `24.18.0` installed — there is no 20.x there despite `lxc-api`'s `.nvmrc`
+  and this file's general "use Node 20.x" guidance assuming one exists.
+  `lxc-apim` uses `bcrypt`, which compiles a native binary tied to the Node
+  ABI it's built under, so its `.nvmrc`/`package.json engines` are
+  deliberately pinned to `24.18.0` to match what's actually installed and
+  what it was actually built against (Hostinger does support 24.x, so this
+  is a valid deploy target too — not just a local workaround). `lxc-api`
+  has no native dependencies, so its 20.x pin is unaffected and unchanged.
+  If a real Node 20.x ever gets installed into `frameworks/node/`, this
+  pin can be revisited, but don't assume 20.x is available there without
+  checking first.
+- **Phase 0/1 done and verified**, and **Phase 4 (browser UI) is now
+  substantially built**, not just a first-cut catalog page:
+  - Pages: `/login`, `POST /logout`, `/dashboard` (landing after login),
+    `/catalog` (its own page, separate from dashboard, env-aware URLs — see
+    below), `/change-password` (admin-only), `/users/new` (create additional
+    accounts). Root `/` redirects to `/dashboard` if logged in, else
+    `/login`.
+  - Session = a JWT issued on login and stored in an httpOnly cookie
+    (`src/middleware/auth.ts`) — the same auth core intended for the future
+    `/v1/auth/login` API, just a different transport (cookie vs.
+    `Authorization` header) for the browser UI vs. programmatic clients.
+  - **Two bootstrap accounts** (`scripts/seed-admin.mjs`, now create-once —
+    uses a SELECT-then-INSERT guard, never overwrites `password_hash`/
+    `is_active` on repeat idempotent runs, which is important since this
+    script runs on every dev startup):
+    - `admin` / `admin@1234` (default) — has a **DB-down code-level
+      fallback** (`src/services/authService.ts`): a literal hardcoded check
+      that logs `admin` in even if the MySQL query itself throws, so
+      health-check/diagnostics stay reachable during a DB outage. Forced to
+      `/change-password` on first login while the DB is reachable and still
+      on the default password.
+    - `superadmin` / `superadmin@#$1234` (fixed, the app never changes it) —
+      DB-row only, no DB-down fallback. Auto-disabled
+      (`apim_users.is_active = 0`) the instant admin's password changes away
+      from the default; re-enable by flipping that flag directly in MySQL.
+  - Both are **temporary, explicitly-requested dev backdoors** (2026-08-02,
+      no public deployment yet) — must be revisited before `lxc-apim` is
+      exposed anywhere real, especially the DB-down bypass, which doesn't
+      depend on the database at all.
+  - A session logged in via the DB-down fallback is marked "degraded": a
+    site-wide banner shows, and `/catalog`, `/change-password`, `/users/new`
+    all refuse to operate (503, clear message) rather than crashing.
+  - `APIM_ENV` (`local` | `production`, `src/config/env.ts`) controls the
+    catalog's displayed URLs: `local` (the dev default) overrides each
+    product to its localhost equivalent (`src/config/localUrls.ts`:
+    `lxc-api` → `:3000`, `lxc-apim` → `:3100`) instead of the DB-seeded
+    production URL. The eventual Build to Publish flow will set this to
+    `production`.
+  - The catalog UI is a grouped API explorer: group headers and endpoint rows
+    belong inside the same bordered card, with the API details rail kept on the
+    right as a separate full-height panel. The current refinement work is about
+    tightening spacing, filter placement, and matching the reference grouped
+    Swagger-like structure more closely.
+  - `lxc-api` now owns the Doctor REST surface (`/v1/doctors/search`,
+    `/v1/doctors/{doctorId}/profile`, `/v1/doctors/{doctorId}/availability`),
+    and `lxc-apim` reads catalog groups from `lxc-api/openapi.json` when the
+    spec is reachable so the UI follows the REST source of truth.
+  - Verified locally against a deliberately-bad DB host: unauthenticated `/`
+    redirects to `/login`; wrong credentials with DB down → 401; the
+    `admin`/`admin@1234` backdoor pair with DB down → succeeds, degraded,
+    dashboard shows the banner; `/catalog`, `/change-password`, `/users/new`
+    all correctly return 503 while degraded; logout clears the session and
+    redirects to `/login`.
+  - **Deferred, still queued:** role/authorization middleware to actually
+    gate who can reach `/users/new` (today any authenticated session can,
+    since only `admin`/`superadmin` exist); the `/v1/auth/login` JSON API
+    itself for programmatic clients; additional API groups after Doctors
+    (Medicines, Hospital/Clinics, etc.) in the `lxc-api` source surface.
+  - Live task tracker: `lxc-databases-apis/lxc-apim/README.md`.
+- **Run it locally against the real remote database:**
+  `Executable/macos_apim_run.sh` is a separate script (not merged into
+  `macos_healthapi_package.sh`, which stays `lxc-api`-only) with a 5-option
+  interactive menu:
+  - **1) First Time** and **2) Regular** — identical underlying sequence,
+    only messaging differs. Neither ever asks a question. Both require
+    `lxc-apim/.env` to already exist (fail with a pointer to option 3 if
+    not); otherwise: load the toolchain, `npm install` if needed, run
+    `db:migrate` + `db:seed` + `db:seed:admin` on every invocation
+    (idempotent, doubles as an "is everything actually in place" check, with
+    a visible ✓ line per step), **best-effort start `lxc-api` too**
+    (`start_lxc_api_if_possible` — skipped with a clear message if
+    `lxc-api/.env` isn't set up; that needs its own separate secret, a real
+    WeatherAPI.com key, which this script doesn't manage), start `npm run
+    dev` for `lxc-apim`, run an **explicit health check** against
+    `http://localhost:3100/v1/health`, then open the browser. Ctrl+C stops
+    both servers (apim tracked via `$server_pid`, api via
+    `$API_SERVER_PID`) and returns to the menu.
+  - **3) Custom Run/Test Local (Dev APIM — Remote DB)** — the interactive
+    path: prompts for MySQL user/password (hidden input, defaults to
+    whatever's already in `.env`), writes/overwrites `lxc-apim/.env`
+    (gitignored, never committed, never hardcoded in the script itself,
+    includes `APIM_ENV=local`), then runs the same database + lxc-api +
+    server + health-check sequence as 1/2.
+  - **4) Make Build to Publish (PROD APIM — local DB)** — placeholder, just
+    re-shows the menu. Not built yet.
+  - **q) Quit**
+
+  This script is meant to be run directly by the user in their own
+  terminal, not executed on their behalf by an AI assistant, since option 3
+  prompts for a real secret. The real Hostinger MySQL password (once
+  supplied by the user) lives only in `lxc-apim/.env` — never in this
+  script, never committed.
+- **Caution:** during this build, files started appearing in
+  `api-apimgmt-db/migrations/` that weren't written by the assisting session
+  — two conflicting schema designs landed concurrently (different column
+  sets for the same tables), plus a whole runner-scripts/package.json/
+  node_modules tree that shouldn't have been there at all (see the Database
+  bullet above). This was reconciled, but if another Claude Code session or
+  agent is/was also working on this same repo, coordinate before both sides
+  keep editing the same files.
+
+**Where to start next:** likely Hostinger deployment verification for
+`lxc-api`, then real API request auth for the mobile app, then wiring
+`LoginScreen`'s mock OTP submit to an actual `POST /auth/login` and
+persisting the session via `react-native-keychain` — or, on the `lxc-apim`
+branch, continuing `lxc-apim`'s Phase 2/3 (the `/v1/auth/login` JSON API,
+role/authorization middleware, admin/catalog CRUD API) and Phase 5
+(multi-spec Swagger).
 
 ### Executable build scripts
 

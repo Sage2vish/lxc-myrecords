@@ -43,6 +43,9 @@ separate, differently-coded management/showcase layer built on top of it.
 | Method | Path | Notes |
 |---|---|---|
 | `GET` | `/v1/health` | Liveness check |
+| `GET` | `/v1/doctors/search` | Search doctors by name, specialization, or location |
+| `GET` | `/v1/doctors/{doctorId}/profile` | Retrieve a single doctor profile |
+| `GET` | `/v1/doctors/{doctorId}/availability` | Check appointment availability for a doctor |
 | `GET` | `/v1/weather/today` | Accepts `?q=...` or `?lat=...&lon=...`; falls back to `Dubai` automatically |
 | `GET` | `/openapi.json` | Raw OpenAPI spec |
 | `GET` | `/docs` | Swagger UI |
@@ -94,6 +97,12 @@ scattered env lookups:
 ```text
 apis.weather.weatherapi.forecastv1
 ```
+
+The doctor REST surface now lives in [`src/routes/doctors.ts`](./src/routes/doctors.ts)
+with a small in-memory service layer in
+[`src/services/doctors.ts`](./src/services/doctors.ts). `lxc-apim` reads those
+routes from this service's OpenAPI document so the catalog can mirror the
+actual API surface instead of a hardcoded list.
 
 ## 🗄️ Database connection notes
 

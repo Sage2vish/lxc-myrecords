@@ -1,0 +1,35 @@
+<header class="site-header">
+  <a class="brand" href="/dashboard" aria-label="Lexvora Consulting APIM home">
+    <img src="/images/logo-small.png" alt="Lexvora Consulting official logo" />
+  </a>
+  <nav class="site-nav">
+    <% if (typeof session !== 'undefined' && session) { %>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/catalog">Catalog</a>
+      <a href="/users/new">Create User</a>
+      <% if (session.email === 'admin' && !session.degraded) { %>
+        <a href="/change-password">Change Password</a>
+      <% } %>
+      <a href="/docs">API Docs</a>
+      <span class="session-email"><%= session.email %></span>
+      <form action="/logout" method="POST"><button type="submit" class="link-button">Logout</button></form>
+    <% } else { %>
+      <a href="/docs">API Docs</a>
+    <% } %>
+  </nav>
+</header>
+<section class="app-header">
+  <div class="app-header__copy">
+    <h1>API Management (LXC-API)</h1>
+    <p class="app-header-copy">Shared API catalog, auth management, and local development workspace.</p>
+  </div>
+  <div class="brand-badge">
+    <span class="brand-badge__title">LXC-APIM</span>
+    <span class="brand-badge__copy">LXC API Management</span>
+  </div>
+</section>
+<% if (typeof session !== 'undefined' && session && session.degraded) { %>
+  <div class="degraded-banner">
+    ⚠ Database connection unavailable — running in degraded mode. Catalog, user management, and password changes won't work until the connection is restored.
+  </div>
+<% } %>
