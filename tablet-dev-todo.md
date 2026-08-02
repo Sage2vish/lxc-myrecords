@@ -114,20 +114,20 @@ _Last updated: 2026-08-02 on `lxc-tablet-app-dev`._
   - [x] Mirror the iPadOS entry strategy with a tablet-specific entry file.
   - [x] Reuse the same shared source and tablet route split.
   - [x] Confirm the Android tablet shell only loads tablet UI.
-- [ ] Add release-archive verification after simulator validation stabilizes.
-  - [ ] Generate an iPadOS archive from the same code path.
-  - [ ] Confirm the release bundle still resolves the tablet entry file.
-  - [ ] Confirm signing and archive settings are clean.
-- [ ] Tighten visual polish on the tablet home screen.
-  - [ ] Match spacing and outer edge alignment to the supplied mock.
-  - [ ] Keep the right alignment of summary values consistent.
-  - [ ] Keep the top of the API/detail areas pinned without drifting.
-  - [ ] Keep the color palette and card rhythm consistent with the brand.
+- [x] Add release-archive verification after simulator validation stabilizes.
+  - [x] Generate an iPadOS archive from the same code path.
+  - [x] Confirm the release bundle still resolves the tablet entry file.
+  - [x] Confirm signing and archive settings are clean.
+- [x] Tighten visual polish on the tablet home screen.
+  - [x] Match spacing and outer edge alignment to the supplied mock.
+  - [x] Keep the right alignment of summary values consistent.
+  - [x] Keep the top of the API/detail areas pinned without drifting.
+  - [x] Keep the color palette and card rhythm consistent with the brand.
 
 ## Progress Snapshot
-- Completed: 19 of 21 top-level tasks, including tablet branch setup, mobile/tablet entry split, iPadOS tablet entry wiring, initial tablet home shell, time-of-day hero reuse, the Podfile hook fix needed for CocoaPods on Xcode 26, the iPhone build validation, the tablet routing model, the tablet drill-down surfaces, the shared-code migration, the image-generation inventory, the responsive daypart refinement, the reusable tablet component extraction, the Android tablet shell, and the iPadOS simulator launch.
-- In progress: release archive verification and tablet home visual polish.
-- Pending: 2 top-level tasks remain, led by release archive verification and visual polish.
+- Completed: 21 of 21 top-level tasks, including tablet branch setup, mobile/tablet entry split, iPadOS tablet entry wiring, initial tablet home shell, time-of-day hero reuse, the Podfile hook fix needed for CocoaPods on Xcode 26, the iPhone build validation, the tablet routing model, the tablet drill-down surfaces, the shared-code migration, the image-generation inventory, the responsive daypart refinement, the reusable tablet component extraction, the Android tablet shell, the iPadOS simulator launch, the release archive verification, and the final tablet home visual polish pass.
+- In progress: none.
+- Pending: none.
 
 ## Verification Log
 - `2026-08-02`: `Executable/macos_ipadosapp_build.sh` reached CocoaPods integration and failed only in the iPadOS Podfile post-install hook before the patch.
@@ -140,6 +140,7 @@ _Last updated: 2026-08-02 on `lxc-tablet-app-dev`._
 - `2026-08-02`: Created the `lxc-myhealthhub-xdatablet` Android tablet shell and confirmed `./gradlew assembleDebug` succeeds in the new project.
 - `2026-08-02`: Patched Hermes release extraction to use `execFileSync('tar', ...)` so the archive step works with the workspace path that contains a space.
 - `2026-08-02`: Tightened the tablet home and section layouts so they size naturally instead of relying on a fixed desktop width.
+- `2026-08-02`: Verified the iPadOS release archive completes successfully after moving the Hermes helper into tracked repo code.
 
 ## Open Decisions
 - Decide which screens are fully shared and which need tablet-specific presentation.

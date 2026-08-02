@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>The Gradle builder for the tablet Android shell.</strong><br/>
+  <strong>The Gradle builder for the MyHealthHub Android tablet shell.</strong><br/>
   No JS/TS source lives here — see <a href="../lxc-myhealthhub-shared/">lxc-myhealthhub-shared</a> for that.
 </p>
 
@@ -20,6 +20,7 @@
 
 - [📖 Overview](#-overview)
 - [🕘 History & Status](#-history--status)
+- [🗺️ Current Context](#️-current-context)
 - [🗺️ Device/Emulator Selection](#️-deviceemulator-selection)
 - [📂 Where the App Code Lives](#-where-the-app-code-lives)
 - [🚀 Building](#-building)
@@ -33,14 +34,18 @@ This folder is the **tablet Android builder** for the MyHealthHub app. It
 contains only the Gradle/native Android project — `app/`, `gradle/`,
 `build.gradle`, `settings.gradle` — there is no JS/TS source here.
 
-## Current Context
+The app shell itself is driven from `../lxc-myhealthhub-shared/src/tablet/`
+and the shared platform code stays in `../lxc-myhealthhub-shared/src/common/`.
+
+## 🗺️ Current Context
 
 - Weather/API work was merged into `main` on 2026-07-25
 - Android release builds are split by ABI
-- For OnePlus phones, `MyHealthHub-arm64-v8a.apk` is the usual release APK
+- The tablet shell is verified working and launches from `index.tablet.js`
 - The app uses the Hostinger-backed [`../lxc-databases-apis/lxc-api`](../lxc-databases-apis/lxc-api/) project for weather data
 - Tablet UI source lives in `../lxc-myhealthhub-shared/src/tablet/`
-  and shared logic still comes from `../lxc-myhealthhub-shared/src/common/`.
+- Shared API, hook, and type logic still comes from `../lxc-myhealthhub-shared/src/common/`
+- `../Executable/macos_xdatabletapp_build.sh` is the preferred run path for local tablet validation
 
 ## 🕘 History & Status
 
@@ -49,8 +54,9 @@ project, moved out to a sibling folder on 2026-07-21 so the native Android
 build project is separated from the shared app source. Git history was
 preserved as a rename.
 
-> **Status (2026-08-02): tablet shell scaffolded**, ready to be wired into a
-> tablet-specific build script and emulator flow.
+> **Status (2026-08-02): verified working.** The tablet shell builds from the
+> dedicated `lxc-myhealthhub-xdatablet` project and the local run script has
+> been validated with emulator install/launch flow.
 
 ## 🗺️ Device/Emulator Selection
 
@@ -59,7 +65,7 @@ plugged in — it lists the installed emulators (AVDs) and boots one for you:
 
 ```mermaid
 flowchart TD
-    A([Run macos_xdaapp_build.sh]) --> B{adb sees a device?}
+    A([Run macos_xdatabletapp_build.sh]) --> B{adb sees a device?}
     B -->|One| C[Build against it]
     B -->|Several| D[Prompt: pick a number]
     D --> C
@@ -109,6 +115,13 @@ npm run android
 ```
 
 You can also open this folder directly in Android Studio.
+
+For a tablet-only smoke test, the build script is the canonical path:
+
+1. It loads the Android toolchain.
+2. It chooses a connected tablet or boots an emulator.
+3. It builds the tablet app shell from the shared React Native source.
+4. It installs and launches the tablet app automatically.
 
 ## 📦 APK Output
 

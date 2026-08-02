@@ -40,6 +40,6 @@ Open `LxcMyHealthHubiPadOS.xcworkspace`, not the `.xcodeproj`, when working in X
 ./Executable/macos_ipadosapp_release_build.sh
 ```
 
-The archive is written under `lxc-myhealthhub-iPadOS/build/archive/`. Configure an Apple signing team in Xcode before archiving for a physical device or distribution.
+The archive is written under `lxc-myhealthhub-iPadOS/build/archive/`. The Xcode project already includes the Apple signing team needed for device and archive builds, so the release script can run without extra project setup.
 
 See [TODO.md](./TODO.md) for the active enablement checklist.

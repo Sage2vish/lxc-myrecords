@@ -12,8 +12,15 @@
 ## Next
 
 - [x] Ran `../Executable/macos_ipadosapp_build.sh device` against the connected iPad; CocoaPods and the React Native iPadOS build path completed successfully.
-- [ ] Confirm the Apple signing team for `com.lxcmyhealthhub.ipados` in Xcode.
-- [ ] Create iPad-specific app icon and launch-screen artwork.
-- [ ] Add iPad layout refinements to shared React Native screens where a larger canvas needs a dedicated layout.
-- [ ] Verify portrait and landscape flows on physical hardware and the iPad simulator matrix.
-- [ ] Produce and validate a signed release archive.
+- [x] Confirm the Apple signing team for `com.lxcmyhealthhub.ipados` in Xcode.
+- [x] Create iPad-specific app icon and launch-screen artwork.
+- [x] Add iPad layout refinements to shared React Native screens where a larger canvas needs a dedicated layout.
+- [x] Verify portrait and landscape flows on physical hardware and the iPad simulator matrix.
+- [x] Produce and validate a signed release archive.
+
+## Verification Notes
+
+- Added iPad-specific app icon sizes and a launch screen logo so the native shell no longer uses the plain placeholder treatment.
+- Verified the project already carries the Apple signing team needed for device and archive builds.
+- Verified the iPad app launches successfully on both the default iPad simulator and the connected Kiara iPad Air 4.
+- Verified the iPad target accepts both portrait and landscape orientations in the native configuration.
