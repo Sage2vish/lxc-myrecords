@@ -1,13 +1,15 @@
 #!/usr/bin/env node
-// Applies migrations/*.sql in filename order, tracking what's applied in
-// apim_schema_migrations. Idempotent — safe to re-run.
+// Applies lxc-databases/api-apimgmt-db/migrations/*.sql in filename order,
+// tracking what's applied in apim_schema_migrations. Idempotent — safe to
+// re-run. The .sql files are pure data owned by the database workspace;
+// this runner is app code and lives here in lxc-apim on purpose.
 import mysql from 'mysql2/promise';
 import {readdir, readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const migrationsDir = path.join(__dirname, '..', 'migrations');
+const migrationsDir = path.join(__dirname, '..', '..', 'lxc-databases', 'api-apimgmt-db', 'migrations');
 
 function requireEnv(name) {
   const value = process.env[name];

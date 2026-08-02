@@ -42,7 +42,16 @@ Table ownership is separated by prefix, not by database:
 | `apim_*` | `lxc-apim` | Users, roles, tokens/JWT, API catalog entries, audit/access data |
 
 Schema and migrations for these prefixed tables live under
-[`../lxc-databases/api-apimgmt-db`](../lxc-databases/api-apimgmt-db/).
+[`../lxc-databases/api-apimgmt-db`](../lxc-databases/api-apimgmt-db/) — but
+only as `.sql` files. The scripts that run them (`scripts/migrate.mjs`,
+`scripts/seed.mjs`, `scripts/seed-admin.mjs`) are app code, so they live here
+in `lxc-apim`, not in the database workspace:
+
+```bash
+npm run db:migrate      # applies ../lxc-databases/api-apimgmt-db/migrations/*.sql
+npm run db:seed         # applies .../seeds/*.sql (roles, products)
+npm run db:seed:admin   # bcrypt-hashes a password and creates the default admin user
+```
 
 ## 🖥️ Showcase UI theme
 
@@ -60,6 +69,13 @@ shared code:
 `express` · `typescript` · `tsx` · `mysql2` · `jsonwebtoken` · `bcrypt` ·
 `zod` · `cors` · `ejs` · `swagger-ui-express`
 
+**Node version note:** pinned to **24.18.0**, not `lxc-api`'s 20.x — the
+locally pinned toolchain at `frameworks/node/` only has 24.18.0 installed,
+and `bcrypt` compiles a native binary tied to the Node ABI it's built under.
+Deploying this to Hostinger must use a matching Node 24.x runtime (Hostinger
+supports 18/20/22/24.x), or `bcrypt` needs a rebuild against whichever
+version actually runs it.
+
 ## ✅ Task Tracker
 
 This is the live status for building `lxc-apim`, updated as work lands.
@@ -71,10 +87,12 @@ This is the live status for building `lxc-apim`, updated as work lands.
 
 ### Phase 1 — Database (`lxc-databases/api-apimgmt-db`) ✅
 - [x] `apim_*` schema migrations (products, users, roles, tokens, audit_log) —
-      `migrations/0001`–`0005`
-- [x] `mysql2`-based migration runner script — `npm run migrate`
-- [x] Seed data (`apim_products` seeded with `lxc-api`/`lxc-apim`, roles, and a
-      default admin user) — `npm run seed`, `npm run seed:admin`
+      `.sql` only, `lxc-databases/api-apimgmt-db/migrations/0001`–`0005`
+- [x] Seed data as plain `.sql` — `.../seeds/0001`–`0002` (roles, products)
+- [x] `mysql2`-based migration/seed runner scripts, plus the bcrypt-hashing
+      admin-user seed script — all live in **`lxc-apim/scripts/`** (app
+      code), not in the database workspace: `npm run db:migrate`,
+      `npm run db:seed`, `npm run db:seed:admin`
 
 > Not yet run against the live Hostinger database — needs the real
 > `MYSQL_PASSWORD` and an explicit go-ahead before touching production data.

@@ -32,6 +32,10 @@ two separate codebases:
 | Any tables `lxc-api` itself needs | `api_*` |
 | Future database migrations | both |
 
+**This folder holds `.sql` files only — no code, no `package.json`, no
+`node_modules`.** The scripts that *run* these files are app code, and app
+code lives in `lxc-apim`, not here — see below.
+
 ## 🗂️ Schema (current)
 
 | Table | Holds |
@@ -43,9 +47,23 @@ two separate codebases:
 | `apim_tokens` | Issued refresh tokens/API keys, revocable; `product_id` is where product-scoped login lives |
 | `apim_audit_log` | Login/token/admin action audit trail |
 
-Migrations: `migrations/0001`–`0005`. Runner: `npm run migrate` (`scripts/migrate.mjs`,
-tracks applied files in `apim_schema_migrations`). Seed data: `npm run seed`
-(baseline products/roles) and `npm run seed:admin` (default admin user).
+Migrations: `migrations/0001`–`0005` (schema DDL). Seeds: `seeds/0001`–`0002`
+(baseline roles/products — plain idempotent `INSERT ... ON DUPLICATE KEY
+UPDATE`, no code needed since it's pure data).
+
+Run them from **`lxc-apim`**, not from here:
+
+```bash
+cd ../../lxc-apim
+npm run db:migrate      # applies migrations/*.sql, tracks state in apim_schema_migrations
+npm run db:seed         # applies seeds/*.sql (roles, products)
+npm run db:seed:admin   # creates/updates the default admin user — needs bcrypt, so it's real code, not SQL
+```
+
+Admin-user seeding needs password hashing (real logic), so it's not a `.sql`
+file — it lives as `lxc-apim/scripts/seed-admin.mjs` alongside the other two
+runner scripts, using `lxc-apim`'s own `mysql2`/`bcrypt` dependencies rather
+than a separate `node_modules` tree in this folder.
 
 ## ✅ Status
 

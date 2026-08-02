@@ -187,29 +187,47 @@ README for the fuller task checklist.
   (`#f7f3ed`), Georgia serif hero headings, Montserrat uppercase eyebrow
   labels, gold-gradient buttons, `.service-card` pattern from that site's
   `our-products.html`.
-- Database: all `apim_*` migrations/seeds/scripts live under
-  `lxc-databases-apis/lxc-databases/api-apimgmt-db/` — **not** inside
-  `lxc-apim` itself, by explicit instruction, so the DB lifecycle stays
-  decoupled from application code. `npm run migrate` / `npm run seed` /
-  `npm run seed:admin` from that folder. Schema (`apim_products`,
-  `apim_users`, `apim_roles`, `apim_user_roles`, `apim_tokens`,
-  `apim_audit_log`) is defined and migrations/seed scripts are written, but
-  **have not been run against the live Hostinger database yet** — that needs
-  the real `MYSQL_PASSWORD` and an explicit go-ahead, deliberately not done
-  automatically.
+- Database: `lxc-databases-apis/lxc-databases/api-apimgmt-db/` holds **only
+  `.sql` files** (`migrations/0001`–`0005`, `seeds/0001`–`0002`) — no code,
+  no `package.json`, no `node_modules`. By explicit instruction, that folder
+  is pure data; the scripts that actually run those `.sql` files
+  (`migrate.mjs`, `seed.mjs`, `seed-admin.mjs`) are real app code and live in
+  **`lxc-apim/scripts/`** instead, run via `npm run db:migrate` /
+  `npm run db:seed` / `npm run db:seed:admin` from inside `lxc-apim`. (An
+  earlier pass put the runner scripts, `package.json`, and `node_modules`
+  inside `api-apimgmt-db` itself — that was wrong and has been corrected;
+  don't reintroduce code there.) Schema (`apim_products`, `apim_users`,
+  `apim_roles`, `apim_user_roles`, `apim_tokens`, `apim_audit_log`) is
+  defined, but **has not been run against the live Hostinger database
+  yet** — that needs the real `MYSQL_PASSWORD` and an explicit go-ahead,
+  deliberately not done automatically.
+- **Node version: pinned to 24.18.0, not the repo-wide 20.x convention.**
+  The locally pinned toolchain at `frameworks/node/` only has Node
+  `24.18.0` installed — there is no 20.x there despite `lxc-api`'s `.nvmrc`
+  and this file's general "use Node 20.x" guidance assuming one exists.
+  `lxc-apim` uses `bcrypt`, which compiles a native binary tied to the Node
+  ABI it's built under, so its `.nvmrc`/`package.json engines` are
+  deliberately pinned to `24.18.0` to match what's actually installed and
+  what it was actually built against (Hostinger does support 24.x, so this
+  is a valid deploy target too — not just a local workaround). `lxc-api`
+  has no native dependencies, so its 20.x pin is unaffected and unchanged.
+  If a real Node 20.x ever gets installed into `frameworks/node/`, this
+  pin can be revisited, but don't assume 20.x is available there without
+  checking first.
 - `lxc-apim`'s own Phase 0 (scaffold) and Phase 1 (database) are done and
-  verified (`npm run build` clean, `/v1/health` responds, migration/seed
-  scripts pass `node --check`). Live task tracker:
+  verified (`npm run build` clean, `/v1/health` responds, all
+  migrate/seed/seed-admin scripts pass `node --check`). Live task tracker:
   `lxc-databases-apis/lxc-apim/README.md`. Still to build: the auth API
   itself, admin/catalog CRUD, the showcase UI, the multi-spec Swagger wiring,
   and Hostinger deployment for `apim.lexvoraconsulting.com`.
 - **Caution:** during this build, files started appearing in
   `api-apimgmt-db/migrations/` that weren't written by the assisting session
   — two conflicting schema designs landed concurrently (different column
-  sets for the same tables). This was reconciled into one canonical
-  migration set, but if another Claude Code session or agent is/was also
-  working on this same repo, coordinate before both sides keep editing the
-  same files.
+  sets for the same tables), plus a whole runner-scripts/package.json/
+  node_modules tree that shouldn't have been there at all (see the Database
+  bullet above). This was reconciled, but if another Claude Code session or
+  agent is/was also working on this same repo, coordinate before both sides
+  keep editing the same files.
 
 **Where to start next:** likely Hostinger deployment verification for
 `lxc-api`, then real API request auth for the mobile app, then wiring
