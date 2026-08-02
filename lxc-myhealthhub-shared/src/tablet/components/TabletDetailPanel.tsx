@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : TabletDetailPanel.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Shared tablet detail card used to show section summaries and
+//               bullet-point context in the tablet shell.
+// ============================================================================
+
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {colors} from '../../theme/colors';
@@ -101,4 +113,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-

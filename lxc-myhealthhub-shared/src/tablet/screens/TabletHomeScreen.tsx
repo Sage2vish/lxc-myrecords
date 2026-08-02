@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : TabletHomeScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Tablet home dashboard with hero banner, family overview,
+//               compact drill-down cards, and health summary panels.
+// ============================================================================
+
 import React, {useEffect, useState} from 'react';
 import {
   Image,

@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : AppDelegate.swift
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : iPadOS native app delegate that boots the tablet React Native
+//               entry point.
+// ============================================================================
+
 import UIKit
 import React
 import React_RCTAppDelegate

@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : tabletTypes.ts
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Tablet section and detail type definitions plus the static
+//               tablet navigation/catalog data.
+// ============================================================================
+
 import {colors} from '../theme/colors';
 
 export type TabletSectionKey = 'home' | 'health' | 'schedules' | 'vault' | 'reports';
@@ -120,4 +132,3 @@ export const tabletDetails: Record<TabletDetailKey, TabletDetailConfig> = {
     accent: colors.primary,
   },
 };
-

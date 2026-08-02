@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : hermes_replace_hermes_version.js
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Release helper that swaps Hermes artifacts when the build
+//               configuration changes.
+// ============================================================================
+
 'use strict';
 
 const {execFileSync} = require('child_process');

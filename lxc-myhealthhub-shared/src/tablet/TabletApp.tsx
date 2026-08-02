@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : TabletApp.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Tablet shell entry point that switches between the home
+//               dashboard and tablet section surfaces.
+// ============================================================================
+
 import React, {useState} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';

@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : TabletStatCard.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Small tablet metric card for section overviews and summary
+//               counts.
+// ============================================================================
+
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {colors} from '../../theme/colors';
@@ -49,4 +61,3 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 });
-

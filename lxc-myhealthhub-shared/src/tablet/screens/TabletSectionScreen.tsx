@@ -1,3 +1,15 @@
+// ============================================================================
+// FILE        : TabletSectionScreen.tsx
+// PROJECT     : LXC-Health
+// AUTHOR      : Vishal Kumar
+// UPDATED BY  : Vishal Kumar
+// VERSION     : 1.0.0
+// DATE-TIME   : 02-August-2026 | 00:00 Hrs
+//
+// PURPOSE     : Tablet section view for health, schedules, vault, and reports
+//               surfaces driven from shared React Native data.
+// ============================================================================
+
 import React, {useEffect, useState} from 'react';
 import {Image, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {colors, fetchDeviceWeather, getHeroTheme, type WeatherSummary} from '../../common';

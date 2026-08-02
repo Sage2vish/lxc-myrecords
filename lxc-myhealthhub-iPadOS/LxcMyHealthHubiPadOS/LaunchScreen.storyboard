@@ -32,10 +32,10 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="LGO-7h-2bM" firstAttribute="centerX" secondItem="Bcu-3y-fUS" secondAttribute="centerX" id="LGO-centerX" />
-                            <constraint firstItem="LGO-7h-2bM" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="96" id="LGO-top" />
-                            <constraint firstItem="LGO-7h-2bM" firstAttribute="width" constant="145" id="LGO-width" />
-                            <constraint firstItem="LGO-7h-2bM" firstAttribute="height" constant="145" id="LGO-height" />
+                            <constraint firstItem="LGO-7h-2bM" firstAttribute="centerX" secondItem="Bcu-3y-fUS" secondAttribute="centerX" id="LGO-centerX"/>
+                            <constraint firstItem="LGO-7h-2bM" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="96" id="LGO-top"/>
+                            <constraint firstItem="LGO-7h-2bM" firstAttribute="width" constant="145" id="LGO-width"/>
+                            <constraint firstItem="LGO-7h-2bM" firstAttribute="height" constant="145" id="LGO-height"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="bottom" secondItem="MN2-I3-ftu" secondAttribute="bottom" constant="20" id="OZV-Vh-mqD"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="centerX" secondItem="GJd-Yh-RWb" secondAttribute="centerX" id="Q3B-4B-g5h"/>
                             <constraint firstItem="MN2-I3-ftu" firstAttribute="centerX" secondItem="Bcu-3y-fUS" secondAttribute="centerX" id="akx-eg-2ui"/>
