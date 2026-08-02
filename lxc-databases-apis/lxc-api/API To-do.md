@@ -22,7 +22,7 @@ the APIM catalog can read from directly.
 | 2 | Create common API architecture: route registration, controllers, services, validation, error model and Swagger grouping | Not started |
 | 3 | Identity & Access APIs | In progress |
 | 4 | User Profile & Family APIs | In progress |
-| 5 | Health Summary APIs | Not started |
+| 5 | Health Summary APIs | In progress |
 | 6 | Doctor & Provider APIs | Not started |
 | 7 | Appointment APIs | Not started |
 | 8 | Medicine & Prescription APIs | Not started |
@@ -128,6 +128,59 @@ may be viewing their own information or a child/dependant’s information.
 - [x] Define request/response contracts
 - [ ] Add validation schemas
 - [x] Add service layer for profile/family behavior
+- [ ] Add error model and shared status responses
+- [x] Add OpenAPI tags and endpoint docs
+- [ ] Ensure APIM catalog can group these endpoints automatically
+
+## Health Summary APIs
+
+### Purpose
+
+This powers the Health area and the health overview shown on the home screen.
+
+### Suggested APIs
+
+- Health Summary API
+- Health Condition API
+- Allergy API
+- Medication Summary API
+- Vital Signs API
+- Blood Pressure API
+- Blood Glucose API
+- Weight and BMI API
+- Heart Rate API
+- Health Risk API
+- Wellness Score API
+- Recent Health Activity API
+
+### Example Endpoints
+
+- `GET /v1/profiles/{profileId}/health-summary`
+- `GET /v1/profiles/{profileId}/conditions`
+- `POST /v1/profiles/{profileId}/conditions`
+- `GET /v1/profiles/{profileId}/allergies`
+- `GET /v1/profiles/{profileId}/vitals`
+- `POST /v1/profiles/{profileId}/vitals`
+- `GET /v1/profiles/{profileId}/health-score`
+
+### Recommended SLA
+
+**Gold**
+
+This group contains sensitive medical data, so the catalogue should prominently display:
+
+- Data classification
+- Consent requirement
+- Encryption status
+- Audit logging status
+- Retention policy
+
+### Build Checklist
+
+- [x] Confirm route module structure for `healthSummary`
+- [x] Define request/response contracts
+- [ ] Add validation schemas
+- [x] Add service layer for health summary behavior
 - [ ] Add error model and shared status responses
 - [x] Add OpenAPI tags and endpoint docs
 - [ ] Ensure APIM catalog can group these endpoints automatically

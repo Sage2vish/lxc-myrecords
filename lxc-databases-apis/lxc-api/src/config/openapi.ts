@@ -19,6 +19,7 @@ export const openApiSpec = {
     {name: 'Health'},
     {name: 'Identity & Access'},
     {name: 'User Profile & Family'},
+    {name: 'Health Summary'},
     {name: 'Weather'},
     {name: 'Doctors'},
   ],
@@ -352,6 +353,144 @@ export const openApiSpec = {
         responses: {
           200: {
             description: 'Profile sharing enabled',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}/health-summary': {
+      get: {
+        tags: ['Health Summary'],
+        summary: 'Get the health summary for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Profile health summary',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}/conditions': {
+      get: {
+        tags: ['Health Summary'],
+        summary: 'List health conditions for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Conditions list',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+      post: {
+        tags: ['Health Summary'],
+        summary: 'Add a health condition for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        requestBody: {required: true, content: {'application/json': {schema: {type: 'object'}}}},
+        responses: {
+          201: {
+            description: 'Condition created',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}/allergies': {
+      get: {
+        tags: ['Health Summary'],
+        summary: 'List allergies for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Allergies list',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}/vitals': {
+      get: {
+        tags: ['Health Summary'],
+        summary: 'List vital signs for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Vital signs list',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+      post: {
+        tags: ['Health Summary'],
+        summary: 'Add a vital sign reading for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        requestBody: {required: true, content: {'application/json': {schema: {type: 'object'}}}},
+        responses: {
+          201: {
+            description: 'Vital created',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}/health-score': {
+      get: {
+        tags: ['Health Summary'],
+        summary: 'Get the health score for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Health score response',
             content: {'application/json': {schema: {type: 'object'}}},
           },
         },
