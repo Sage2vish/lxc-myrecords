@@ -25,7 +25,7 @@
 - [🤖 macos_xdaapp_build.sh](#-macos_xdaapp_buildsh)
 - [🏁 macos_xdaapp_release_build.sh](#-macos_xdaapp_release_buildsh)
 - [📦 macos_healthapi_package.sh](#-macos_healthapi_packagesh)
-- [🗂️ macos_apimapp_run.sh](#️-macos_apimapp_runsh)
+- [🗂️ macos_apim_run.sh](#️-macos_apim_runsh)
 - [🩹 Error Message Format](#-error-message-format)
 - [⚠️ Compatibility Notes](#️-compatibility-notes)
 
@@ -99,14 +99,14 @@ repo-root `publish/` folder.
 
 This script is `lxc-api`-only. `lxc-apim` shares the same MySQL database as
 `lxc-api` but is a **separate codebase with its own run/deploy tooling** —
-see `macos_apimapp_run.sh` below. The two are deliberately not merged.
+see `macos_apim_run.sh` below. The two are deliberately not merged.
 
 ---
 
-## 🗂️ `macos_apimapp_run.sh`
+## 🗂️ `macos_apim_run.sh`
 
 ```bash
-./macos_apimapp_run.sh
+./macos_apim_run.sh
 ```
 
 Interactive menu for running **`lxc-apim`** (the API management/showcase
@@ -116,48 +116,51 @@ service — a different codebase from `lxc-api`, sharing only its database).
 ========================================
  LXC-APIM
 ========================================
- 1) Default Run/Test Local  (Dev APIM  — Remote DB)
- 2) Custom Run/Test Local   (Dev APIM  — Remote DB)
- 3) Make Build to Publish (PROD APIM — local DB)
+ 1) First Time - Default Run/Test Local  (Dev APIM  — Remote DB)
+ 2) Regular    - Default Run/Test Local  (Dev APIM  — Remote DB)
+ 3) Custom Run/Test Local  (Dev APIM  — Remote DB)
+ 4) Make Build to Publish (PROD APIM — local DB)
  q) Quit
 ========================================
 ```
 
-**Option 1 — Default Run/Test Local (Dev APIM — Remote DB):** zero prompts.
-Uses whatever's already saved in `lxc-apim/.env` (already gitignored, never
-committed). Sequence:
+**Options 1 and 2 run the identical underlying sequence** — they only differ
+in labeling/messaging (option 1 prints a short explainer for newcomers,
+option 2 is terser for everyday use). Neither ever asks a question:
 
 1. **Preflight** — confirms the `lxc-apim` folder and the Node toolchain
    loader script exist.
-2. **Requires `.env` to already exist** — if it doesn't, this option fails
-   immediately with a message pointing at option 2, rather than silently
-   asking questions (Default is not supposed to ask anything).
+2. **Requires `lxc-apim/.env` to already exist** — if it doesn't, both options
+   fail immediately with a message pointing at option 3, rather than
+   silently asking questions.
 3. **Load toolchain** — `frameworks/android/env.sh` (Node).
-4. **JS deps** — `npm install`, skipped if `node_modules` already exists.
-5. **Database check** — runs `npm run db:migrate` then `npm run db:seed`
-   every time. Both are idempotent (migrations track what's applied in
+4. **Dependencies** — `npm install`, skipped if `node_modules` already exists.
+5. **Database** — runs `npm run db:migrate` then `npm run db:seed` every
+   time. Both are idempotent (migrations track what's applied in
    `apim_schema_migrations`; seeds are `ON DUPLICATE KEY UPDATE`), so this
    doubles as "is everything actually in place" — it fixes gaps instead of
    just detecting them, at negligible cost on repeat runs.
-6. **Run + open browser** — starts `npm run dev` (connected to the **real**
-   remote Hostinger database, not a local one) and opens
-   `http://localhost:3100` once the health check responds. Ctrl+C stops the
-   server and returns to this menu.
+6. **Server + explicit health check** — starts `npm run dev` in the
+   background (connected to the **real** remote Hostinger database, not a
+   local one), polls `http://localhost:3100/v1/health` and prints a clear
+   `✓ Health check passed` / `✗ Health check failed` line, **then** opens the
+   browser only once that check passes. Ctrl+C stops the server and returns
+   to this menu.
 
-**Option 2 — Custom Run/Test Local (Dev APIM — Remote DB):** the interactive
+**Option 3 — Custom Run/Test Local (Dev APIM — Remote DB):** the interactive
 path. Prompts for the MySQL user (defaulting to whatever's already saved, or
 the known Hostinger admin user) and the real MySQL password (hidden input,
 never echoed or hardcoded anywhere in this script), generates a random dev
 `JWT_SECRET`, and writes/overwrites `lxc-apim/.env`. Then runs the same
-database-check + run + open-browser sequence as option 1.
+database + server + health-check sequence as options 1/2.
 
-**Option 3 — Make Build to Publish (PROD APIM — local DB):** not built yet.
+**Option 4 — Make Build to Publish (PROD APIM — local DB):** not built yet.
 Selecting it just re-shows the menu; this will later become `lxc-apim`'s own
 packaging flow (analogous to `macos_healthapi_package.sh`, but its own
 separate script/file, not a shared one).
 
 Run this script yourself in a terminal rather than asking an AI assistant to
-run it on your behalf — the MySQL password prompt (option 2) is interactive
+run it on your behalf — the MySQL password prompt (option 3) is interactive
 and should never pass through anything else.
 
 ---

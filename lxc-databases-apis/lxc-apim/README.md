@@ -113,17 +113,25 @@ This is the live status for building `lxc-apim`, updated as work lands.
 Run it locally against the **real remote Hostinger database** with:
 
 ```bash
-../../Executable/macos_apimapp_run.sh
+../../Executable/macos_apim_run.sh
 ```
 
-Choose option 1 (Default) once `lxc-apim/.env` exists — it runs with zero
-prompts, checking/applying `db:migrate` + `db:seed` on every run (both are
-idempotent, so this is cheap) before opening `http://localhost:3100`
-automatically. If `.env` doesn't exist yet, use option 2 (Custom) once to set
-the real MySQL password interactively (hidden input, saved only to the
-gitignored local `.env`) — after that, option 1 needs no further input. Run
-this yourself in a terminal — don't route the password prompt through an AI
-assistant.
+Choose option 1 or 2 (First Time / Regular — identical logic, different
+messaging) once `lxc-apim/.env` exists — both run with zero prompts,
+checking/applying `db:migrate` + `db:seed` + `db:seed:admin` on every run
+(idempotent, so cheap), then run an explicit health check before opening
+`http://localhost:3100` automatically. If `.env` doesn't exist yet, use
+option 3 (Custom) once to set the real MySQL password interactively (hidden
+input, saved only to the gitignored local `.env`) — after that, options 1/2
+need no further input. Run this yourself in a terminal — don't route the
+password prompt through an AI assistant.
+
+> ⚠️ **Temporary dev backdoor.** `db:seed:admin` with no `SEED_ADMIN_*` env
+> vars set creates/keeps a known login: **`admin` / `admin@1234`**.
+> Intentional for now (2026-08-02 — no auth API or public deployment yet),
+> but this **must be replaced or removed before `lxc-apim` is exposed
+> anywhere real**. To use a real credential instead, run
+> `SEED_ADMIN_EMAIL=... SEED_ADMIN_PASSWORD=... npm run db:seed:admin` once.
 
 ### Phase 5 — Swagger / docs
 - [ ] `lxc-apim`'s own `src/config/openapi.ts`

@@ -226,22 +226,35 @@ README for the fuller task checklist.
   API itself, admin/catalog CRUD, admin-panel showcase views, the multi-spec
   Swagger wiring, and Hostinger deployment for `apim.lexvoraconsulting.com`.
 - **Run it locally against the real remote database:**
-  `Executable/macos_apimapp_run.sh` is a new, separate script (not merged
+  `Executable/macos_apim_run.sh` is a new, separate script (not merged
   into `macos_healthapi_package.sh`, which stays `lxc-api`-only) with a
-  4-option interactive menu:
-  - **1) Default Run/Test Local (Dev APIM — Remote DB)** — zero prompts.
-    Requires `lxc-apim/.env` to already exist (fails with a pointer to
-    option 2 if not); otherwise loads the toolchain, `npm install`s if
-    needed, runs `db:migrate` + `db:seed` on every invocation (both are
+  5-option interactive menu:
+  - **1) First Time** and **2) Regular** — Default Run/Test Local (Dev APIM
+    — Remote DB). These two run the **identical underlying sequence**; they
+    only differ in messaging (option 1 prints a short explainer for
+    newcomers, option 2 is terser). Neither ever asks a question. Both
+    require `lxc-apim/.env` to already exist (fail with a pointer to option
+    3 if not); otherwise: load the toolchain, `npm install` if needed, run
+    `db:migrate` + `db:seed` + `db:seed:admin` on every invocation (all
     idempotent, so this is cheap and doubles as an "is everything actually
-    in place" check that fixes gaps rather than just detecting them), then
-    starts `npm run dev` and opens `http://localhost:3100` in the browser.
-  - **2) Custom Run/Test Local (Dev APIM — Remote DB)** — the interactive
+    in place" check that fixes gaps rather than just detecting them, with a
+    visible ✓ line per step), start `npm run dev` in the background, run an
+    **explicit health check** against `http://localhost:3100/v1/health`
+    printing a clear pass/fail line, then print "✓ All set" and only open
+    the browser once that health check passes.
+  - **⚠️ Temporary dev backdoor:** `db:seed:admin` with no `SEED_ADMIN_*` env
+    vars set creates/keeps a known login — **`admin` / `admin@1234`** — in
+    `apim_users`. Explicitly requested (2026-08-02) for this early-dev stage
+    (no auth API or public deployment exists yet), but this **must be
+    replaced or removed before `lxc-apim` is exposed anywhere real**. To use
+    a real credential instead: `SEED_ADMIN_EMAIL=... SEED_ADMIN_PASSWORD=...
+    npm run db:seed:admin` once, from `lxc-apim`.
+  - **3) Custom Run/Test Local (Dev APIM — Remote DB)** — the interactive
     path: prompts for MySQL user/password (hidden input, defaults to
     whatever's already in `.env`), writes/overwrites `lxc-apim/.env`
     (gitignored, never committed, never hardcoded in the script itself),
-    then runs the same database-check + start + open-browser sequence.
-  - **3) Make Build to Publish (PROD APIM — local DB)** — placeholder, just
+    then runs the same database + server + health-check sequence as 1/2.
+  - **4) Make Build to Publish (PROD APIM — local DB)** — placeholder, just
     re-shows the menu. Not built yet.
   - **q) Quit**
 

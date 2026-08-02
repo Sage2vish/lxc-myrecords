@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# FILE        : macos_apimapp_run.sh
+# FILE        : macos_apim_run.sh
 # PROJECT     : LXC-DBs-APIs
 # AUTHOR      : Claude Sonnet 5
 # DATE-TIME   : 02-August-2026
@@ -12,20 +12,23 @@
 #               in separate scripts, not merged.
 #
 #               Menu:
-#                 1) Default Run/Test Local (Dev APIM — Remote DB) — uses
-#                    whatever is already in lxc-apim/.env (already gitignored,
-#                    never committed) with zero prompts. If .env doesn't
-#                    exist yet, this option fails with a message pointing at
-#                    option 2 instead of silently asking questions.
-#                 2) Custom Run/Test Local (Dev APIM — Remote DB) — the
-#                    interactive path: prompts for MySQL user/password
-#                    (hidden input), writes/overwrites lxc-apim/.env, then
-#                    runs the same startup sequence as option 1.
-#                 3) Make Build to Publish (PROD APIM — local DB) — not built
-#                    yet; selecting it just re-shows this menu.
+#                 1) First Time  - Default Run/Test Local (Dev APIM — Remote DB)
+#                 2) Regular     - Default Run/Test Local (Dev APIM — Remote DB)
+#                 3) Custom Run/Test Local (Dev APIM — Remote DB)
+#                 4) Make Build to Publish (PROD APIM — local DB)
+#                 q) Quit
+#
+#               Options 1 and 2 run the exact same underlying sequence (both
+#               always confirm dependencies, apply migrations/seed data, and
+#               run an explicit health check before opening the browser —
+#               all idempotent, so repeating it is cheap) and both require
+#               lxc-apim/.env to already exist, asking zero questions. They
+#               only differ in labeling/messaging — "First Time" for
+#               newcomers, "Regular" for everyday use. Option 3 is the only
+#               one that prompts, for setting up or changing credentials.
 #
 #               The real MySQL password is never hardcoded in this script —
-#               it only ever lives in lxc-apim/.env.
+#               it only ever lives in lxc-apim/.env (gitignored).
 # ============================================================================
 
 set -euo pipefail
@@ -71,59 +74,123 @@ preflight() {
 
 ensure_deps() {
   if [ ! -d "$APIM_DIR/node_modules" ]; then
-    echo "==> Installing lxc-apim dependencies (first run)"
+    echo "    Installing lxc-apim dependencies (first run)"
     (cd "$APIM_DIR" && npm install)
+  else
+    echo "    Dependencies already installed"
   fi
 }
 
-# Runs migrate + seed against whatever's in $ENV_FILE right now. Both are
-# idempotent (migrate tracks applied files in apim_schema_migrations, seed
-# is ON DUPLICATE KEY UPDATE), so calling this on every run is cheap and
-# doubles as the "is everything actually in place" check — it fixes gaps
-# instead of just detecting them.
+# Runs migrate + seed (+ the dev backdoor admin account) against whatever's
+# in $ENV_FILE right now. All three are idempotent (migrate tracks applied
+# files in apim_schema_migrations, seed/seed-admin are ON DUPLICATE KEY
+# UPDATE), so calling this on every run is cheap and doubles as the "is
+# everything actually in place" check — it fixes gaps instead of just
+# detecting them.
+#
+# TEMPORARY: db:seed:admin with no SEED_ADMIN_* env vars set creates/keeps a
+# known admin/admin@1234 backdoor login. Intentional for now (early
+# development, no auth API or public deployment yet) — must be removed or
+# replaced before lxc-apim goes anywhere real.
 ensure_db_ready() {
-  echo "==> Checking schema/data (safe to re-run — no-ops if already applied)"
+  echo "    Checking schema (migrations)..."
   (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:migrate)
+  echo "    ✓ Schema up to date"
+
+  echo "    Checking baseline data (roles, products)..."
   (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:seed)
+  echo "    ✓ Baseline data present"
+
+  echo "    Checking admin account..."
+  (cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run db:seed:admin)
+  echo "    ✓ Admin account present"
 }
 
-start_server_and_open_browser() {
-  (
-    for _ in $(seq 1 30); do
-      if curl -s "http://localhost:${PORT}/v1/health" >/dev/null 2>&1; then
-        echo "==> Opening http://localhost:${PORT} in your browser"
-        open "http://localhost:${PORT}"
-        break
-      fi
-      sleep 1
-    done
-  ) &
+# Starts the dev server in the background, explicitly health-checks it,
+# opens the browser only once that health check passes, then attaches to
+# the logs in the foreground so Ctrl+C cleanly stops the server and returns
+# to the menu.
+start_server_and_health_check() {
+  ( cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && npm run dev ) > "$LOG_FILE" 2>&1 &
+  local server_pid=$!
+
+  trap 'echo ""; echo "Stopping lxc-apim..."; kill "$server_pid" 2>/dev/null; wait "$server_pid" 2>/dev/null; trap - INT TERM' INT TERM
+
+  echo "    Checking server health..."
+  echo "    Waiting for http://localhost:${PORT}/v1/health"
+  local tries=0
+  local healthy="0"
+  while [ "$tries" -lt 30 ]; do
+    if curl -s "http://localhost:${PORT}/v1/health" >/dev/null 2>&1; then
+      healthy="1"
+      break
+    fi
+    if ! kill -0 "$server_pid" 2>/dev/null; then
+      break
+    fi
+    tries=$((tries + 1))
+    sleep 1
+  done
+
+  if [ "$healthy" != "1" ]; then
+    echo "    ✗ Health check failed — see $LOG_FILE"
+    kill "$server_pid" 2>/dev/null
+    trap - INT TERM
+    return 1
+  fi
+
+  echo "    ✓ Health check passed"
+  echo ""
+  echo "✓ All set — opening http://localhost:${PORT} ;-)"
+  open "http://localhost:${PORT}"
 
   echo "==> Running — Ctrl+C stops the server and returns to this menu"
-  ( cd "$APIM_DIR" && set -a && source "$ENV_FILE" && set +a && exec npm run dev ) 2>&1 | tee "$LOG_FILE" || true
+  tail -f "$LOG_FILE" &
+  local tail_pid=$!
+  wait "$server_pid" 2>/dev/null
+  kill "$tail_pid" 2>/dev/null
+  trap - INT TERM
 }
 
-run_default() {
-  echo "==> [1/4] Preflight checks"
+# Shared by "First Time" and "Regular" — identical logic, only the caller's
+# messaging differs. Always confirms dependencies, always applies
+# migrations/seed data, always health-checks before opening the browser.
+run_default_sequence() {
+  echo "==> [1/5] Preflight checks"
   preflight
 
   if [ ! -f "$ENV_FILE" ]; then
     fail "lxc-apim/.env" \
-      "Default mode never asks questions, so it needs credentials to already be saved." \
-      "Run option 2 (Custom Run/Test Local) once to set the MySQL password — it writes $ENV_FILE, and Default will use it silently from then on."
+      "This option never asks questions, so it needs credentials to already be saved." \
+      "Run option 3 (Custom Run/Test Local) once to set the MySQL password — it writes $ENV_FILE, and options 1/2 will use it silently from then on."
   fi
 
-  echo "==> [2/4] Loading toolchain"
+  echo "==> [2/5] Loading toolchain"
   # shellcheck disable=SC1091
   source "$FRAMEWORKS_ROOT/android/env.sh"
 
+  echo "==> [3/5] Dependencies"
   ensure_deps
 
-  echo "==> [3/4] Database"
+  echo "==> [4/5] Database — migrate + seed + admin account (idempotent, safe to re-run)"
   ensure_db_ready
 
-  echo "==> [4/4] Starting lxc-apim (dev mode, remote DB) — logs: $LOG_FILE"
-  start_server_and_open_browser
+  echo "==> [5/5] Server + health check"
+  start_server_and_health_check
+}
+
+run_first_time() {
+  echo ""
+  echo "First-time run: confirming dependencies, applying database"
+  echo "migrations + seed data, health-checking the server, then opening"
+  echo "it in your browser."
+  run_default_sequence
+}
+
+run_regular() {
+  echo ""
+  echo "Starting lxc-apim..."
+  run_default_sequence
 }
 
 run_custom() {
@@ -134,10 +201,11 @@ run_custom() {
   # shellcheck disable=SC1091
   source "$FRAMEWORKS_ROOT/android/env.sh"
 
+  echo "==> [3/5] Dependencies"
   ensure_deps
 
   echo ""
-  echo "==> [3/5] Custom credentials for lxc-apim"
+  echo "==> Custom credentials for lxc-apim"
   echo "This writes/overwrites $ENV_FILE (already gitignored, never committed)."
   echo ""
 
@@ -182,11 +250,11 @@ EOF
 
   echo "==> Wrote $ENV_FILE"
 
-  echo "==> [4/5] Database"
+  echo "==> [4/5] Database — migrate + seed + admin account (idempotent, safe to re-run)"
   ensure_db_ready
 
-  echo "==> [5/5] Starting lxc-apim (dev mode, remote DB) — logs: $LOG_FILE"
-  start_server_and_open_browser
+  echo "==> [5/5] Server + health check"
+  start_server_and_health_check
 }
 
 show_menu() {
@@ -194,9 +262,10 @@ show_menu() {
   echo "========================================"
   echo " LXC-APIM"
   echo "========================================"
-  echo " 1) Default Run/Test Local  (Dev APIM  — Remote DB)"
-  echo " 2) Custom Run/Test Local   (Dev APIM  — Remote DB)"
-  echo " 3) Make Build to Publish (PROD APIM — local DB)"
+  echo " 1) First Time - Default Run/Test Local  (Dev APIM  — Remote DB)"
+  echo " 2) Regular    - Default Run/Test Local  (Dev APIM  — Remote DB)"
+  echo " 3) Custom Run/Test Local  (Dev APIM  — Remote DB)"
+  echo " 4) Make Build to Publish (PROD APIM — local DB)"
   echo " q) Quit"
   echo "========================================"
 }
@@ -207,12 +276,15 @@ main() {
     read -r -p "Choose an option: " choice
     case "$choice" in
       1)
-        run_default
+        run_first_time
         ;;
       2)
-        run_custom
+        run_regular
         ;;
       3)
+        run_custom
+        ;;
+      4)
         echo ""
         echo "Not built yet — this option is a placeholder for the PROD"
         echo "APIM / local DB build-to-publish flow, coming later."
