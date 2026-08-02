@@ -17,6 +17,8 @@ export const openApiSpec = {
   ],
   tags: [
     {name: 'Health'},
+    {name: 'Identity & Access'},
+    {name: 'User Profile & Family'},
     {name: 'Weather'},
     {name: 'Doctors'},
   ],
@@ -40,6 +42,317 @@ export const openApiSpec = {
                 },
               },
             },
+          },
+        },
+      },
+    },
+    '/v1/auth/register': {
+      post: {
+        tags: ['Identity & Access'],
+        summary: 'Register a user',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  name: {type: 'string', example: 'Priya Kumar'},
+                  email: {type: 'string', example: 'priya@example.com'},
+                  phone: {type: 'string', example: '+971501112233'},
+                  password: {type: 'string', example: 'Secret123!'},
+                },
+                required: ['name', 'email', 'password'],
+              },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: 'User registered',
+            content: {
+              'application/json': {
+                schema: {type: 'object'},
+              },
+            },
+          },
+        },
+      },
+    },
+    '/v1/auth/otp/request': {
+      post: {
+        tags: ['Identity & Access'],
+        summary: 'Request a mobile OTP',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  phone: {type: 'string', example: '+971501112233'},
+                },
+                required: ['phone'],
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'OTP request accepted',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/auth/otp/verify': {
+      post: {
+        tags: ['Identity & Access'],
+        summary: 'Verify a mobile OTP',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  phone: {type: 'string', example: '+971501112233'},
+                  otp: {type: 'string', example: '123456'},
+                },
+                required: ['phone', 'otp'],
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'OTP verified',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/auth/login': {
+      post: {
+        tags: ['Identity & Access'],
+        summary: 'Email login',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  email: {type: 'string', example: 'priya@example.com'},
+                  password: {type: 'string', example: 'Secret123!'},
+                },
+                required: ['email', 'password'],
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Login success',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/auth/token/refresh': {
+      post: {
+        tags: ['Identity & Access'],
+        summary: 'Refresh access token',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  refreshToken: {type: 'string', example: 'lxc_rt_xxx'},
+                },
+                required: ['refreshToken'],
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Token refreshed',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/auth/logout': {
+      post: {
+        tags: ['Identity & Access'],
+        summary: 'Logout a session',
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  sessionId: {type: 'string', example: 'ses_demo'},
+                },
+                required: ['sessionId'],
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Session logged out',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/auth/sessions': {
+      get: {
+        tags: ['Identity & Access'],
+        summary: 'List sessions',
+        responses: {
+          200: {
+            description: 'Active sessions',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/auth/sessions/{sessionId}': {
+      delete: {
+        tags: ['Identity & Access'],
+        summary: 'Delete a session',
+        parameters: [
+          {
+            name: 'sessionId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'ses_demo'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Session deleted',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/users/me': {
+      get: {
+        tags: ['User Profile & Family'],
+        summary: 'Get current user profile',
+        responses: {
+          200: {
+            description: 'Current user profile',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+      patch: {
+        tags: ['User Profile & Family'],
+        summary: 'Update current user profile',
+        requestBody: {
+          required: true,
+          content: {'application/json': {schema: {type: 'object'}}},
+        },
+        responses: {
+          200: {
+            description: 'Current user profile updated',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/users/me/family': {
+      get: {
+        tags: ['User Profile & Family'],
+        summary: 'List current user family members',
+        responses: {
+          200: {
+            description: 'Family members',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+      post: {
+        tags: ['User Profile & Family'],
+        summary: 'Add a family member',
+        requestBody: {
+          required: true,
+          content: {'application/json': {schema: {type: 'object'}}},
+        },
+        responses: {
+          201: {
+            description: 'Family member added',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}': {
+      get: {
+        tags: ['User Profile & Family'],
+        summary: 'Get a profile by profileId',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Profile record',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+      patch: {
+        tags: ['User Profile & Family'],
+        summary: 'Update a profile by profileId',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-self-001'},
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {'application/json': {schema: {type: 'object'}}},
+        },
+        responses: {
+          200: {
+            description: 'Profile updated',
+            content: {'application/json': {schema: {type: 'object'}}},
+          },
+        },
+      },
+    },
+    '/v1/profiles/{profileId}/sharing': {
+      post: {
+        tags: ['User Profile & Family'],
+        summary: 'Create a sharing link for a profile',
+        parameters: [
+          {
+            name: 'profileId',
+            in: 'path',
+            required: true,
+            schema: {type: 'string', example: 'profile-child-001'},
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Profile sharing enabled',
+            content: {'application/json': {schema: {type: 'object'}}},
           },
         },
       },
