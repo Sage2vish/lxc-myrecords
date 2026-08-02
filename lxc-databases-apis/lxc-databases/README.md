@@ -1,4 +1,17 @@
-# lxc-databases
+<h1 id="lxc-databases" align="center">🗄️ lxc-databases</h1>
+
+<p align="center">
+  <a href="https://lexvoraconsulting.com" target="_blank"><strong>lexvoraconsulting.com</strong></a>
+</p>
+
+<p align="center">
+    <img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status">
+    <img src="https://img.shields.io/badge/scope-Database%20Workspace-4B5563" alt="Scope">
+    <img src="https://img.shields.io/badge/Database-MySQL-4479A1" alt="MySQL">
+    <img src="https://img.shields.io/badge/Deploy-Hostinger-4B5563" alt="Hostinger">
+</p>
+
+---
 
 Dedicated database workspace for the Lexvora Consulting APIs & Databases stack.
 
@@ -7,16 +20,16 @@ integration notes, migrations, and deployment context. It is intended to be the
 single place where we define how health data is stored, accessed, secured, and
 evolved over time.
 
-## Current Structure
+## 🧭 Current Structure
 
-This workspace is now split into two child areas:
+This workspace is split into two child areas:
 
-- [`api-apimgmt-db/`](./api-apimgmt-db/) for JWT, admin, API user, and API
-  management data
-- [`health-db/`](./health-db/) for patient, visit, record, and sync-oriented
-  health data
+| Folder | Purpose |
+|---|---|
+| [`api-apimgmt-db/`](./api-apimgmt-db/) | JWT, admin, API user, and API management data (`api_*`/`apim_*` tables) |
+| [`health-db/`](./health-db/) | Patient, visit, record, and sync-oriented health data |
 
-## Purpose
+## 🎯 Purpose
 
 The goal of this folder is to keep the data layer separate from the mobile and
 API applications so database decisions stay easy to review and maintain.
@@ -33,7 +46,7 @@ Use this space for:
 - API management and health-domain data should live in separate subfolders
   unless we intentionally merge them later
 
-## Database Provider — Decided
+## 🏆 Database Provider — Decided
 
 **MySQL**, on the existing Hostinger instance already documented in
 [`../lxc-api/DB_CONNECTION.md`](../lxc-api/DB_CONNECTION.md). Not MongoDB Atlas,
@@ -94,16 +107,17 @@ Typical strengths:
 
 </details>
 
-## Recommended Direction
+## 🧩 Recommended Direction
 
 For the current LXC-DBs-APIs ecosystem, tables are split by domain within the
 same MySQL database:
 
-- Use `api-apimgmt-db` (`api_*` / `apim_*` prefixes) for authentication, users,
-  sessions, API catalog, and admin control — shared by `lxc-api` and `lxc-apim`.
-- Use `health-db` for patient records, timelines, and medical documents.
+| Domain | Folder | Prefix |
+|---|---|---|
+| Auth, users, sessions, API catalog, admin control — shared by `lxc-api` and `lxc-apim` | `api-apimgmt-db` | `api_*` / `apim_*` |
+| Patient records, timelines, medical documents | `health-db` | (TBD) |
 
-## Suggested Folder Structure
+## 📁 Suggested Folder Structure
 
 ```text
 lxc-databases/
@@ -120,7 +134,7 @@ lxc-databases/
 └── env.example
 ```
 
-## Environment Notes
+## ⚙️ Environment Notes
 
 Keep secrets out of git. Same MySQL connection contract already used by
 `lxc-api` (see [`../lxc-api/.env.example`](../lxc-api/.env.example)):
@@ -136,14 +150,14 @@ MYSQL_PASSWORD=
 `lxc-apim` will use the same values — it's the same database, just different
 table prefixes.
 
-## Working Rules
+## 📏 Working Rules
 
 - Keep provider-specific scripts and notes inside this folder
 - Avoid scattering schema decisions across app folders
 - Document breaking changes before applying them
 - Treat patient data as sensitive by default
 
-## Next Step
+## ➡️ Next Step
 
 Database provider is confirmed (MySQL/Hostinger). Next: define the `api_*` /
 `apim_*` schema in `api-apimgmt-db/` and the schema in `health-db/`, then add
