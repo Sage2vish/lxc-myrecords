@@ -5,9 +5,31 @@ import {requireAuth} from '../middleware/auth.js';
 
 export const catalogRouter = Router();
 
+type OpenApiOperation = {
+  tags?: string[];
+  summary?: string;
+  description?: string;
+  security?: Array<Record<string, string[]>>;
+  parameters?: unknown[];
+  requestBody?: {content?: Record<string, {schema?: OpenApiSchema}>};
+  responses?: Record<string, {description?: string; content?: Record<string, {schema?: OpenApiSchema}>}>;
+  'x-rate-limit'?: string;
+  'x-last-updated'?: string;
+};
+
+type OpenApiSchema = {
+  type?: string;
+  example?: unknown;
+  properties?: Record<string, OpenApiSchema>;
+  required?: string[];
+  items?: OpenApiSchema;
+};
+
 type OpenApiSpec = {
-  tags?: Array<{name: string}>;
-  paths?: Record<string, Record<string, {tags?: string[]; summary?: string; description?: string}>>;
+  info?: {version?: string};
+  tags?: Array<{name: string; description?: string}>;
+  paths?: Record<string, Record<string, OpenApiOperation>>;
+  security?: Array<Record<string, string[]>>;
 };
 
 type CatalogEndpoint = {
@@ -17,10 +39,14 @@ type CatalogEndpoint = {
   displayName: string;
   summary: string;
   description: string;
-  details: string[];
   version: string;
   auth: string;
   environment: string;
+  rateLimit: string;
+  lastUpdated: string;
+  requestExample: string;
+  responseExample: string;
+  operationJson: string;
 };
 
 type CatalogGroup = {
@@ -32,218 +58,62 @@ type CatalogGroup = {
   endpoints: CatalogEndpoint[];
 };
 
-const fallbackGroups: CatalogGroup[] = [
-  {
-    id: 'health',
-    name: 'Health',
-    description: 'System and uptime endpoints.',
-    countLabel: '1 API',
-    icon: '♥',
-    endpoints: [
-      {
-        id: 'health-check',
-        method: 'GET',
-        path: '/v1/health',
-        displayName: 'Health Check',
-        summary: 'Health check for v1',
-        description: 'Service is healthy',
-        details: ['Docs: /openapi.json', 'Used for liveness checks'],
-        version: 'v1.0.0',
-        auth: 'None',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-    ],
-  },
-  {
-    id: 'weather',
-    name: 'Weather',
-    description: 'Current weather lookup endpoints.',
-    countLabel: '1 API',
-    icon: '☁',
-    endpoints: [
-      {
-        id: 'weather-today',
-        method: 'GET',
-        path: '/v1/weather/today',
-        displayName: 'Current Weather',
-        summary: 'Get current weather for v1 using q or coordinates',
-        description: 'Current weather summary',
-        details: ['Query: q, lat, lon, city', 'Falls back to default city when needed'],
-        version: 'v1.0.0',
-        auth: 'None',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-    ],
-  },
-  {
-    id: 'doctors',
-    name: 'Doctors API',
-    description: 'Doctors profile, search, and scheduling endpoints.',
-    countLabel: '3 APIs',
-    icon: '◌',
-    endpoints: [
-      {
-        id: 'doctor-search',
-        method: 'GET',
-        path: '/v1/doctors/search',
-        displayName: 'Doctor Search API',
-        summary: 'Search doctors by name or specialization',
-        description: 'Find doctors by specialty, location, or name.',
-        details: ['Query: name, specialization, location', 'Supports grouped search and filters'],
-        version: 'v1.0.0',
-        auth: 'OAuth 2.0',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-      {
-        id: 'doctor-profile',
-        method: 'GET',
-        path: '/v1/doctors/{doctorId}/profile',
-        displayName: 'Doctor Profile API',
-        summary: 'Retrieve detailed doctor profile',
-        description: 'Doctor credentials, specialties, and service details.',
-        details: ['Path: doctorId', 'Detailed profile and credentials'],
-        version: 'v1.1.0',
-        auth: 'OAuth 2.0',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-      {
-        id: 'doctor-appointments',
-        method: 'GET',
-        path: '/v1/doctors/{doctorId}/availability',
-        displayName: 'Appointment Availability API',
-        summary: 'Check appointment availability',
-        description: 'Real-time booking slots and working hours.',
-        details: ['Path: doctorId', 'Availability and schedule checks'],
-        version: 'v1.0.3',
-        auth: 'OAuth 2.0',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-    ],
-  },
-  {
-    id: 'medicines',
-    name: 'Medicines API',
-    description: 'Medicine search, interaction, and prescription support.',
-    countLabel: '3 APIs',
-    icon: '◌',
-    endpoints: [
-      {
-        id: 'medicine-search',
-        method: 'GET',
-        path: '/v1/medicines/search',
-        displayName: 'Medicine Search API',
-        summary: 'Search medicines by name or brand',
-        description: 'Lookup medications by name, brand, or composition.',
-        details: ['Query: name, brand, composition', 'Supports medicine directory search'],
-        version: 'v1.3.0',
-        auth: 'OAuth 2.0',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-      {
-        id: 'medicine-interactions',
-        method: 'GET',
-        path: '/v1/medicines/interactions',
-        displayName: 'Drug Interaction API',
-        summary: 'Check medicine interactions',
-        description: 'Potential interactions between multiple drugs.',
-        details: ['Query: drug list', 'Flags possible interactions'],
-        version: 'v1.1.0',
-        auth: 'OAuth 2.0',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-      {
-        id: 'prescription-validation',
-        method: 'POST',
-        path: '/v1/medicines/prescriptions/validate',
-        displayName: 'Prescription Validation API',
-        summary: 'Validate prescriptions',
-        description: 'Prescription format and compliance checks.',
-        details: ['Body: prescription payload', 'Validates drug rules and compliance'],
-        version: 'v1.0.2',
-        auth: 'OAuth 2.0',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-    ],
-  },
-  {
-    id: 'hospitals',
-    name: 'Hospital and Clinics API',
-    description: 'Hospitals, clinics, and location coverage endpoints.',
-    countLabel: '3 APIs',
-    icon: '◌',
-    endpoints: [
-      {
-        id: 'hospital-search',
-        method: 'GET',
-        path: '/v1/hospitals/search',
-        displayName: 'Hospital Search API',
-        summary: 'Search hospitals and clinics',
-        description: 'Find healthcare facilities by name or area.',
-        details: ['Query: name, area, specialty', 'Facility discovery'],
-        version: 'v1.0.0',
-        auth: 'None',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-      {
-        id: 'hospital-details',
-        method: 'GET',
-        path: '/v1/hospitals/{hospitalId}',
-        displayName: 'Hospital Details API',
-        summary: 'Get hospital details',
-        description: 'Facility metadata, contacts, and services.',
-        details: ['Path: hospitalId', 'Detailed facility profile'],
-        version: 'v1.0.1',
-        auth: 'None',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-      {
-        id: 'clinic-availability',
-        method: 'GET',
-        path: '/v1/clinics/{clinicId}/availability',
-        displayName: 'Clinic Availability API',
-        summary: 'Check clinic availability',
-        description: 'Working hours and live slot availability.',
-        details: ['Path: clinicId', 'Availability and hours'],
-        version: 'v1.0.0',
-        auth: 'None',
-        environment: env.apimEnv === 'local' ? 'Local' : 'Production',
-      },
-    ],
-  },
-];
+const HTTP_METHODS = new Set(['get', 'post', 'put', 'patch', 'delete', 'head', 'options']);
 
 function toGroupId(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
-function titleFromTag(tag: string) {
-  return tag;
+function getAuthLabel(operation: OpenApiOperation, spec: OpenApiSpec) {
+  const security = operation.security ?? spec.security;
+  if (!security?.length) return 'None';
+
+  const schemes = [...new Set(security.flatMap((requirement) => Object.keys(requirement)))];
+  return schemes.length ? schemes.join(', ') : 'None';
+}
+
+function exampleFromSchema(schema?: OpenApiSchema): unknown {
+  if (!schema) return {};
+  if (schema.example !== undefined) return schema.example;
+  if (schema.properties) {
+    return Object.fromEntries(Object.entries(schema.properties).map(([name, property]) => [name, exampleFromSchema(property)]));
+  }
+  if (schema.type === 'array') return [exampleFromSchema(schema.items)];
+  if (schema.type === 'boolean') return false;
+  if (schema.type === 'number' || schema.type === 'integer') return 0;
+  return schema.type === 'object' ? {} : '';
+}
+
+function schemaExample(content?: Record<string, {schema?: OpenApiSchema}>) {
+  const schema = content?.['application/json']?.schema ?? Object.values(content ?? {})[0]?.schema;
+  return JSON.stringify(exampleFromSchema(schema), null, 2);
 }
 
 function buildGroupsFromSpec(spec: OpenApiSpec): CatalogGroup[] {
-  const tags = spec.tags?.map((tag) => tag.name).filter(Boolean) ?? [];
-  const paths = spec.paths ?? {};
   const groups = new Map<string, CatalogGroup>();
 
-  for (const tagName of tags) {
-    groups.set(toGroupId(tagName), {
-      id: toGroupId(tagName),
-      name: titleFromTag(tagName),
-      description: `${tagName} endpoints.`,
+  for (const tag of spec.tags ?? []) {
+    const id = toGroupId(tag.name);
+    groups.set(id, {
+      id,
+      name: tag.name,
+      description: tag.description ?? `${tag.name} endpoints.`,
       countLabel: '0 APIs',
       icon: '◌',
       endpoints: [],
     });
   }
 
-  for (const [path, operations] of Object.entries(paths)) {
-    for (const [method, operation] of Object.entries(operations)) {
-      const tagName = operation.tags?.[0] ?? 'API';
+  for (const [path, pathItem] of Object.entries(spec.paths ?? {})) {
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (!HTTP_METHODS.has(method)) continue;
+
+      const tagName = operation.tags?.[0] ?? 'Ungrouped';
       const groupId = toGroupId(tagName);
       if (!groups.has(groupId)) {
         groups.set(groupId, {
           id: groupId,
-          name: titleFromTag(tagName),
+          name: tagName,
           description: `${tagName} endpoints.`,
           countLabel: '0 APIs',
           icon: '◌',
@@ -251,54 +121,52 @@ function buildGroupsFromSpec(spec: OpenApiSpec): CatalogGroup[] {
         });
       }
 
-      const group = groups.get(groupId)!;
-      const endpointName =
-        path.includes('weather') ? 'Current Weather' :
-        path.includes('search') ? `${tagName.replace(/s$/i, '')} Search API` :
-        path.includes('profile') ? `${tagName.replace(/s$/i, '')} Profile API` :
-        path.includes('availability') ? 'Appointment Availability API' :
-        `${tagName} API`;
-
-      group.endpoints.push({
+      const summary = operation.summary ?? `${method.toUpperCase()} ${path}`;
+      groups.get(groupId)!.endpoints.push({
         id: `${groupId}-${method}-${path.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '')}`,
         method: method.toUpperCase(),
         path,
-        displayName: endpointName,
-        summary: operation.summary ?? endpointName,
-        description: operation.description ?? operation.summary ?? endpointName,
-        details: ['Source: lxc-api /openapi.json'],
-        version: 'v1.0.0',
-        auth: 'None',
+        displayName: summary,
+        summary,
+        description: operation.description ?? summary,
+        version: spec.info?.version ?? 'Unknown',
+        auth: getAuthLabel(operation, spec),
         environment: env.apimEnv === 'local' ? 'Local' : 'Production',
+        rateLimit: operation['x-rate-limit'] ?? 'Not specified',
+        lastUpdated: operation['x-last-updated'] ?? 'Not specified',
+        requestExample: operation.requestBody ? schemaExample(operation.requestBody.content) : 'No request body defined.',
+        responseExample: schemaExample(Object.values(operation.responses ?? {})[0]?.content),
+        operationJson: JSON.stringify(operation, null, 2),
       });
     }
   }
 
-  return Array.from(groups.values()).map((group) => ({
-    ...group,
-    countLabel: `${group.endpoints.length} API${group.endpoints.length === 1 ? '' : 's'}`,
-  }));
+  return [...groups.values()]
+    .filter((group) => group.endpoints.length > 0)
+    .map((group) => ({
+      ...group,
+      countLabel: `${group.endpoints.length} API${group.endpoints.length === 1 ? '' : 's'}`,
+    }));
 }
 
-async function loadGroups() {
+async function loadGroups(): Promise<{groups: CatalogGroup[]; error: string | null}> {
   const apiBaseUrl = env.apimEnv === 'local' ? 'http://localhost:3000' : 'https://api.lexvoraconsulting.com';
   try {
     const response = await fetch(`${apiBaseUrl}/openapi.json`, {headers: {accept: 'application/json'}});
-    if (!response.ok) {
-      throw new Error(`OpenAPI fetch failed (${response.status})`);
-    }
+    if (!response.ok) throw new Error(`OpenAPI fetch failed (${response.status})`);
 
-    const spec = (await response.json()) as OpenApiSpec;
-    const groups = buildGroupsFromSpec(spec).filter((group) => group.endpoints.length > 0);
-    return groups.length > 0 ? groups : fallbackGroups;
-  } catch {
-    return fallbackGroups;
+    const groups = buildGroupsFromSpec((await response.json()) as OpenApiSpec);
+    return groups.length
+      ? {groups, error: null}
+      : {groups: [], error: 'The OpenAPI document does not contain any API operations.'};
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return {groups: [], error: `Unable to load the lxc-api OpenAPI document: ${message}`};
   }
 }
 
 catalogRouter.get('/catalog', requireAuth, async (req, res, next) => {
   let dbError: string | null = null;
-
   try {
     await pool.query('SELECT 1');
   } catch (error) {
@@ -306,23 +174,16 @@ catalogRouter.get('/catalog', requireAuth, async (req, res, next) => {
   }
 
   try {
-    const groups = await loadGroups();
+    const {groups, error: catalogError} = await loadGroups();
     const selectedGroupId = typeof req.query.group === 'string' ? req.query.group : groups[0]?.id;
     const selectedGroup = groups.find((group) => group.id === selectedGroupId) ?? groups[0];
     const selectedEndpointId = typeof req.query.endpoint === 'string' ? req.query.endpoint : selectedGroup?.endpoints[0]?.id;
     const selectedEndpoint = groups.flatMap((group) => group.endpoints).find((endpoint) => endpoint.id === selectedEndpointId) ?? selectedGroup?.endpoints[0];
     const baseUrl = env.apimEnv === 'local' ? 'http://localhost:3000' : 'https://api.lexvoraconsulting.com';
-    const docsUrl = `${baseUrl}/openapi.json`;
 
     res.render('catalog', {
-      groups,
-      selectedGroup,
-      selectedEndpoint,
-      dbError,
-      session: req.session,
-      apimEnv: env.apimEnv,
-      baseUrl,
-      docsUrl,
+      groups, selectedGroup, selectedEndpoint, dbError, catalogError,
+      session: req.session, apimEnv: env.apimEnv, baseUrl, docsUrl: `${baseUrl}/openapi.json`,
     });
   } catch (error) {
     next(error);

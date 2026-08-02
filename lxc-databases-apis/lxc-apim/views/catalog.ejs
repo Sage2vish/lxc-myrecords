@@ -77,10 +77,10 @@
           </div>
         </section>
 
-        <% if (dbError) { %>
+        <% if (dbError || catalogError) { %>
           <section class="catalog-empty" aria-live="polite">
             <p>Catalog data isn't available yet.</p>
-            <p class="catalog-empty-detail"><%= dbError %></p>
+            <p class="catalog-empty-detail"><%= dbError || catalogError %></p>
           </section>
         <% } else { %>
           <section class="swagger-body" aria-label="API groups">
@@ -139,44 +139,45 @@
             <a class="details-docs" href="<%= baseUrl + '/docs' %>" target="_blank" rel="noopener">View in API Docs</a>
 
             <article class="details-card">
-              <h4>Endpoint</h4>
+              <div class="details-card__heading"><h4>Endpoint</h4><span aria-hidden="true">↗</span></div>
               <div class="details-field">
                 <span>Base URL</span>
-                <strong><%= baseUrl %></strong>
+                <div class="details-value"><strong><%= baseUrl %></strong><button class="copy-button" type="button" data-copy="<%= baseUrl %>" aria-label="Copy base URL">⧉</button></div>
               </div>
               <div class="details-field">
                 <span>Endpoint</span>
-                <strong><%= selectedEndpoint.path %></strong>
+                <div class="details-value"><strong><%= selectedEndpoint.path %></strong><button class="copy-button" type="button" data-copy="<%= selectedEndpoint.path %>" aria-label="Copy endpoint">⧉</button></div>
               </div>
               <div class="details-field">
-                <span>Full URL</span>
-                <strong><%= baseUrl + selectedEndpoint.path %></strong>
+                <span>Full URL (Example)</span>
+                <div class="details-value details-value--link"><strong><%= baseUrl + selectedEndpoint.path %></strong><button class="copy-button" type="button" data-copy="<%= baseUrl + selectedEndpoint.path %>" aria-label="Copy full URL">⧉</button></div>
               </div>
             </article>
 
             <article class="details-card">
               <h4>Summary</h4>
               <div class="details-grid">
-                <span>Group</span><strong><%= selectedGroup ? selectedGroup.name : 'API' %></strong>
-                <span>Method</span><strong><%= selectedEndpoint.method %></strong>
+                <span>Group</span><strong class="detail-badge detail-badge--group"><%= selectedGroup ? selectedGroup.name : 'Not specified' %></strong>
+                <span>Method</span><strong class="detail-badge detail-badge--method"><%= selectedEndpoint.method %></strong>
                 <span>Authentication</span><strong><%= selectedEndpoint.auth %></strong>
                 <span>Version</span><strong><%= selectedEndpoint.version %></strong>
-                <span>Environment</span><strong><%= selectedEndpoint.environment %></strong>
-                <span>Status</span><strong>Active</strong>
+                <span>Environment</span><strong class="detail-badge detail-badge--environment"><%= selectedEndpoint.environment %></strong>
+                <span>Rate Limit</span><strong><%= selectedEndpoint.rateLimit %></strong>
+                <span>Status</span><strong class="detail-status"><i></i>Active</strong>
+                <span>Last Updated</span><strong><%= selectedEndpoint.lastUpdated %></strong>
               </div>
             </article>
 
             <article class="details-card details-card--code">
-              <div class="details-card__tabs">
-                <span class="is-active">Request</span>
-                <span>Response</span>
-                <span>JSON</span>
+              <div class="details-card__tabs" role="tablist" aria-label="API payload details">
+                <button class="details-tab is-active" type="button" data-tab="request" role="tab">Request</button>
+                <button class="details-tab" type="button" data-tab="response" role="tab">Response</button>
+                <button class="details-tab" type="button" data-tab="json" role="tab">JSON</button>
+                <button class="copy-button details-code-copy" type="button" aria-label="Copy code sample">⧉</button>
               </div>
-              <pre>{
-  "endpoint": "<%= selectedEndpoint.path %>",
-  "method": "<%= selectedEndpoint.method %>",
-  "group": "<%= selectedGroup ? selectedGroup.name : 'API' %>"
-}</pre>
+              <pre class="details-code is-active" data-panel="request"><code><%= selectedEndpoint.requestExample %></code></pre>
+              <pre class="details-code" data-panel="response" hidden><code><%= selectedEndpoint.responseExample %></code></pre>
+              <pre class="details-code" data-panel="json" hidden><code><%= selectedEndpoint.operationJson %></code></pre>
             </article>
           <% } %>
         </section>
@@ -187,5 +188,28 @@
   <footer class="site-footer">
     <p>&copy; 2026 Lexvora Consulting</p>
   </footer>
+  <script>
+    document.querySelectorAll('.copy-button').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const text = button.dataset.copy || button.closest('.details-card--code')?.querySelector('.details-code:not([hidden]) code')?.textContent || '';
+        if (!text) return;
+        await navigator.clipboard.writeText(text);
+        const label = button.textContent;
+        button.textContent = '✓';
+        setTimeout(() => { button.textContent = label; }, 1200);
+      });
+    });
+
+    document.querySelectorAll('.details-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.details-tab').forEach((item) => item.classList.toggle('is-active', item === tab));
+        document.querySelectorAll('.details-code').forEach((panel) => {
+          const active = panel.dataset.panel === tab.dataset.tab;
+          panel.hidden = !active;
+          panel.classList.toggle('is-active', active);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
