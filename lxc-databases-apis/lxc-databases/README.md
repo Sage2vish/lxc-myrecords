@@ -7,6 +7,15 @@ integration notes, migrations, and deployment context. It is intended to be the
 single place where we define how health data is stored, accessed, secured, and
 evolved over time.
 
+## Current Structure
+
+This workspace is now split into two child areas:
+
+- [`api-apimgmt-db/`](./api-apimgmt-db/) for JWT, admin, API user, and API
+  management data
+- [`health-db/`](./health-db/) for patient, visit, record, and sync-oriented
+  health data
+
 ## Purpose
 
 The goal of this folder is to keep the data layer separate from the mobile and
@@ -21,6 +30,8 @@ Use this space for:
 - Backup and recovery notes
 - Security and access patterns
 - Provider-specific implementation details
+- API management and health-domain data should live in separate subfolders
+  unless we intentionally merge them later
 
 ## Database Options
 
@@ -78,19 +89,26 @@ Choose based on the shape of the data and the way the application will grow:
 
 ## Recommended Direction
 
-For the current MyHealthHub ecosystem, the decision should be made around the
+For the current LXC-DBs-APIs ecosystem, the decision should be made around the
 core data shapes:
 
-- If the first priority is patient records, timelines, and medical documents,
-  MongoDB Atlas is a natural starting point.
-- If the first priority is users, appointments, permissions, and audit-friendly
-  relational data, Supabase is likely the better base.
+- Use `api-apimgmt-db` for authentication, users, sessions, and admin control.
+- Use `health-db` for patient records, timelines, and medical documents.
+- If the data is highly relational and needs strong reporting, Supabase is a
+  strong fit.
+- If the health records stay flexible and document-oriented, MongoDB Atlas is a
+  strong fit.
 
 ## Suggested Folder Structure
 
 ```text
 lxc-databases/
 ├── README.md
+├── api-apimgmt-db/
+│   └── README.md
+├── health-db/
+│   ├── README.md
+│   └── docs-images/
 ├── schema/
 ├── migrations/
 ├── seeds/
