@@ -46,6 +46,11 @@ without re-discovering what's already been verified.
 **Branch context:**
 - Weather work was merged into `main` on 2026-07-25
 - New backend project: `lxc-databases-apis/lxc-api/`
+- `lxc-databases-apis/` was restructured on 2026-08-02: `lxc-api` (the API
+  itself) and `lxc-apim` (a separate, new API-management/showcase codebase)
+  are sibling services under `lxc-databases-apis/`, sharing one MySQL
+  database via `api_*`/`apim_*` table prefixes — see the "lxc-apim" section
+  below. In-progress work on `lxc-apim` lives on the `lxc-apim` branch.
 - Backend deployment target: Hostinger Node app
 - Mobile app should call the backend first, and the backend should proxy WeatherAPI.com
 - Production WeatherAPI keys must stay in Hostinger env vars. A temporary mobile
@@ -149,10 +154,68 @@ README for the fuller task checklist.
   into `lxc-databases-apis/lxc-api/publish/lxc-api-YYYY-MM-DD-HHMM.tar`. Do not use
   or recreate a root-level `publish/` folder.
 
-**Where to start next:** likely Hostinger deployment verification, then real API
-request auth for the mobile app, then wiring `LoginScreen`'s mock OTP submit to
-an actual `POST /auth/login` and persisting the session via
-`react-native-keychain`.
+**`lxc-apim` status (started 2026-08-02, on the `lxc-apim` branch):**
+- `lxc-databases-apis/lxc-apim/` is a **separate codebase** from `lxc-api` —
+  not shared code, not a shared package. It's the API management/showcase
+  layer: catalogs the APIs LXC builds, owns admin users/roles/tokens, and
+  will serve a themed showcase UI. `lxc-api` stays the actual API that serves
+  requests; `lxc-apim` doesn't sit in the traffic path (no gateway/proxy
+  behavior — out of scope by design).
+- Stack mirrors `lxc-api`: Node.js + Express (`^4`, pinned to match `lxc-api`)
+  + TypeScript + `tsx`, plus `mysql2`, `jsonwebtoken`, `bcrypt`, `zod`, `cors`,
+  `ejs` (server-rendered showcase views — no separate SPA build pipeline),
+  `swagger-ui-express`.
+- Auth model: a **product-aware** auth API — login/authorization takes "which
+  product/service" as an input rather than being hardcoded to one app, so
+  MyHealthHub, the DSA app, and `lxc-apim` itself could all eventually
+  authenticate through the same mechanism, each scoped to their own product.
+  Product scoping lives on `apim_tokens.product_id`, not on `apim_user_roles`
+  (roles are global to the apim admin surface).
+- Deploys as a **single Node.js app** on Hostinger at
+  `apim.lexvoraconsulting.com` (same Express/Node-app preset as `lxc-api`),
+  serving both the admin/catalog API and the showcase UI's static build from
+  one Express process — not split across Hostinger's separate static-website
+  hosting product.
+- Swagger `/docs` is planned as **multi-spec**: `swagger-ui-express`'s `urls`
+  array, generated from the `apim_products` table rather than hardcoded, so
+  it shows a dropdown across every registered LXC API (starting with
+  `lxc-api`), not just `lxc-apim`'s own endpoints.
+- Showcase UI theme must match the `lexvoraconsulting_web` site (a **separate
+  sibling repo**, not inside this monorepo, at
+  `/Users/SageVish/Documents/Development Work/git-repos/lexvoraconsulting_web`):
+  dark navy + gold header (`#061421` / `#b88445` / `#d2a15f`), cream body
+  (`#f7f3ed`), Georgia serif hero headings, Montserrat uppercase eyebrow
+  labels, gold-gradient buttons, `.service-card` pattern from that site's
+  `our-products.html`.
+- Database: all `apim_*` migrations/seeds/scripts live under
+  `lxc-databases-apis/lxc-databases/api-apimgmt-db/` — **not** inside
+  `lxc-apim` itself, by explicit instruction, so the DB lifecycle stays
+  decoupled from application code. `npm run migrate` / `npm run seed` /
+  `npm run seed:admin` from that folder. Schema (`apim_products`,
+  `apim_users`, `apim_roles`, `apim_user_roles`, `apim_tokens`,
+  `apim_audit_log`) is defined and migrations/seed scripts are written, but
+  **have not been run against the live Hostinger database yet** — that needs
+  the real `MYSQL_PASSWORD` and an explicit go-ahead, deliberately not done
+  automatically.
+- `lxc-apim`'s own Phase 0 (scaffold) and Phase 1 (database) are done and
+  verified (`npm run build` clean, `/v1/health` responds, migration/seed
+  scripts pass `node --check`). Live task tracker:
+  `lxc-databases-apis/lxc-apim/README.md`. Still to build: the auth API
+  itself, admin/catalog CRUD, the showcase UI, the multi-spec Swagger wiring,
+  and Hostinger deployment for `apim.lexvoraconsulting.com`.
+- **Caution:** during this build, files started appearing in
+  `api-apimgmt-db/migrations/` that weren't written by the assisting session
+  — two conflicting schema designs landed concurrently (different column
+  sets for the same tables). This was reconciled into one canonical
+  migration set, but if another Claude Code session or agent is/was also
+  working on this same repo, coordinate before both sides keep editing the
+  same files.
+
+**Where to start next:** likely Hostinger deployment verification for
+`lxc-api`, then real API request auth for the mobile app, then wiring
+`LoginScreen`'s mock OTP submit to an actual `POST /auth/login` and
+persisting the session via `react-native-keychain` — or, on the `lxc-apim`
+branch, continuing `lxc-apim`'s Phase 2 (the product-aware auth API).
 
 ### Executable build scripts
 

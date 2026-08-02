@@ -32,9 +32,24 @@ two separate codebases:
 | Any tables `lxc-api` itself needs | `api_*` |
 | Future database migrations | both |
 
+## 🗂️ Schema (current)
+
+| Table | Holds |
+|---|---|
+| `apim_products` | The API catalog — one row per registered LXC product/service (`slug`, `openapi_url`, `base_url`, `is_active`) |
+| `apim_users` | Admin/API-consumer accounts |
+| `apim_roles` | Global roles (`admin`, `developer`, ...) — not per-product |
+| `apim_user_roles` | Grants a role to a user |
+| `apim_tokens` | Issued refresh tokens/API keys, revocable; `product_id` is where product-scoped login lives |
+| `apim_audit_log` | Login/token/admin action audit trail |
+
+Migrations: `migrations/0001`–`0005`. Runner: `npm run migrate` (`scripts/migrate.mjs`,
+tracks applied files in `apim_schema_migrations`). Seed data: `npm run seed`
+(baseline products/roles) and `npm run seed:admin` (default admin user).
+
 ## ✅ Status
 
-- [ ] Define schema (`api_*` and `apim_*`)
-- [ ] Add migrations
-- [ ] Add seed data
-- [ ] Connect API auth layer
+- [x] Define schema (`apim_*`)
+- [x] Add migrations
+- [x] Add seed data
+- [ ] Connect API auth layer (`lxc-apim` Phase 2)
