@@ -253,7 +253,7 @@ Use this flow whenever you want to see the latest React Native UI in the Android
 Terminal 1:
 
 ```bash
-cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-shared"
+cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/LXC-MyHealthHub/lxc-myhealthhub-shared"
 source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 npm run start:reset
 ```
@@ -261,7 +261,7 @@ npm run start:reset
 Terminal 2:
 
 ```bash
-cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-shared"
+cd "/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/LXC-MyHealthHub/lxc-myhealthhub-shared"
 source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 npm run android
 ```
@@ -354,7 +354,7 @@ Before building, install Android SDK Platform 36, API 36 build tools, and an And
 Last successful debug APK:
 
 ```text
-/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/lxc-myrecords/lxc-myhealthhub-xda/app/build/outputs/apk/debug/app-debug.apk
+/Users/SageVish/Documents/Development Work/git-repos/LXC-Repos/LXC-MyHealthHub/lxc-myhealthhub-xda/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 Project-relative path:
