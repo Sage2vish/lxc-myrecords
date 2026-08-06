@@ -1,4 +1,4 @@
-<h1 id="myrecords-healthcare-platform" align="center">🩺 MyRecords Healthcare Platform</h1>
+<h1 id="myrecords-healthcare-platform" align="center">🩺 MyHealthHub Healthcare Platform</h1>
 
 <p align="center">
   <a href="https://lexvoraconsulting.com" target="_blank"><strong>lexvoraconsulting.com</strong></a>
@@ -25,11 +25,11 @@
 <p align="center">iOS • Android • Web</p>
 
 <p align="center">
-  <a href="https://github.com/Sage2vish/lxc-myrecords"><img src="https://img.shields.io/badge/Star-Repository-111827?style=for-the-badge" alt="Star"></a>
-  <a href="https://github.com/Sage2vish/lxc-myrecords/fork"><img src="https://img.shields.io/badge/Fork-Project-0F766E?style=for-the-badge" alt="Fork"></a>
+  <a href="https://github.com/Sage2vish/LXC-MyHealthHub"><img src="https://img.shields.io/badge/Star-Repository-111827?style=for-the-badge" alt="Star"></a>
+  <a href="https://github.com/Sage2vish/LXC-MyHealthHub/fork"><img src="https://img.shields.io/badge/Fork-Project-0F766E?style=for-the-badge" alt="Fork"></a>
   <a href="#setup-and-running-the-apps"><img src="https://img.shields.io/badge/Download-Builds-7C3AED?style=for-the-badge" alt="Download"></a>
   <a href="#myhealthhub-premium-showcase"><img src="https://img.shields.io/badge/Documentation-Read_More-0A6BFF?style=for-the-badge" alt="Documentation"></a>
-  <a href="https://github.com/Sage2vish/lxc-myrecords/issues"><img src="https://img.shields.io/badge/Issues-Track-B91C1C?style=for-the-badge" alt="Issues"></a>
+  <a href="https://github.com/Sage2vish/LXC-MyHealthHub/issues"><img src="https://img.shields.io/badge/Issues-Track-B91C1C?style=for-the-badge" alt="Issues"></a>
 </p>
 
 <p align="center">
@@ -247,7 +247,8 @@ Copyright 2026
 
 ## 📖 Platform Dossier
 
-This repository is the home of the **Lexvora MyRecords healthcare platform**.
+This repository is the home of the **Lexvora MyHealthHub healthcare platform**.
+The code name used throughout the project is **LXC-MyRecords**.
 It contains two independently built React Native applications:
 
 1. **MyHealthHub**: a patient-facing mobile app for managing health records.

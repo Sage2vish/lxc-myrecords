@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository overview
 
-This repo (`lxc-myrecords`) is the Lexvora MyRecords healthcare platform and contains
+This repo (`LXC-MyHealthHub`) is the Lexvora MyHealthHub healthcare platform and contains
 **two independent React Native apps**:
 
 1. **MyHealthHub** — patient-facing mobile app (Android + iOS), split across three
