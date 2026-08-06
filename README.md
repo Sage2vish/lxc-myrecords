@@ -216,8 +216,8 @@ Proprietary Lexvora Consulting codebase. Internal use and controlled distributio
 | Channel | Link |
 |---|---|
 | Website | [lexvoraconsulting.com](https://lexvoraconsulting.com) |
-| Repository | [GitHub](https://github.com/Sage2vish/lxc-myrecords) |
-| Issues | [Bug tracker](https://github.com/Sage2vish/lxc-myrecords/issues) |
+| Repository | [GitHub](https://github.com/Sage2vish/LXC-MyHealthHub) |
+| Issues | [Bug tracker](https://github.com/Sage2vish/LXC-MyHealthHub/issues) |
 | Docs | This README plus the app and API subproject READMEs |
 
 ### Footer
@@ -621,7 +621,7 @@ source "/Users/SageVish/Documents/Development Work/frameworks/android/env.sh"
 
 ```sh
 git clone <repository-url>
-cd lxc-myrecords
+cd LXC-MyHealthHub
 ```
 
 ### Step 3: Install Dependencies and Run an App

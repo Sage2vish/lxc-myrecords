@@ -1,6 +1,6 @@
 # ChatGPT Context
 
-Repository: `lxc-myrecords`
+Repository: `LXC-MyHealthHub`
 
 Current branch:
 - `main`
